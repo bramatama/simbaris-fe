@@ -1,7 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+
+    const handleRegisterClick = () => {
+        navigate('/register');
+    }
     return (
         <div className="relative min-h-screen flex items-center justify-start text-black overflow-hidden">
             {/* Background Image (tetap di paling bawah) */}
@@ -14,7 +20,7 @@ const LandingPage = () => {
 
             <div className="absolute inset-0 bg-black opacity-5"></div>
 
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 md:pl-16 lg:pl-24">
+            <div className="relative z-10 w-full mx-auto px-8 md:px-24 lg:px-48">
                 <div className="max-w-2xl">
                     {/* Logo SIMBARIS */}
                     <img
@@ -51,6 +57,7 @@ const LandingPage = () => {
                             size="long"
                             round="half"
                             color="primary"
+                            onClick={handleRegisterClick}
                         ></Button>
                         <Button
                             text="Login"

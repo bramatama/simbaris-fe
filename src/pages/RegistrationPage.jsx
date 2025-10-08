@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../components/Button'; // Menggunakan komponen Button yang sudah ada
 import StepsIndicator from '../components/StepsIndicator';
+import { Users, User, ScrollText, CircleUserRound, Binary} from 'lucide-react';
 
 const RegistrationPage = () => {
     // Daftar langkah-langkah proses
@@ -8,22 +9,27 @@ const RegistrationPage = () => {
         {
             title: 'Data Tim',
             description: 'Input Data Tim dan Sekolah Asal Tim',
+            icon: <Users className='w-4 h-4'/>,
         },
         {
             title: 'Data Anggota Tim',
             description: 'Input Data Masing-Masing Anggota Tim',
+            icon: <User className='w-4 h-4' />,
         },
         {
             title: 'Pembayaran',
             description: 'Metode Pembayaran dan Bukti Pembayaran',
+            icon: <ScrollText className='w-4 h-4' />,
         },
         {
             title: 'Akun Tim',
             description: 'Pembuatan Akun Tim',
+            icon: <CircleUserRound className='w-4 h-4' />,
         },
         {
             title: 'Kode Tim',
             description: 'Menerima Kode Tim untuk Proses Login',
+            icon: <Binary className='w-4 h-4' />,
         },
     ];
 
@@ -43,8 +49,8 @@ const RegistrationPage = () => {
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen p-8 flex flex-col items-center">
-            <div className="w-full max-w-6xl mb-12">
+        <div className="bg-gray-50 min-h-screen py-12 flex flex-col gap-10 items-center">
+            <div className="w-full max-w-6xl ">
                 <StepsIndicator
                     steps={registrationSteps}
                     currentStep={currentStep}
