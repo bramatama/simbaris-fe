@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import RegistrationPage from './pages/RegistrationPage';
 // import Dashboard from './pages/Dashboard';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/register" element={<RegistrationPage />} />
       </Routes>
     </Router>
   );

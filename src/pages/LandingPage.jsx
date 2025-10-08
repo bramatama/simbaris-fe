@@ -52,7 +52,6 @@ const LandingPage = () => {
                             round="half"
                             color="primary"
                         ></Button>
-
                         <Button
                             text="Login"
                             size="long"
