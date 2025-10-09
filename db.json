@@ -1,0 +1,297 @@
+{
+  "users": [
+    {
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "admin",
+      "created_at": "2025-01-15T10:00:00.000Z"
+    },
+    {
+      "user_id": "550e8400-e29b-41d4-a716-446655440002",
+      "email": "leader@example.com",
+      "password": "leader123",
+      "role": "team_leader",
+      "created_at": "2025-01-16T10:00:00.000Z"
+    },
+    {
+      "user_id": "550e8400-e29b-41d4-a716-446655440003",
+      "email": "member@example.com",
+      "password": "member123",
+      "role": "member",
+      "created_at": "2025-01-17T10:00:00.000Z"
+    }
+  ],
+  "admins": [
+    {
+      "admin_id": "650e8400-e29b-41d4-a716-446655440001",
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "admin_name": "Admin Utama",
+      "admin_contact": "081234567890"
+    },
+    {
+      "admin_id": "650e8400-e29b-41d4-a716-446655440002",
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "admin_name": "Admin Sekunder",
+      "admin_contact": "081234567891"
+    }
+  ],
+  "schools": [
+    {
+      "school_id": "750e8400-e29b-41d4-a716-446655440001",
+      "school_name": "SMA Negeri 1 Jakarta",
+      "province": "DKI Jakarta",
+      "city": "Jakarta Pusat",
+      "subdistrict": "Menteng",
+      "created_at": "2025-01-10T08:00:00.000Z"
+    },
+    {
+      "school_id": "750e8400-e29b-41d4-a716-446655440002",
+      "school_name": "SMA Negeri 2 Bandung",
+      "province": "Jawa Barat",
+      "city": "Bandung",
+      "subdistrict": "Coblong",
+      "created_at": "2025-01-11T08:00:00.000Z"
+    },
+    {
+      "school_id": "750e8400-e29b-41d4-a716-446655440003",
+      "school_name": "SMA Negeri 3 Surabaya",
+      "province": "Jawa Timur",
+      "city": "Surabaya",
+      "subdistrict": "Gubeng",
+      "created_at": "2025-01-12T08:00:00.000Z"
+    },
+    {
+      "school_id": "750e8400-e29b-41d4-a716-446655440004",
+      "school_name": "SMA Negeri 1 Yogyakarta",
+      "province": "DI Yogyakarta",
+      "city": "Yogyakarta",
+      "subdistrict": "Jetis",
+      "created_at": "2025-01-13T08:00:00.000Z"
+    },
+    {
+      "school_id": "750e8400-e29b-41d4-a716-446655440005",
+      "school_name": "SMA Negeri 5 Semarang",
+      "province": "Jawa Tengah",
+      "city": "Semarang",
+      "subdistrict": "Candisari",
+      "created_at": "2025-01-14T08:00:00.000Z"
+    }
+  ],
+  "teams": [
+    {
+      "team_id": "850e8400-e29b-41d4-a716-446655440001",
+      "school_id": "750e8400-e29b-41d4-a716-446655440001",
+      "team_name": "Tim Robotik SMAN 1 Jakarta",
+      "unique_team_code": "a1b2c3d4",
+      "coach_name": "Budi Santoso",
+      "supervisor_name": "Dr. Ahmad Fauzi",
+      "contact": "081234567891",
+      "email": "team1@sman1jkt.sch.id",
+      "created_by": "550e8400-e29b-41d4-a716-446655440002",
+      "created_at": "2025-02-01T09:00:00.000Z",
+      "updated_at": "2025-02-01T09:00:00.000Z"
+    },
+    {
+      "team_id": "850e8400-e29b-41d4-a716-446655440002",
+      "school_id": "750e8400-e29b-41d4-a716-446655440002",
+      "team_name": "Tim Inovasi Bandung",
+      "unique_team_code": "e5f6g7h8",
+      "coach_name": "Siti Nurhaliza",
+      "supervisor_name": "Prof. Bambang",
+      "contact": "082345678901",
+      "email": "innovate@sman2bdg.sch.id",
+      "created_by": "550e8400-e29b-41d4-a716-446655440002",
+      "created_at": "2025-02-02T09:00:00.000Z",
+      "updated_at": "2025-02-02T09:00:00.000Z"
+    },
+    {
+      "team_id": "850e8400-e29b-41d4-a716-446655440003",
+      "school_id": "750e8400-e29b-41d4-a716-446655440003",
+      "team_name": "Tim Teknologi Surabaya",
+      "unique_team_code": "i9j0k1l2",
+      "coach_name": "Agus Setiawan",
+      "supervisor_name": "Ir. Suryanto",
+      "contact": "083456789012",
+      "email": "techteam@sman3sby.sch.id",
+      "created_by": "550e8400-e29b-41d4-a716-446655440002",
+      "created_at": "2025-02-03T09:00:00.000Z",
+      "updated_at": "2025-02-03T09:00:00.000Z"
+    }
+  ],
+  "members": [
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440001",
+      "team_id": "850e8400-e29b-41d4-a716-446655440001",
+      "user_id": "550e8400-e29b-41d4-a716-446655440003",
+      "member_name": "John Doe",
+      "member_grade": "11",
+      "nisn": "1234567890",
+      "gender": "male",
+      "created_at": "2025-02-05T10:00:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440002",
+      "team_id": "850e8400-e29b-41d4-a716-446655440001",
+      "user_id": null,
+      "member_name": "Jane Smith",
+      "member_grade": "11",
+      "nisn": "1234567891",
+      "gender": "female",
+      "created_at": "2025-02-05T10:05:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440003",
+      "team_id": "850e8400-e29b-41d4-a716-446655440001",
+      "user_id": null,
+      "member_name": "Ahmad Rizki",
+      "member_grade": "11",
+      "nisn": "1234567892",
+      "gender": "male",
+      "created_at": "2025-02-05T10:10:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440004",
+      "team_id": "850e8400-e29b-41d4-a716-446655440002",
+      "user_id": null,
+      "member_name": "Siti Aminah",
+      "member_grade": "12",
+      "nisn": "1234567893",
+      "gender": "female",
+      "created_at": "2025-02-06T10:00:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440005",
+      "team_id": "850e8400-e29b-41d4-a716-446655440002",
+      "user_id": null,
+      "member_name": "Budi Hartono",
+      "member_grade": "12",
+      "nisn": "1234567894",
+      "gender": "male",
+      "created_at": "2025-02-06T10:05:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440006",
+      "team_id": "850e8400-e29b-41d4-a716-446655440003",
+      "user_id": null,
+      "member_name": "Dewi Lestari",
+      "member_grade": "10",
+      "nisn": "1234567895",
+      "gender": "female",
+      "created_at": "2025-02-07T10:00:00.000Z"
+    },
+    {
+      "member_id": "950e8400-e29b-41d4-a716-446655440007",
+      "team_id": "850e8400-e29b-41d4-a716-446655440003",
+      "user_id": null,
+      "member_name": "Eko Prasetyo",
+      "member_grade": "10",
+      "nisn": "1234567896",
+      "gender": "male",
+      "created_at": "2025-02-07T10:05:00.000Z"
+    }
+  ],
+  "registration": [
+    {
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440001",
+      "team_id": "850e8400-e29b-41d4-a716-446655440001",
+      "status": "pending",
+      "price": 500000,
+      "payment_proof": "https://example.com/payments/proof-001.jpg",
+      "raw_photo_url": "https://example.com/photos/raw-001.jpg",
+      "verified_by": null,
+      "verified_at": null,
+      "submitted_at": "2025-02-10T14:30:00.000Z",
+      "last_update": "2025-02-10T14:30:00.000Z"
+    },
+    {
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440002",
+      "team_id": "850e8400-e29b-41d4-a716-446655440002",
+      "status": "verified",
+      "price": 500000,
+      "payment_proof": "https://example.com/payments/proof-002.jpg",
+      "raw_photo_url": "https://example.com/photos/raw-002.jpg",
+      "verified_by": "650e8400-e29b-41d4-a716-446655440001",
+      "verified_at": "2025-02-12T10:00:00.000Z",
+      "submitted_at": "2025-02-11T09:00:00.000Z",
+      "last_update": "2025-02-12T10:00:00.000Z"
+    },
+    {
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440003",
+      "team_id": "850e8400-e29b-41d4-a716-446655440003",
+      "status": "rejected",
+      "price": 500000,
+      "payment_proof": "https://example.com/payments/proof-003.jpg",
+      "raw_photo_url": "https://example.com/photos/raw-003.jpg",
+      "verified_by": "650e8400-e29b-41d4-a716-446655440001",
+      "verified_at": "2025-02-13T11:00:00.000Z",
+      "submitted_at": "2025-02-12T15:00:00.000Z",
+      "last_update": "2025-02-13T11:00:00.000Z"
+    }
+  ],
+  "photos": [
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440001",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440001",
+      "member_id": "950e8400-e29b-41d4-a716-446655440001",
+      "file_url": "https://example.com/photos/member-001.jpg",
+      "ocr_text": "John Doe\nSMA Negeri 1 Jakarta\nNISN: 1234567890",
+      "verified_name": "John Doe",
+      "created_at": "2025-02-10T14:35:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440002",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440001",
+      "member_id": "950e8400-e29b-41d4-a716-446655440002",
+      "file_url": "https://example.com/photos/member-002.jpg",
+      "ocr_text": "Jane Smith\nSMA Negeri 1 Jakarta\nNISN: 1234567891",
+      "verified_name": "Jane Smith",
+      "created_at": "2025-02-10T14:40:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440003",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440001",
+      "member_id": "950e8400-e29b-41d4-a716-446655440003",
+      "file_url": "https://example.com/photos/member-003.jpg",
+      "ocr_text": "Ahmad Rizki\nSMA Negeri 1 Jakarta\nNISN: 1234567892",
+      "verified_name": "Ahmad Rizki",
+      "created_at": "2025-02-10T14:45:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440004",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440002",
+      "member_id": "950e8400-e29b-41d4-a716-446655440004",
+      "file_url": "https://example.com/photos/member-004.jpg",
+      "ocr_text": "Siti Aminah\nSMA Negeri 2 Bandung\nNISN: 1234567893",
+      "verified_name": "Siti Aminah",
+      "created_at": "2025-02-11T09:10:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440005",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440002",
+      "member_id": "950e8400-e29b-41d4-a716-446655440005",
+      "file_url": "https://example.com/photos/member-005.jpg",
+      "ocr_text": "Budi Hartono\nSMA Negeri 2 Bandung\nNISN: 1234567894",
+      "verified_name": "Budi Hartono",
+      "created_at": "2025-02-11T09:15:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440006",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440003",
+      "member_id": "950e8400-e29b-41d4-a716-446655440006",
+      "file_url": "https://example.com/photos/member-006.jpg",
+      "ocr_text": "Dewi Lestari\nSMA Negeri 3 Surabaya\nNISN: 1234567895",
+      "verified_name": "Dewi Lestari",
+      "created_at": "2025-02-12T15:10:00.000Z"
+    },
+    {
+      "photo_id": "b50e8400-e29b-41d4-a716-446655440007",
+      "registration_id": "a50e8400-e29b-41d4-a716-446655440003",
+      "member_id": "950e8400-e29b-41d4-a716-446655440007",
+      "file_url": "https://example.com/photos/member-007.jpg",
+      "ocr_text": "Eko Prasetyo\nSMA Negeri 3 Surabaya\nNISN: 1234567896",
+      "verified_name": "Eko Prasetyo",
+      "created_at": "2025-02-12T15:15:00.000Z"
+    }
+  ]
+}
