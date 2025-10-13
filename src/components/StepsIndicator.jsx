@@ -12,7 +12,7 @@ const StepsIndicator = ({ steps = [], currentStep = 1 }) => {
                     {/* --- Garis Latar Belakang (Hanya untuk Desktop) --- */}
                     <div className="absolute top-6 hidden md:block left-16 w-[calc(100%-8rem)] h-1 transform -translate-y-1/2">
                         {/* Garis abu-abu */}
-                        <div className="w-full h-full bg-simbaris-neutral-300 rounded-full"></div>
+                        <div className="w-full h-full bg-gray-300 rounded-full"></div>
                         {/* Garis biru progres */}
                         <div
                             className="absolute top-0 left-0 h-full bg-simbaris-primary rounded-full transition-all duration-500 ease-in-out"
@@ -78,7 +78,7 @@ const StepsIndicator = ({ steps = [], currentStep = 1 }) => {
                                                 className={
                                                     isCompleted || isActive
                                                         ? 'text-simbaris-secondary'
-                                                        : 'text-simbaris-neutral-300'
+                                                        : 'text-gray-300'
                                                 }
                                                 size={28}
                                             />

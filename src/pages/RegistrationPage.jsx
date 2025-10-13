@@ -63,7 +63,7 @@ const RegistrationPage = () => {
                     Langkah {currentStep}:{' '}
                     {registrationSteps[currentStep - 1].title}
                 </h2>
-                <p className="text-simbaris-neutral-600 mb-8">
+                <p className="text-gray-600 mb-8">
                     Ini adalah konten untuk bagian "{' '}
                     {registrationSteps[currentStep - 1].description} "
                 </p>

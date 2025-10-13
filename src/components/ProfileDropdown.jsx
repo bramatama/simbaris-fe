@@ -1,61 +1,99 @@
-// // src/components/ProfileDropdown.jsx
+import React, {useState, useEffect, useRef } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
-// import React, { useState } from 'react';
-// import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'; // ikon panah
 
-// const ProfileDropdown = ({ user }) => {
-//     const [isOpen, setIsOpen] = useState(false);
+const Avatar = ({ imageUrl, initials, name }) => {
+    if (imageUrl) {
+        return (
+            <img
+                src={imageUrl}
+                alt={`Avatar for ${name}`}
+                className="w-12 h-12 rounded-full object-cover"
+            />
+        );
+    }
 
-//     // Menentukan apakah avatar berupa gambar atau inisial
-//     const Avatar = () => {
-//         if (user.avatarUrl) {
-//             return <img src={user.avatarUrl} alt="Avatar" className="h-10 w-10 rounded-full" />;
-//         }
-//         // Jika tidak ada gambar, gunakan inisial
-//         const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2);
-//         return (
-//             <div className="h-10 w-10 rounded-full bg-blue-700 flex items-center justify-center text-white font-bold">
-//                 {initials}
-//             </div>
-//         );
-//     };
+    return (
+        <div className="w-12 h-12 rounded-full bg-simbaris-primary flex items-center justify-center text-white font-bold text-lg">
+            {initials}
+        </div>
+    );
+};
 
-//     return (
-//         <div className="relative p-4 border-b border-gray-200">
-//             {/* Bagian Profil yang selalu terlihat */}
-//             <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-//                 <div className="flex items-center space-x-3">
-//                     <Avatar />
-//                     <div>
-//                         <p className="font-semibold text-gray-800">{user.name}</p>
-//                         <p className="text-sm text-gray-500">{user.role}</p>
-//                     </div>
-//                 </div>
-//                 {/* Ikon panah berubah sesuai state */}
-//                 {isOpen ? (
-//                     <ChevronUpIcon className="h-5 w-5 text-gray-500" />
-//                 ) : (
-//                     <ChevronDownIcon className="h-5 w-5 text-gray-500" />
-//                 )}
-//             </div>
+const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-//             {/* Konten Dropdown (muncul saat isOpen true) */}
-//             {isOpen && (
-//                 <div className="mt-2 pl-13 space-y-1">
-//                     <a href="/preferensi" className="block px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100">
-//                         Preferensi
-//                     </a>
-//                     {/* Logout dengan background merah saat hover */}
-//                     <button 
-//                         className="w-full text-left px-3 py-2 text-sm text-red-600 rounded-md hover:bg-red-50"
-//                         onClick={() => alert('Logout clicked!')} // Ganti dengan fungsi logout sebenarnya
-//                     >
-//                         Logout
-//                     </button>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
+    // Fungsi untuk menutup dropdown saat klik di luar komponen
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
 
-// export default ProfileDropdown;
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const { parent, children, imageUrl, initials } = user;
+
+    return (
+        <div className="relative w-full max-w-xs font-sans" ref={dropdownRef}>
+            {/* --- Tombol Utama Profile --- */}
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`w-full flex items-center p-4 rounded-lg transition-colors duration-200 ${
+                    isOpen ? 'bg-gray-100 rounded-b-none' : 'hover:bg-gray-50'
+                }`}
+            >
+                <Avatar imageUrl={imageUrl} initials={initials} parent={parent} />
+                <div className="ml-3 text-left">
+                    <p className="font-semibold text-sm text-simbaris-text">{parent}</p>
+                    <p className="text-xs text-gray-500">{children}</p>
+                </div>
+                <div className="ml-auto text-gray-500">
+                    {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </div>
+            </button>
+
+            {/* --- Menu Dropdown --- */}
+            {isOpen && (
+                <div className="absolute top-full w-full bg-white rounded-lg rounded-t-none shadow-lg overflow-hidden z-20">
+                    <ul>
+                        <li>
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    onPreferences();
+                                    setIsOpen(false);
+                                }}
+                                className="block px-4 py-3 text-sm text-simbaris-text hover:bg-gray-100 transition-colors"
+                            >
+                                Preferensi
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    onLogout();
+                                    setIsOpen(false);
+                                }}
+                                className="block px-4 py-3 text-sm text-simbaris-hazard hover:bg-simbaris-hazard-lightest transition-colors"
+                            >
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default ProfileDropdown;

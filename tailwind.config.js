@@ -56,19 +56,6 @@ export default {
         "simbaris-hazard-dark": "#991B1B",
         "simbaris-hazard-darkest": "#330808",
 
-        // Neutral
-        "simbaris-neutral-50": "gray-50",
-        "simbaris-neutral-100": "gray-100",
-        "simbaris-neutral-200": "gray-200",
-        "simbaris-neutral-300": "gray-300",
-        "simbaris-neutral-400": "gray-400",
-        "simbaris-neutral-500": "gray-500",
-        "simbaris-neutral-600": "gray-600",
-        "simbaris-neutral-700": "gray-700",
-        "simbaris-neutral-800": "gray-800",
-        "simbaris-neutral-900": "gray-900",
-        "simbaris-neutral-white": "white",
-
         "simbaris-text": "#111827",
         "simbaris-background": "gray-50",
         "simbaris-button-disabled": "gray-400",

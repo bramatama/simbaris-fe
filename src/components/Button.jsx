@@ -26,17 +26,17 @@ const Button = ({
   const colorStyles = {
     primary: {
       primary:
-        "bg-simbaris-primary text-simbaris-neutral-white hover:bg-simbaris-primary-dark",
+        "bg-simbaris-primary text-white hover:bg-simbaris-primary-dark",
       secondary:
-        "bg-simbaris-secondary text-simbaris-neutral-white hover:bg-simbaris-secondary-dark",
+        "bg-simbaris-secondary text-white hover:bg-simbaris-secondary-dark",
       accent:
-        "bg-simbaris-accent text-simbaris-neutral-white hover:bg-simbaris-accent-dark",
+        "bg-simbaris-accent text-white hover:bg-simbaris-accent-dark",
       success:
-        "bg-simbaris-success text-simbaris-neutral-white hover:bg-simbaris-success-dark",
+        "bg-simbaris-success text-white hover:bg-simbaris-success-dark",
       warning:
-        "bg-simbaris-warning text-simbaris-neutral-white hover:bg-simbaris-warning-dark",
+        "bg-simbaris-warning text-white hover:bg-simbaris-warning-dark",
       hazard:
-        "bg-simbaris-hazard text-simbaris-neutral-white hover:bg-simbaris-hazard-dark",
+        "bg-simbaris-hazard text-white hover:bg-simbaris-hazard-dark",
     },
     secondary: {
       primary:
@@ -56,9 +56,9 @@ const Button = ({
 
   const disabledStyles = {
     primary:
-      "bg-simbaris-neutral-200 text-simbaris-neutral-400 border-transparent",
+      "bg-gray-200 text-gray-400 border-transparent",
     secondary:
-      "text-simbaris-neutral-400 border-simbaris-neutral-200 bg-transparent",
+      "text-gray-400 border-gray-200 bg-transparent",
   };
 
   const focusedStyles = {

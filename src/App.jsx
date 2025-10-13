@@ -1,20 +1,71 @@
 import React from 'react';
-import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import { useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+
+import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
+
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
-// import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        <Route path="/register" element={<RegistrationPage />} />
-      </Routes>
-    </Router>
-  );
+    const location = useLocation();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const getInitials = (name) => {
+        return name
+            .split(' ')
+            .map((n) => n[0])
+            .join('')
+            .toUpperCase();
+    }
+
+    const user = {
+        role : 'admin', // table user -> role
+        parent: 'John Doe', // panitia -> name, admin -> team_name, member -> name
+        children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
+        imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
+        get initials() {
+            return getInitials(this.parent);
+        }
+    }
+
+    const excludedRoutes = ['/', '/login', '/register'];
+    const showNavbar = !excludedRoutes.includes(location.pathname);
+    const showSidebar = !excludedRoutes.includes(location.pathname);
+
+    return (
+        <div className="App">
+            {user && showSidebar && (
+                <Sidebar
+                    toggleSidebar={toggleSidebar}
+                    isOpen={isSidebarOpen}
+                    user={user}
+                    activePath={location.pathname}
+                />
+            )}
+            {showNavbar && (
+                <Navbar
+                    toggleSidebar={toggleSidebar}
+                    isSidebarOpen={isSidebarOpen}
+                />
+            )}
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/register" element={<RegistrationPage />} />
+                <Route
+                    path="/dashboard"
+                    element={<Dashboard isSidebarOpen={isSidebarOpen} />}
+                />
+            </Routes>
+        </div>
+    );
 }
 
 export default App;
