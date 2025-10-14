@@ -14,7 +14,7 @@ const Avatar = ({ imageUrl, initials, name }) => {
     }
 
     return (
-        <div className="w-12 h-12 rounded-full bg-simbaris-primary flex items-center justify-center text-white font-bold text-lg">
+        <div className="min-w-12 h-12 rounded-full bg-simbaris-primary flex items-center justify-center text-white font-bold text-lg">
             {initials}
         </div>
     );
@@ -45,13 +45,13 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
             {/* --- Tombol Utama Profile --- */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center p-4 rounded-lg transition-colors duration-200 ${
-                    isOpen ? 'bg-gray-100 rounded-b-none' : 'hover:bg-gray-50'
+                className={`w-full flex items-center p-4 rounded-lg transition-all duration-200 ${
+                    isOpen ? 'bg-gray-100 rounded-b-none border-transparent border-2' : 'hover:bg-gray-50 border-gray-100 border-2 hover:border-transparent'
                 }`}
             >
                 <Avatar imageUrl={imageUrl} initials={initials} parent={parent} />
                 <div className="ml-3 text-left">
-                    <p className="font-semibold text-sm text-simbaris-text">{parent}</p>
+                    <p className="font-semibold text-lg text-simbaris-text">{parent}</p>
                     <p className="text-xs text-gray-500">{children}</p>
                 </div>
                 <div className="ml-auto text-gray-500">
@@ -61,7 +61,7 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
 
             {/* --- Menu Dropdown --- */}
             {isOpen && (
-                <div className="absolute top-full w-full bg-white rounded-lg rounded-t-none shadow-lg overflow-hidden z-20">
+                <div className="absolute w-full bg-white rounded-lg border-transparent border-2 rounded-t-none shadow-lg z-20">
                     <ul>
                         <li>
                             <a

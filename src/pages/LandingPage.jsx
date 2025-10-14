@@ -37,7 +37,7 @@ const LandingPage = () => {
                             Institut Teknologi Kalimantan
                         </p>
                         <p className="text-sm sm:text-base md:text-lg text-simbaris-text mt-2 drop-shadow-md">
-                            Tingkat SD/MI - SMP/Mts - SMA/SMK/MA
+                            Tingkat SD/MI - SMP/MTs - SMA/SMK/MA
                             <br />
                             <span className="font-bold">Kalimantan Open</span>
                         </p>

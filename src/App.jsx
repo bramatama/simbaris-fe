@@ -20,15 +20,13 @@ function App() {
 
     const getInitials = (name) => {
         return name
-            .split(' ')
-            .map((n) => n[0])
-            .join('')
+            .split(' ')[0][0]
             .toUpperCase();
     }
 
     const user = {
         role : 'admin', // table user -> role
-        parent: 'John Doe', // panitia -> name, admin -> team_name, member -> name
+        parent: 'Raihan', // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
         get initials() {

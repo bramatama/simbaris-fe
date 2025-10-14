@@ -4,10 +4,10 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
-const SidebarLink = ({ icon, label, isActive, href = '#' }) => (
+const SidebarLink = ({ icon, label, isActive,isChildren, href = '#' }) => (
     <a
         href={href}
-        className={`flex items-center w-full px-4 py-3 text-sm font-semibold transition-colors duration-200
+        className={`flex items-center w-full ${isChildren? 'px-8' : 'px-4'} py-3 text-sm font-semibold transition-colors duration-200
             ${
                 isActive
                     ? 'bg-simbaris-primary-lightest text-simbaris-primary border-r-4 border-simbaris-primary'
@@ -22,7 +22,7 @@ const SidebarLink = ({ icon, label, isActive, href = '#' }) => (
 
 // --- Helper Component: Tautan Sidebar dengan Dropdown ---
 const SidebarDropdown = ({ label, children, isActive }) => {
-    const [isOpen, setIsOpen] = useState(isActive); 
+    const [isOpen, setIsOpen] = useState(isActive);
 
     return (
         <div>
@@ -45,7 +45,11 @@ const SidebarDropdown = ({ label, children, isActive }) => {
                     )}
                 </div>
             </button>
-            {isOpen && <div className="pl-8">{children}</div>}
+            {isOpen && (
+                <div>   
+                    {children}
+                </div>
+            )}
         </div>
     );
 };
@@ -109,7 +113,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
         ],
     };
 
-    const userNav = navConfig[user.role] || []; // Pilih navigasi berdasarkan peran user
+    const userNav = navConfig[user.role] || [];
 
     return (
         <div className="flex">
@@ -123,7 +127,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                         onPreferences={() => console.log('Preferences')}
                     />
                 </div>
-                <div className='border-b-2 border-gray-400 mx-4'></div>
+                <div className="border-b-2 border-gray-400 mx-4"></div>
                 <nav className="flex-1 py-4">
                     {userNav.map((item) => {
                         if (item.type === 'link') {
@@ -134,11 +138,11 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                                     icon={item.icon}
                                     label={item.label}
                                     isActive={activePath === item.path}
+                                    isChildren={false}
                                 />
                             );
                         }
                         if (item.type === 'dropdown') {
-                            // Cek apakah ada anak dari dropdown yang aktif
                             const isChildActive = item.children.some(
                                 (child) => child.path === activePath
                             );
@@ -154,6 +158,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                                             href={child.path}
                                             label={child.label}
                                             isActive={activePath === child.path}
+                                            isChildren={true}
                                         />
                                     ))}
                                 </SidebarDropdown>
