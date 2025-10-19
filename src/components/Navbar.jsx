@@ -1,8 +1,8 @@
 import { Menu } from 'lucide-react';
 
-const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
+const Header = ({ toggleSidebar, isSidebarOpen }) => {
     return (
-        <nav className="fixed top-0 left-0 w-full bg-white h-[100px] flex items-center justify-between z-5 px-4">
+        <header className="fixed top-0 left-0 w-full bg-white h-[100px] flex items-center justify-between z-5 px-4">
             <div className={`flex items-center`}>
                 <Menu
                     className={`text-simbaris-text text-2xl cursor-pointer hover:text-simbaris-primary-darkest transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-3'}`}
@@ -30,8 +30,8 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
                     }}
                 />
             </div>
-        </nav>
+        </header>
     );
 };
 
-export default Navbar;
+export default Header;

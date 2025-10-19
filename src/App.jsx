@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
+import Header from './components/Header';
 
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -35,7 +35,7 @@ function App() {
     }
 
     const excludedRoutes = ['/', '/login', '/register'];
-    const showNavbar = !excludedRoutes.includes(location.pathname);
+    const showHeader = !excludedRoutes.includes(location.pathname);
     const showSidebar = !excludedRoutes.includes(location.pathname);
 
     return (
@@ -48,8 +48,8 @@ function App() {
                     activePath={location.pathname}
                 />
             )}
-            {showNavbar && (
-                <Navbar
+            {showHeader && (
+                <Header
                     toggleSidebar={toggleSidebar}
                     isSidebarOpen={isSidebarOpen}
                 />

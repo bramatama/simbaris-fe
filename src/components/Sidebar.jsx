@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ProfileDropdown from './ProfileDropdown';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
