@@ -8,7 +8,8 @@ import Header from './components/Header';
 
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
-import Dashboard from './pages/Dashboard';
+import SampleWithDashboard from './pages/Sample';
+import Sample from './pages/Sample';
 
 function App() {
     const location = useLocation();
@@ -26,7 +27,7 @@ function App() {
 
     const user = {
         role : 'admin', // table user -> role
-        parent: 'Raihan', // panitia -> name, admin -> team_name, member -> name
+        parent: `User`, // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
         get initials() {
@@ -34,7 +35,7 @@ function App() {
         }
     }
 
-    const excludedRoutes = ['/', '/login', '/register'];
+    const excludedRoutes = ['/', '/login', '/register', '/forgot-password', '/reset-password','/sample'];
     const showHeader = !excludedRoutes.includes(location.pathname);
     const showSidebar = !excludedRoutes.includes(location.pathname);
 
@@ -58,8 +59,12 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route
-                    path="/dashboard"
-                    element={<Dashboard isSidebarOpen={isSidebarOpen} />}
+                    path="/sample-dashboard"
+                    element={<SampleWithDashboard isSidebarOpen={isSidebarOpen} />}
+                />
+                <Route
+                    path="/sample"
+                    element={<Sample isSidebarOpen={isSidebarOpen} />}
                 />
             </Routes>
         </div>

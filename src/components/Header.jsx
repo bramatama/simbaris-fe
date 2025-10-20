@@ -21,7 +21,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
                 </div>
                 <img
                     src="/images/logo_simbaris_icon.png"
-                    alt="GAKKUMHUT"
+                    alt="SIMBARIS"
                     className={`w-[70px] h-auto transition-opacity duration-300 ${isSidebarOpen ? 'opacity-0 md:opacity-100' : 'opacity-100'}`}
                     onError={(e) => {
                         e.target.onerror = null;
