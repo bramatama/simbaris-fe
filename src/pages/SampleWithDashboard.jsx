@@ -1,8 +1,8 @@
 import Button from '../components/Button';
-const Sample = () => {
+const SampleWithDashboard = (isSidebarOpen) => {
     return (
-        <>
-            <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen flex">
+            <div className="pl-64 pt-[100px] flex items-center justify-center">
                 <Button
                     text="Login"
                     size="long"
@@ -10,7 +10,7 @@ const Sample = () => {
                     color="accent"
                 ></Button>
             </div>
-        </>
+        </div>
     );
 };
-export default Sample;
+export default SampleWithDashboard;

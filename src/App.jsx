@@ -8,7 +8,7 @@ import Header from './components/Header';
 
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
-import SampleWithDashboard from './pages/Sample';
+import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 
 function App() {
@@ -20,22 +20,27 @@ function App() {
     };
 
     const getInitials = (name) => {
-        return name
-            .split(' ')[0][0]
-            .toUpperCase();
-    }
+        return name.split(' ')[0][0].toUpperCase();
+    };
 
     const user = {
-        role : 'admin', // table user -> role
+        role: 'admin', // table user -> role
         parent: `User`, // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
         get initials() {
             return getInitials(this.parent);
-        }
-    }
+        },
+    };
 
-    const excludedRoutes = ['/', '/login', '/register', '/forgot-password', '/reset-password','/sample'];
+    const excludedRoutes = [
+        '/',
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/reset-password',
+        '/sample',
+    ];
     const showHeader = !excludedRoutes.includes(location.pathname);
     const showSidebar = !excludedRoutes.includes(location.pathname);
 
@@ -60,12 +65,11 @@ function App() {
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route
                     path="/sample-dashboard"
-                    element={<SampleWithDashboard isSidebarOpen={isSidebarOpen} />}
+                    element={
+                        <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
+                    }
                 />
-                <Route
-                    path="/sample"
-                    element={<Sample isSidebarOpen={isSidebarOpen} />}
-                />
+                <Route path="/sample" element={<Sample />} />
             </Routes>
         </div>
     );
