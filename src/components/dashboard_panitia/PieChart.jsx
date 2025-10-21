@@ -73,7 +73,7 @@ const PieChart = ({ chartData, title }) => {
                     weight: 'bold',
                 },
                 padding: {
-                    y: 5,
+                    y:0
                 },
                 color: '#111827 ',
             },

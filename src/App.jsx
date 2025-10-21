@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Sidebar from './components/sidebar/Sidebar';
-import Header from './components/Header';
+import Header from './components/header/Header';
 
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';

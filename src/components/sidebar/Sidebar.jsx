@@ -114,16 +114,15 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
     return (
         <div className="flex">
             <div
-                className={`fixed flex flex-col h-full bg-white text-simbaris-text w-64 z-10 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`fixed flex flex-col h-full bg-white text-simbaris-text w-64 z-10 border-r-2 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
-                <div className="m-4">
+                <div className="">
                     <ProfileDropdown
                         user={user}
                         onLogout={() => navigator('/')}
                         onPreferences={() => console.log('Preferences')}
                     />
                 </div>
-                <div className="border-b-2 border-gray-400 mx-4"></div>
                 <nav className="flex-1 py-4">
                     {userNav.map((item) => {
                         if (item.type === 'link') {

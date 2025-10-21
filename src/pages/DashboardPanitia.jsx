@@ -45,20 +45,25 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 Tabel Data Akan Ditampilkan Di Sini
                             </div>
                         </div>
-                        <div className="bg-white shadow-md rounded-lg h-fit lg:h-72 p-6 overflow-auto">
-                            <div className="flex justify-between items-center">
-                                <span className="text-lg text-simbaris-text font-bold">
-                                    Pendaftar Tercepat
-                                </span>
-                                <Link
-                                to={"/tim-terdaftar"}>
-                                    <span className='text-sm text-simbaris-text hover:underline'>Lihat Semua</span>
-                                </Link>
+                        <div className="relative bg-white shadow-md rounded-lg h-fit lg:h-72 overflow-hidden">
+                            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-gray-50 to-transparent pointer-events-none"></div>
+                            <div className="h-full w-full overflow-auto p-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-lg text-simbaris-text font-bold">
+                                        Pendaftar Tercepat
+                                    </span>
+                                    <Link to={'/tim-terdaftar'}>
+                                        <span className="text-sm text-simbaris-text hover:underline">
+                                            Lihat Semua
+                                        </span>
+                                    </Link>
+                                </div>
+                                <FastestRegistrantsPanel teams={fastestTeams} />
                             </div>
-                            <FastestRegistrantsPanel teams={fastestTeams} />
+                            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none"></div>
                         </div>
-                        <div className="bg-white flex flex-col rounded-lg shadow-md py-4 px-6 md:row-span-2 h-96 md:h-[480px] lg:h-auto">
-                            <div className="relative h-full w-full p-4">
+                        <div className="bg-white flex flex-col items-center rounded-lg shadow-md py-4 px-6 md:row-span-2 h-96 md:h-[480px] lg:h-auto">
+                            <div className="h-full w-full max-w-[350px] p-4">
                                 <PieChart
                                     chartData={registrationData}
                                     title="Tim Terdaftar Perkategori"

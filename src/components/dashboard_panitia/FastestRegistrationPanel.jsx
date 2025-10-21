@@ -53,7 +53,7 @@ const FastestRegistrantsPanel = ({ teams }) => {
     };
 
     return (
-        <div className="h-fit flex flex-col pt-6">
+        <div className="h-fit flex flex-col">
             {/* --- Daftar Tim --- */}
             <div className="flex-1 flex flex-col min-[425px]:flex-row md:flex-col min-[425px]:gap-x-4">
                 <div className="flex flex-col gap-4 w-full">
