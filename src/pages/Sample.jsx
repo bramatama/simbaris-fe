@@ -1,16 +1,26 @@
 import Button from '../components/Button';
 const Sample = () => {
     return (
-        <>
-            <div className="p-6 bg-gray-100 min-h-screen">
-                <Button
-                    text="Login"
-                    size="long"
-                    round="half"
-                    color="accent"
-                ></Button>
+        <div className="flex bg-gray-100">
+            <div
+                className={`w-full min-h-screen overflow-hidden transition-all duration-300`}
+            >
+                <div className="flex flex-col gap-4 p-6">
+                    <header className="text-simbaris-text font-semibold text-3xl">
+                        Sample without Dashboard
+                    </header>
+
+                    {/* Taruh objek disini guys */}
+                    {/* contoh */}
+                    <Button
+                        text="Dashboard Button"
+                        size="long"
+                        round="half"
+                        color="primary"
+                    ></Button>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 export default Sample;

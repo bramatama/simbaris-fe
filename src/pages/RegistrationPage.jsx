@@ -73,14 +73,14 @@ const RegistrationPage = () => {
                     <Button
                         onClick={handlePrev}
                         disabled={currentStep === 1}
-                        color="secondary"
+                        color="primary"
                     >
                         Sebelumnya
                     </Button>
                     <Button
                         onClick={handleNext}
                         disabled={currentStep === registrationSteps.length}
-                        color="primary"
+                        color="accent"
                     >
                         Selanjutnya
                     </Button>
