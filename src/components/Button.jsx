@@ -6,7 +6,7 @@ const Button = ({
     type = 'primary',
     color = 'primary',
     round = 'half',
-    size = 'default',
+    size,
     leftIcon,
     rightIcon,
     disabled = false,
@@ -16,6 +16,7 @@ const Button = ({
     const sizeStyles = {
         default: 'h-11 w-36 px-4',
         long: 'h-11 w-60 px-6',
+        full: 'h-11 w-full px-6'
     };
 
     const roundStyles = {

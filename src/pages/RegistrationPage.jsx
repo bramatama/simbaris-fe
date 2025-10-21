@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../components/Button'; // Menggunakan komponen Button yang sudah ada
-import StepsIndicator from '../components/StepsIndicator';
+import StepsIndicator from '../components/registration/StepsIndicator';
 import { Users, User, ScrollText, CircleUserRound, Binary} from 'lucide-react';
 
 const RegistrationPage = () => {

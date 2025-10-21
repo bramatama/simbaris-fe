@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 
 const LandingPage = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const handleRegisterClick = () => navigate('/register');
+    // const handleRegisterClick = () => navigate('/register');
 
     return (
         <div className="relative bg-gray-50">
@@ -42,19 +42,22 @@ const LandingPage = () => {
                             <span className="font-bold">Kalimantan Open</span>
                         </p>
                         <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                            <Button
-                                text="Daftar Sekarang!"
-                                size="long"
-                                round="half"
-                                color="primary"
-                                onClick={handleRegisterClick}
-                            ></Button>
-                            <Button
-                                text="Login"
-                                size="long"
-                                round="half"
-                                color="accent"
-                            ></Button>
+                            <Link to={'/pendaftaran'}>
+                                <Button
+                                    text="Daftar Sekarang!"
+                                    size="long"
+                                    round="half"
+                                    color="primary"
+                                ></Button>
+                            </Link>
+                            <Link to={'/login'}>
+                                <Button
+                                    text="Login"
+                                    size="long"
+                                    round="half"
+                                    color="accent"
+                                ></Button>
+                            </Link>
                         </div>
                     </div>
                 </div>

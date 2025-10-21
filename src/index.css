@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::-webkit-scrollbar {
+    width: 10px; 
+    height: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: #e1e8f2; /* Warna track (simbaris-primary-lightest) */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #a4b9d6; /* Warna handle (simbaris-primary-light) */
+    border-radius: 10px;
+    border: 2px solid #e1e8f2; /* Memberi sedikit padding di sekitar handle */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #5c7ead; /* Warna handle saat di-hover (simbaris-primary-baselight) */
+}
+
+
+* {
+    scrollbar-width:thin;
+    scrollbar-color: #a4b9d6 #e1e8f2; /* Warna thumb dan track */
+}

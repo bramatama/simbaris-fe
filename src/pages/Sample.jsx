@@ -13,7 +13,7 @@ const Sample = () => {
                     {/* Taruh objek disini guys */}
                     {/* contoh */}
                     <Button
-                        text="Dashboard Button"
+                        text="Button"
                         size="long"
                         round="half"
                         color="primary"

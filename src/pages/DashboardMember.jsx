@@ -1,6 +1,6 @@
 import Button from '../components/Button';
 import PieChart from '../components/dashboard_panitia/PieChart';
-const SampleWithDashboard = ({ isSidebarOpen }) => {
+const DashboardMember = ({ isSidebarOpen }) => {
     const registrationData = {
         labels: ['SD / MI', 'SMP / MTs', 'SMA / SMK / MA'],
         values: [12, 23, 29],
@@ -38,4 +38,4 @@ const SampleWithDashboard = ({ isSidebarOpen }) => {
         </div>
     );
 };
-export default SampleWithDashboard;
+export default DashboardMember;

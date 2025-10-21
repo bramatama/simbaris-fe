@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
-const SidebarLink = ({ icon, label, isActive,isChildren, href = '#' }) => (
+const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
     <a
         href={href}
-        className={`flex items-center w-full ${isChildren? 'px-8' : 'px-4'} py-3 text-sm font-semibold transition-colors duration-200
+        className={`flex items-center w-full ${isChildren ? 'px-8' : 'px-4'} py-3 text-sm font-semibold transition-colors duration-200
             ${
                 isActive
                     ? 'bg-simbaris-primary-lightest text-simbaris-primary border-r-4 border-simbaris-primary'
@@ -45,11 +45,7 @@ const SidebarDropdown = ({ label, children, isActive }) => {
                     )}
                 </div>
             </button>
-            {isOpen && (
-                <div>   
-                    {children}
-                </div>
-            )}
+            {isOpen && <div>{children}</div>}
         </div>
     );
 };
@@ -71,7 +67,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                 label: 'Tim Terdaftar',
             },
         ],
-        admin: [
+        admin_tim: [
             {
                 type: 'link',
                 path: '/dashboard',
