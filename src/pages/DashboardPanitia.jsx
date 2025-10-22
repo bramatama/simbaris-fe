@@ -46,7 +46,6 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                             </div>
                         </div>
                         <div className="relative bg-white shadow-md rounded-lg h-fit lg:h-72 overflow-hidden">
-                            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-gray-50 to-transparent pointer-events-none"></div>
                             <div className="h-full w-full overflow-auto p-6">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-lg text-simbaris-text font-bold">
@@ -60,7 +59,6 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 </div>
                                 <FastestRegistrantsPanel teams={fastestTeams} />
                             </div>
-                            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none"></div>
                         </div>
                         <div className="bg-white flex flex-col items-center rounded-lg shadow-md py-4 px-6 md:row-span-2 h-96 md:h-[480px] lg:h-auto">
                             <div className="h-full w-full max-w-[350px] p-4">
