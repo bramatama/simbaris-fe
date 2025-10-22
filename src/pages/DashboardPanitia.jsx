@@ -45,7 +45,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 Tabel Data Akan Ditampilkan Di Sini
                             </div>
                         </div>
-                        <div className="relative bg-white shadow-md rounded-lg h-fit lg:h-72 overflow-hidden">
+                        <div className="flex bg-white shadow-md rounded-lg h-fit lg:h-72 overflow-hidden">
                             <div className="h-full w-full overflow-auto p-6">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-lg text-simbaris-text font-bold">
