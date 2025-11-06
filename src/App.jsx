@@ -6,12 +6,17 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
 
+
+
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
 import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
 import NotFoundPage from './pages/NotFoundPage';
+import LoginPage from './pages/LoginPage';
+import DashboardPanitia from './pages/DashboardPanitia';
+
 
 function App() {
     const location = useLocation();
@@ -63,7 +68,7 @@ function App() {
             )}
             <Routes>
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<Sample />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/pendaftaran" element={<RegistrationPage />} />
                 <Route
                     path="/dashboard/"
@@ -79,6 +84,10 @@ function App() {
                     element={
                         <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
+                />
+                <Route
+                    path="/dashboard-panitia"
+                    element={<DashboardPanitia isSidebarOpen={isSidebarOpen} />}
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />

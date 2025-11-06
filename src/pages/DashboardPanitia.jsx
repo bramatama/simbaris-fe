@@ -2,6 +2,8 @@ import Button from '../components/Button';
 import PieChart from '../components/dashboard_panitia/PieChart';
 import FastestRegistrantsPanel from '../components/dashboard_panitia/FastestRegistrationPanel';
 import { Link } from 'react-router-dom';
+import SimpleCard from '../components/dashboard_panitia/SimpleCards';
+
 const DashboardPanitia = ({ isSidebarOpen }) => {
     // Data Dummy untuk jumlah pendaftar
     const registrationData = {
@@ -9,7 +11,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         values: [12, 23, 29],
     };
 
-    //Data Dummy untuk pendaftar tercepat
+    // Data Dummy untuk pendaftar tercepat
     const fastestTeams = [
         { name: 'Garuda Muda', school: 'SMA Negeri 1', initials: 'GM' },
         { name: 'Elang Perkasa', school: 'SMP Bintang Timur', initials: 'EP' },
@@ -18,33 +20,56 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         { name: 'Kijang Emas', school: 'SMP Cendekia', initials: 'KE' },
     ];
 
+    // ✅ Tambahan: data untuk SimpleCard
+    const cards = [
+        { color: 'bg-blue-800', title: 'Tim Terdaftar', data: '100 Data' },
+        { color: 'bg-yellow-500', title: 'Tim Butuh Verifikasi', data: '100 Data' },
+        { color: 'bg-red-600', title: 'Tim Butuh Revisi', data: '100 Data' },
+        { color: 'bg-green-600', title: 'Tim Terverifikasi', data: '100 Data' },
+    ];
+
     return (
         <div className="flex bg-gray-100">
             <div
-                className={`w-full min-h-screen overflow-hidden pt-16 ${isSidebarOpen ? 'md:ml-64' : 'ml-0'} transition-all duration-300`}
+                className={`w-full min-h-screen overflow-hidden pt-16 ${
+                    isSidebarOpen ? 'md:ml-64' : 'ml-0'
+                } transition-all duration-300`}
             >
                 <div className="flex flex-col gap-4 p-6">
                     <header className="text-simbaris-text font-semibold text-3xl">
                         Sample with Dashboard
                     </header>
 
-                    {/* Taruh objek disini guys */}
-                    {/* contoh */}
+                    {/* ✅ Tambahan: Section Simple Cards */}
+                    <div className="flex flex-wrap gap-4 mb-4">
+                        {cards.map((card, index) => (
+                            <SimpleCard
+                                key={index}
+                                color={card.color}
+                                title={card.title}
+                                data={card.data}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Komponen lama tetap ada */}
                     <Button
                         text="Dashboard Button"
                         size="long"
                         round="half"
                         color="primary"
                     ></Button>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
                         <div className="bg-white flex flex-col rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3">
                             <h3 className="font-bold text-lg">
                                 Aktivitas Terbaru
                             </h3>
-                            <div className="mt-4 flex-1  rounded-md flex items-center justify-center text-gray-400">
+                            <div className="mt-4 flex-1 rounded-md flex items-center justify-center text-gray-400">
                                 Tabel Data Akan Ditampilkan Di Sini
                             </div>
                         </div>
+
                         <div className="flex bg-white shadow-md rounded-lg h-fit lg:h-72 overflow-hidden">
                             <div className="h-full w-full overflow-auto p-6">
                                 <div className="flex justify-between items-center mb-4">
@@ -60,6 +85,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 <FastestRegistrantsPanel teams={fastestTeams} />
                             </div>
                         </div>
+
                         <div className="bg-white flex flex-col items-center rounded-lg shadow-md py-4 px-6 md:row-span-2 h-96 md:h-[480px] lg:h-auto">
                             <div className="h-full w-full max-w-[350px] p-4">
                                 <PieChart
