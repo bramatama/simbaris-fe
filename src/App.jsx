@@ -1,12 +1,10 @@
 import React from 'react';
 import './App.css';
 import { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
-
-
 
 import LandingPage from './pages/LandingPage';
 import RegistrationPage from './pages/RegistrationPage';
@@ -15,7 +13,6 @@ import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
-import DashboardPanitia from './pages/DashboardPanitia';
 
 
 function App() {
@@ -39,6 +36,23 @@ function App() {
         return name.split(' ')[0][0].toUpperCase();
     };
 
+    const availableRoutes = [
+        '/',
+        '/login',
+        '/pendaftaran',
+        '/dashboard',
+        '/sample-dashboard',
+        '/sample',
+        '/reset-password',
+        '/forgot-password',
+    ];
+
+    const isNotFoundPage = !availableRoutes.some(
+        (route) =>
+            route === location.pathname ||
+            location.pathname.startsWith('/dashboard/')
+    );
+
     const excludedRoutes = [
         '/',
         '/login',
@@ -46,9 +60,13 @@ function App() {
         '/forgot-password',
         '/reset-password',
         '/sample',
+        '/reset-password',
+        '/forgot-password',
     ];
-    const showHeader = !excludedRoutes.includes(location.pathname);
-    const showSidebar = !excludedRoutes.includes(location.pathname);
+    const showHeader =
+        !excludedRoutes.includes(location.pathname) && !isNotFoundPage;
+    const showSidebar =
+        !excludedRoutes.includes(location.pathname) && !isNotFoundPage;
 
     return (
         <div className="App">
@@ -80,14 +98,23 @@ function App() {
                     }
                 />
                 <Route
+                    path="/dashboard/*"
+                    element={<Navigate to="/dashboard" replace />}
+                />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <DashboardRoute
+                            isSidebarOpen={isSidebarOpen}
+                            userRole={currentUser.role}
+                        />
+                    }
+                />
+                <Route
                     path="/sample-dashboard"
                     element={
                         <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
-                />
-                <Route
-                    path="/dashboard-panitia"
-                    element={<DashboardPanitia isSidebarOpen={isSidebarOpen} />}
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />
