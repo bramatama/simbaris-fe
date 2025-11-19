@@ -19,7 +19,7 @@ function App() {
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [currentUser, setCurrentUser] = useState({
-        role: 'panitia', // table user -> role
+        role: 'admin_tim', // table user -> role
         parent: `User`, // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
@@ -45,6 +45,7 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/tim-saya/detail',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -115,6 +116,9 @@ function App() {
                     element={
                         <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
+                />
+                <Route
+                    path = "/tim-saya/detail" element={<DashboardRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />

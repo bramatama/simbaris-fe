@@ -9,9 +9,9 @@ const Breadcrumbs = () => {
   // Mapping halaman ke struktur breadcrumb
   const breadcrumbMap = {
     '/': [{ name: 'Dashboard', path: '/' }],
-    '/detail-pembayaran': [
+    '/detail-pendaftaran': [
       { name: 'Dashboard', path: '/' },
-      { name: 'Detail Pembayaran', path: '/detail-pembayaran' },
+      { name: 'Detail Pendaftaran', path: '/detail-pendaftaran' },
     ],
     '/tim-saya': [
       { name: 'Dashboard', path: '/' },

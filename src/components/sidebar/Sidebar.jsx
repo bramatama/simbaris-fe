@@ -75,8 +75,8 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
             },
             {
                 type: 'link',
-                path: '/detail-pembayaran',
-                label: 'Detail Pembayaran',
+                path: '/detail-pendaftaran',
+                label: 'Detail Pendaftaran',
             },
             {
                 type: 'dropdown',
