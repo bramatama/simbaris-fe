@@ -13,6 +13,9 @@ import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
+import DashboardMember from './pages/Member/DashboardMember';
+import DetailTimView from './pages/Member/DetailTimView';
+
 
 
 function App() {
@@ -45,6 +48,7 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/member',
         '/tim-saya/detail',
     ];
 
@@ -90,6 +94,10 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/pendaftaran" element={<RegistrationPage />} />
                 <Route
+                    path="/member"
+                    element={<DashboardMember isSidebarOpen={isSidebarOpen} />}
+                />
+                <Route
                     path="/dashboard/"
                     element={
                         <DashboardRoute
@@ -118,7 +126,8 @@ function App() {
                     }
                 />
                 <Route
-                    path = "/tim-saya/detail" element={<DashboardRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
+                    path="/tim-saya/detail"
+                    element={<DetailTimView isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />

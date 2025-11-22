@@ -90,7 +90,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
         member: [
             {
                 type: 'link',
-                path: '/dashboard',
+                path: '/member',
                 label: 'Dashboard',
             },
             {

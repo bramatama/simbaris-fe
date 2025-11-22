@@ -1,7 +1,7 @@
 import React from 'react';
 import DashboardPanitia from '../pages/DashboardPanitia';
 import DashboardAdminTim from '../pages/DashboardAdminTim';
-import DashboardMember from '../pages/DashboardMember';
+import DashboardMember from '../pages/Member/DashboardMember';
 import NotFoundPage from '../pages/NotFoundPage';
 
 const DashboardRoute = ({ userRole, isSidebarOpen}) => {
