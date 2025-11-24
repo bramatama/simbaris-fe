@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 
 const LandingPage = () => {
-    // const navigate = useNavigate();
-
-    // const handleRegisterClick = () => navigate('/register');
-
     return (
         <div className="relative bg-gray-50">
             <div className="relative min-h-screen flex items-center justify-start text-simbaris-text overflow-hidden">

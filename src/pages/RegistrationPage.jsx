@@ -1,8 +1,11 @@
 import React, { useState, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import InputField from '../components/inputs/InputField';
 import StepsIndicator from '../components/registration/StepsIndicator';
 import ComboBox from '../components/inputs/Combobox';
+import UploadModal from '../components/registration/UploadModal';
+
 import schoolList from '../dummy/schoolList';
 import {
     Users,
@@ -11,14 +14,22 @@ import {
     CircleUserRound,
     Binary,
     Upload,
+    Pen,
+    PenLine,
 } from 'lucide-react';
 
 const defaultMember = {
     fullName: '',
-    nik: '',
     nisn: '',
     grade: '',
-    birthPlace: '',
+    gender: '',
+    email: '',
+};
+
+const gradeOptionsByLevel = {
+    "SD/MI Sederajat": ["I", "II", "III", "IV", "V", "VI"],
+    "SMP/MTs Sederajat": ["VII", "VIII", "IX"],
+    "SMA/SMK/MA Sederajat": ["X", "XI", "XII"],
 };
 
 const RegistrationPage = () => {
@@ -104,6 +115,16 @@ const RegistrationPage = () => {
         }
     };
 
+    const step2Validation = useMemo(() => {
+        return formData.members.some(
+            (member) =>
+                !member.fullName ||
+                !member.nisn ||
+                !member.gender ||
+                !member.grade
+        );
+    }, [formData.members]);
+
     const registrationSteps = [
         {
             title: 'Data Tim',
@@ -146,25 +167,20 @@ const RegistrationPage = () => {
         }
     };
 
-    // ---------- Derived option lists (memoized) ----------
-    // Jenjang unik
     const levelOptions = useMemo(() => {
         return Array.from(new Set(schoolList.map((s) => s.level))).sort();
     }, []);
 
-    // Sekolah yang sesuai dengan jenjang (jika jenjang dipilih)
     const schoolsByLevel = useMemo(() => {
         if (!formData.schoolLevel) return schoolList;
         return schoolList.filter((s) => s.level === formData.schoolLevel);
     }, [formData.schoolLevel]);
 
-    // Provinsi berdasarkan sekolah yang ada pada konteks (filtered by jenjang kalau ada)
     const provinceOptions = useMemo(() => {
         const setProv = new Set(schoolsByLevel.map((s) => s.province));
         return Array.from(setProv).sort();
     }, [schoolsByLevel]);
 
-    // Kota berdasarkan provinsi & jenjang
     const cityOptions = useMemo(() => {
         const filtered = formData.province
             ? schoolsByLevel.filter((s) => s.province === formData.province)
@@ -172,7 +188,6 @@ const RegistrationPage = () => {
         return Array.from(new Set(filtered.map((s) => s.city))).sort();
     }, [schoolsByLevel, formData.province]);
 
-    // Kecamatan berdasarkan kota & kontekst jenjang
     const districtOptions = useMemo(() => {
         const filtered = formData.city
             ? schoolsByLevel.filter((s) => s.city === formData.city)
@@ -180,7 +195,6 @@ const RegistrationPage = () => {
         return Array.from(new Set(filtered.map((s) => s.district))).sort();
     }, [schoolsByLevel, formData.city]);
 
-    // Sekolah (nama) berdasarkan jenjang, provinsi, kota, kecamatan
     const schoolNameOptions = useMemo(() => {
         let filtered = schoolsByLevel;
         if (formData.province)
@@ -192,12 +206,10 @@ const RegistrationPage = () => {
         return Array.from(new Set(filtered.map((s) => s.school_name))).sort();
     }, [schoolsByLevel, formData.province, formData.city, formData.district]);
 
-    // ---------- Handlers untuk autofill dan filter chain ----------
     const handleSelectLevel = (level) => {
         setFormData((prev) => ({
             ...prev,
             schoolLevel: level,
-            // reset dependent fields when jenjang changes
             schoolName: '',
             province: '',
             city: '',
@@ -225,16 +237,13 @@ const RegistrationPage = () => {
         setFormData((prev) => ({
             ...prev,
             province,
-            // if province changed, clear city and district because they may not belong
             city: '',
             district: '',
-            // but keep schoolName only if it still matches (we keep it empty to be safe)
             schoolName: '',
         }));
     };
 
     const handleSelectCity = (city) => {
-        // find a school that matches this city to determine its province (autofill province)
         const s = schoolList.find(
             (x) =>
                 x.city === city &&
@@ -264,6 +273,25 @@ const RegistrationPage = () => {
         }));
     };
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleProcessUpload = (file) => {
+        if (file) {
+            console.log('Memproses file:', file.name);
+            // Lakukan logika upload ke server di sini
+
+            // Setelah selesai, tutup modal
+            setIsModalOpen(false);
+        }
+    };
     return (
         <div className="bg-gray-50 min-h-screen py-12 flex flex-col gap-10 items-center">
             <div className="w-full max-w-6xl px-4 md:px-0">
@@ -481,44 +509,97 @@ const RegistrationPage = () => {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <InputField
+                                        <ComboBox
                                             label="Jenis Kelamin"
+                                            placeholder="Pilih jenis kelamin"
+                                            options={['Laki-laki', 'Perempuan']}
+                                            value={member.gender}
+                                            onSelect={(val) =>
+                                                handleMemberChange(
+                                                    index,
+                                                    'gender',
+                                                    val
+                                                )
+                                            }
+                                        />
+                                        <ComboBox
+                                            label="Kelas"
+                                            placeholder="Pilih kelas"
+                                            options={
+                                                gradeOptionsByLevel[
+                                                    formData.schoolLevel
+                                                ] || []
+                                            }
                                             value={member.grade}
-                                            onChange={(e) =>
+                                            onSelect={(val) =>
                                                 handleMemberChange(
                                                     index,
                                                     'grade',
-                                                    e.target.value
+                                                    val
                                                 )
                                             }
-                                            placeholder="Masukkan jenis kelamin"
                                         />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <InputField
-                                            label="Kelas"
-                                            value={member.birthPlace}
+                                            label="Email"
+                                            value={member.email}
+                                            type="email"
                                             onChange={(e) =>
                                                 handleMemberChange(
                                                     index,
-                                                    'birthPlace',
+                                                    'email',
                                                     e.target.value
                                                 )
                                             }
-                                            placeholder="Masukkan kelas"
+                                            placeholder="Masukkan Email"
                                         />
                                     </div>
                                 </div>
                             ))}
-
-                            {formData.members.length < 18 && (
-                                <button
-                                    type="button"
-                                    onClick={handleAddMember}
-                                    className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2"
-                                >
-                                    + Anggota
-                                </button>
-                            )}
+                            <div className="flex justify-between">
+                                {formData.members.length < 18 && (
+                                    <button
+                                        type="button"
+                                        onClick={handleAddMember}
+                                        className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2"
+                                    >
+                                        + Anggota
+                                    </button>
+                                )}
+                                <div className="flex gap-3">
+                                    <a
+                                        href="https://www.canva.com/design/DAG5kSicvtY/BXo_38G0V_om296veat4Fg/edit?utm_content=DAG5kSicvtY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Button
+                                            color="secondary"
+                                            size="long"
+                                            text="Edit Form Foto"
+                                            leftIcon={
+                                                <PenLine className="w-4 h-4" />
+                                            }
+                                        />
+                                    </a>
+                                    <Button
+                                        onClick={handleOpenModal}
+                                        disabled={step2Validation}
+                                        color="success"
+                                        size="long"
+                                        text="Upload Form Foto"
+                                        leftIcon={
+                                            <Upload className="w-4 h-4" />
+                                        }
+                                    />
+                                </div>
+                            </div>
                         </div>
+                        <UploadModal
+                            isOpen={isModalOpen}
+                            onClose={handleCloseModal}
+                            onProcess={handleProcessUpload}
+                        />
                     </div>
                 )}
 
@@ -852,8 +933,8 @@ const RegistrationPage = () => {
                         <Button
                             onClick={handlePrev}
                             disabled={currentStep === 1}
-                            color="primary"
-                            variant="outline"
+                            color="secondary"
+                            type="secondary"
                             size="default"
                             text="← Kembali"
                             className="w-full md:w-40"
