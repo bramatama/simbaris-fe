@@ -114,7 +114,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
     return (
         <div className="flex">
             <div
-                className={`fixed flex flex-col h-full bg-white text-simbaris-text w-64 z-10 border-r-2 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`fixed flex flex-col h-full bg-white text-simbaris-text w-64 z-20 border-r-2 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="">
                     <ProfileDropdown

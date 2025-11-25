@@ -1,24 +1,27 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import {
     GraduationCapIcon,
     Users,
     Filter,
-    MoreVertical,
-    ChevronLeft,
-    ChevronRight,
-    ArrowUpDown,
     SearchIcon,
+    MoreVertical,
+    XCircle,
+    ChevronDown, // Tambahkan import ChevronDown
 } from 'lucide-react';
 import SimpleCard from '../components/SimpleCards';
 import InputField from '../components/inputs/InputField';
+import Table from '../components/Table';
+import Pagination from '../components/Pagination';
+import FilterDropdown from '../components/FilterDropdown';
 
+// ... (Data dummy initialData tetap sama) ...
 const initialData = [
     {
         id: 1,
         team: 'Human Torch',
         school: 'SMP Negeri 29 Samarinda',
         level: 'SMP/MTs Sederajat',
-        time: 'Kalimantan Timur',
+        time: '25/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -27,7 +30,7 @@ const initialData = [
         team: 'Garuda Muda',
         school: 'SMP Negeri 89 Balikpapan',
         level: 'SMP/MTs Sederajat',
-        time: 'Kalimantan Timur',
+        time: '26/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
     },
@@ -36,7 +39,7 @@ const initialData = [
         team: 'Elang Perkasa',
         school: 'SD Negeri 087 Pontianak',
         level: 'SD/MI Sederajat',
-        time: 'Kalimantan Barat',
+        time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -45,7 +48,7 @@ const initialData = [
         team: 'Kijang Mata Satu',
         school: 'SMK Kesehatan Samarinda',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Timur',
+        time: '25/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -54,7 +57,7 @@ const initialData = [
         team: 'Ksatria Muda',
         school: 'SMP Negeri 99 Singkawang',
         level: 'SMP/MTs Sederajat',
-        time: 'Kalimantan Barat',
+        time: '26/10/2025',
         status: 'Ditolak',
         verified_by: 'Bambang',
     },
@@ -63,7 +66,7 @@ const initialData = [
         team: 'Arjuna',
         school: 'SMA Negeri 10 Balikpapan',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Timur',
+        time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -72,7 +75,7 @@ const initialData = [
         team: 'Budiono Siregar',
         school: 'SD Negeri 1 Palangkaraya',
         level: 'SD/MI Sederajat',
-        time: 'Kalimantan Tengah',
+        time: '25/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Bambang',
     },
@@ -81,7 +84,7 @@ const initialData = [
         team: 'Bina Bangsa',
         school: 'SD Negeri 77 Balikpapan',
         level: 'SD/MI Sederajat',
-        time: 'Kalimantan Timur',
+        time: '26/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -90,7 +93,7 @@ const initialData = [
         team: 'Ksatria Nusantara',
         school: 'SMP Nusantara Pontianak',
         level: 'SMP/MTs Sederajat',
-        time: 'Kalimantan Barat',
+        time: '25/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
     },
@@ -99,7 +102,7 @@ const initialData = [
         team: 'Harimau Sakti',
         school: 'MAN 5 Balikpapan',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Timur',
+        time: '26/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Sulis',
     },
@@ -108,7 +111,7 @@ const initialData = [
         team: 'Rajawali',
         school: 'SMA 1 Samarinda',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Timur',
+        time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -117,7 +120,7 @@ const initialData = [
         team: 'Pangeran Antasari',
         school: 'SMP 1 Banjarmasin',
         level: 'SMP/MTs Sederajat',
-        time: 'Kalimantan Selatan',
+        time: '23/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
     },
@@ -126,7 +129,7 @@ const initialData = [
         team: 'Srikandi',
         school: 'SMK 2 Balikpapan',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Timur',
+        time: '27/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -135,7 +138,7 @@ const initialData = [
         team: 'Gatot Kaca',
         school: 'SD 1 Tenggarong',
         level: 'SD/MI Sederajat',
-        time: 'Kalimantan Timur',
+        time: '22/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
     },
@@ -144,49 +147,17 @@ const initialData = [
         team: 'Panglima Burung',
         school: 'SMA 3 Pontianak',
         level: 'SMA/SMK/MA Sederajat',
-        time: 'Kalimantan Barat',
+        time: '27/10/2025',
         status: 'Ditolak',
         verified_by: 'Bambang',
     },
 ];
 
-const FilterButton = ({ label }) => (
-    <button className="flex items-center gap-2 px-4 py-2 h-11 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-        {label}
-        <Filter size={16} />
-    </button>
-);
-
-const TimTerdaftarMember = ({ isSidebarOpen }) => {
-    const cards = [
-        {
-            color: 'bg-simbaris-accent',
-            title: 'Tim Terdaftar',
-            data: '15 Data',
-            leftIcon: <Users className="text-white" size={20} />,
-        },
-        {
-            color: 'bg-gray-500',
-            title: 'SMA/SMK/MA Sederajat',
-            data: '5 Data',
-            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
-        },
-        {
-            color: 'bg-simbaris-secondary',
-            title: 'SMP/MTs Sederajat',
-            data: '5 Data',
-            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
-        },
-        {
-            color: 'bg-simbaris-hazard',
-            title: 'SD/MI Sederajat',
-            data: '5 Data',
-            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
-        },
-    ];
-
+const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
+    // --- STATE ---
     const [data] = useState(initialData);
     const [search, setSearch] = useState('');
+    const [filters, setFilters] = useState({ level: '', status: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortConfig, setSortConfig] = useState({
@@ -194,18 +165,45 @@ const TimTerdaftarMember = ({ isSidebarOpen }) => {
         direction: 'asc',
     });
 
-    // --- LOGIC ---
+    // --- OPTIONS FILTER ---
+    const levelOptions = [
+        { label: 'SD/MI Sederajat', value: 'SD/MI Sederajat' },
+        { label: 'SMP/MTs Sederajat', value: 'SMP/MTs Sederajat' },
+        { label: 'SMA/SMK/MA Sederajat', value: 'SMA/SMK/MA Sederajat' },
+    ];
 
-    // 1. Filtering
+    const statusOptions = [
+        { label: 'Perlu Verifikasi', value: 'Perlu Verifikasi' },
+        { label: 'Telah Diverifikasi', value: 'Telah Diverifikasi' },
+        { label: 'Ditolak', value: 'Ditolak' },
+    ];
+
+    // --- DATA PROCESSING ---
+    const stats = useMemo(() => {
+        const counts = { total: data.length, sma: 0, smp: 0, sd: 0 };
+        data.forEach((item) => {
+            if (item.level === 'SMA/SMK/MA Sederajat') counts.sma++;
+            else if (item.level === 'SMP/MTs Sederajat') counts.smp++;
+            else if (item.level === 'SD/MI Sederajat') counts.sd++;
+        });
+        return counts;
+    }, [data]);
+
     const filteredData = useMemo(() => {
-        return data.filter(
-            (item) =>
+        return data.filter((item) => {
+            const matchSearch =
                 item.team.toLowerCase().includes(search.toLowerCase()) ||
-                item.school.toLowerCase().includes(search.toLowerCase())
-        );
-    }, [data, search]);
+                item.school.toLowerCase().includes(search.toLowerCase());
+            const matchLevel = filters.level
+                ? item.level === filters.level
+                : true;
+            const matchStatus = filters.status
+                ? item.status === filters.status
+                : true;
+            return matchSearch && matchLevel && matchStatus;
+        });
+    }, [data, search, filters]);
 
-    // 2. Sorting
     const sortedData = useMemo(() => {
         let sortableItems = [...filteredData];
         if (sortConfig.key) {
@@ -220,13 +218,12 @@ const TimTerdaftarMember = ({ isSidebarOpen }) => {
         return sortableItems;
     }, [filteredData, sortConfig]);
 
-    // 3. Pagination
-    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-    const paginatedData = sortedData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+    const paginatedData = useMemo(() => {
+        const firstPageIndex = (currentPage - 1) * itemsPerPage;
+        return sortedData.slice(firstPageIndex, firstPageIndex + itemsPerPage);
+    }, [sortedData, currentPage, itemsPerPage]);
 
+    // --- HANDLERS ---
     const handleSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -235,20 +232,79 @@ const TimTerdaftarMember = ({ isSidebarOpen }) => {
         setSortConfig({ key, direction });
     };
 
-    // Helper untuk Header Tabel
-    const Th = ({ label, sortKey, className = '' }) => (
-        <th
-            className={`px-4 py-3 text-left font-semibold text-white text-sm whitespace-nowrap ${className}`}
-        >
-            <button
-                className="flex items-center gap-2 hover:text-gray-200"
-                onClick={() => sortKey && handleSort(sortKey)}
-            >
-                {label}
-                {sortKey && <ArrowUpDown size={14} className="opacity-70" />}
-            </button>
-        </th>
-    );
+    const handleFilterChange = (key, value) => {
+        setFilters((prev) => ({ ...prev, [key]: value }));
+        setCurrentPage(1);
+    };
+
+    const columns = [
+        {
+            header: 'Nama Tim',
+            accessor: 'team',
+            sortable: true,
+            cellClassName: 'text-gray-900 font-medium',
+        },
+        { header: 'Nama Sekolah', accessor: 'school', sortable: true },
+        { header: 'Jenjang', accessor: 'level', sortable: true },
+        { header: 'Waktu Pendaftaran', accessor: 'time', sortable: true },
+        {
+            header: 'Status Pendaftaran',
+            accessor: 'status',
+            sortable: true,
+            render: (row) => {
+                let colorClass = 'text-gray-600';
+                if (row.status === 'Perlu Verifikasi')
+                    colorClass =
+                        'text-simbaris-warning font-medium bg-simbaris-warning-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-warning-light';
+                if (row.status === 'Telah Diverifikasi')
+                    colorClass =
+                        'text-simbaris-success font-medium bg-simbaris-success-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-success-light';
+                if (row.status === 'Ditolak')
+                    colorClass =
+                        'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
+                return <span className={colorClass}>{row.status}</span>;
+            },
+        },
+        { header: 'Verifikator', accessor: 'verified_by', sortable: true },
+        {
+            header: 'Detail',
+            accessor: 'actions',
+            className: 'text-center',
+            cellClassName: 'text-center',
+            render: () => (
+                <button className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50">
+                    <MoreVertical size={18} />
+                </button>
+            ),
+        },
+    ];
+
+    const cards = [
+        {
+            color: 'bg-simbaris-accent',
+            title: 'Tim Terdaftar',
+            data: `${stats.total}  Data`,
+            leftIcon: <Users className="text-white" size={20} />,
+        },
+        {
+            color: 'bg-gray-500',
+            title: 'SMA/SMK/MA Sederajat',
+            data: `${stats.sma}  Data`,
+            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
+        },
+        {
+            color: 'bg-simbaris-secondary',
+            title: 'SMP/MTs Sederajat',
+            data: `${stats.smp}  Data`,
+            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
+        },
+        {
+            color: 'bg-simbaris-hazard',
+            title: 'SD/MI Sederajat',
+            data: `${stats.sd}  Data`,
+            leftIcon: <GraduationCapIcon className="text-white" size={20} />,
+        },
+    ];
 
     return (
         <div className="flex bg-gray-100">
@@ -259,207 +315,81 @@ const TimTerdaftarMember = ({ isSidebarOpen }) => {
                     <header className="text-simbaris-text font-semibold text-3xl">
                         Tim Terdaftar
                     </header>
+
+                    {/* Cards */}
                     <div className="hidden lg:flex gap-4 mb-4">
                         {cards.map((card, index) => (
-                            <SimpleCard
-                                key={index}
-                                color={card.color}
-                                title={card.title}
-                                data={card.data}
-                                leftIcon={card.leftIcon}
-                            />
+                            <SimpleCard key={index} {...card} />
                         ))}
                     </div>
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-6">
-                            Daftar Tim
-                        </h1>
-                        <div className="flex flex-col items-center lg:flex-row gap-4">
-                            <InputField 
-                                leftIcon={<SearchIcon/>}
-                                name="search"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Cari Tim"
-                            />
-                            <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-                                <FilterButton label="Jenjang" />
-                                <FilterButton label="Provinsi" />
-                                <FilterButton label="Kota" />
-                                <FilterButton label="Kota" />
-                            </div>
+
+                    {/* Main Content */}
+                    <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <h1 className="text-xl font-bold text-gray-900">
+                                Daftar Tim
+                            </h1>
                         </div>
-                        <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    {/* Header Biru (#3454D1 is typical primary blue) */}
-                                    <thead className="bg-blue-600">
-                                        <tr>
-                                            <Th
-                                                label="Nama Tim"
-                                                sortKey="team"
-                                            />
-                                            <Th
-                                                label="Nama Sekolah"
-                                                sortKey="school"
-                                            />
-                                            <Th
-                                                label="Jenjang"
-                                                sortKey="level"
-                                            />
-                                            <Th
-                                                label="Waktu Pendaftaran"
-                                                sortKey="time"
-                                            />
-                                            <Th
-                                                label="Status Pendaftaran"
-                                                sortKey="status"
-                                            />
-                                            <Th
-                                                label="Verifikator"
-                                                sortKey="verifier"
-                                            />
-                                            <th className="px-4 py-3 text-center text-white font-semibold text-sm">
-                                                Detail
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-100">
-                                        {paginatedData.length > 0 ? (
-                                            paginatedData.map((row, index) => (
-                                                <tr
-                                                    key={row.id}
-                                                    className={`hover:bg-gray-50 transition-colors ${
-                                                        index % 2 !== 0
-                                                            ? 'bg-gray-50/50'
-                                                            : 'bg-white'
-                                                    }`}
-                                                >
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                                        {row.team}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                        {row.school}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                        {row.level}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                        {row.time}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                        {row.status}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                        {row.verifier}
-                                                    </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-center text-sm">
-                                                        <button className="text-gray-400 hover:text-blue-600 transition-colors">
-                                                            <MoreVertical
-                                                                size={18}
-                                                            />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td
-                                                    colSpan="7"
-                                                    className="px-4 py-8 text-center text-gray-500 text-sm"
-                                                >
-                                                    Tidak ada data yang
-                                                    ditemukan.
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+
+                        {/* Search & Filters */}
+                        <div className="flex flex-col lg:flex-row gap-4">
+                            <div className="flex">
+                                <InputField
+                                    leftIcon={
+                                        <SearchIcon
+                                            size={18}
+                                            className="text-gray-400"
+                                        />
+                                    }
+                                    name="search"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Cari Tim atau Sekolah..."
+                                    className="h-11"
+                                />
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                <FilterDropdown
+                                    label="Jenjang"
+                                    options={levelOptions}
+                                    value={filters.level}
+                                    onChange={(val) =>
+                                        handleFilterChange('level', val)
+                                    }
+                                />
+                                <FilterDropdown
+                                    label="Status"
+                                    options={statusOptions}
+                                    value={filters.status}
+                                    onChange={(val) =>
+                                        handleFilterChange('status', val)
+                                    }
+                                />
                             </div>
                         </div>
 
-                        {/* --- PAGINATION --- */}
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-                            <div>
-                                {(currentPage - 1) * itemsPerPage + 1}-
-                                {Math.min(
-                                    currentPage * itemsPerPage,
-                                    sortedData.length
-                                )}{' '}
-                                of {sortedData.length}
-                            </div>
+                        <Table
+                            columns={columns}
+                            data={paginatedData}
+                            sortConfig={sortConfig}
+                            onSort={handleSort}
+                        />
 
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <span>Result per page</span>
-                                    <select
-                                        className="border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                        value={itemsPerPage}
-                                        onChange={(e) => {
-                                            setItemsPerPage(
-                                                Number(e.target.value)
-                                            );
-                                            setCurrentPage(1);
-                                        }}
-                                    >
-                                        <option value={10}>10</option>
-                                        <option value={20}>20</option>
-                                        <option value={50}>50</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex items-center gap-1">
-                                    <button
-                                        className="flex items-center px-2 py-1 hover:text-blue-600 disabled:opacity-50 disabled:hover:text-gray-600"
-                                        onClick={() =>
-                                            setCurrentPage((p) =>
-                                                Math.max(1, p - 1)
-                                            )
-                                        }
-                                        disabled={currentPage === 1}
-                                    >
-                                        <ChevronLeft size={16} /> Back
-                                    </button>
-
-                                    <div className="flex gap-1 mx-2">
-                                        {Array.from(
-                                            { length: totalPages },
-                                            (_, i) => i + 1
-                                        ).map((page) => (
-                                            <button
-                                                key={page}
-                                                onClick={() =>
-                                                    setCurrentPage(page)
-                                                }
-                                                className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium transition-colors ${
-                                                    currentPage === page
-                                                        ? 'bg-simbaris-secondary text-white'
-                                                        : 'text-gray-600 hover:bg-gray-100'
-                                                }`}
-                                            >
-                                                {page}
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    <button
-                                        className="flex items-center px-2 py-1 hover:text-simbaris-secondary disabled:opacity-50 disabled:hover:text-gray-600"
-                                        onClick={() =>
-                                            setCurrentPage((p) =>
-                                                Math.min(totalPages, p + 1)
-                                            )
-                                        }
-                                        disabled={currentPage === totalPages}
-                                    >
-                                        Next <ChevronRight size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalItems={filteredData.length}
+                            itemsPerPage={itemsPerPage}
+                            onPageChange={setCurrentPage}
+                            onItemsPerPageChange={(val) => {
+                                setItemsPerPage(val);
+                                setCurrentPage(1);
+                            }}
+                        />
                     </div>
                 </div>
             </div>
         </div>
     );
 };
-export default TimTerdaftarMember;
+
+export default TimTerdaftarPanitia;
