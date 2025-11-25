@@ -461,7 +461,7 @@ const RegistrationPage = () => {
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">
                             DATA ANGGOTA TIM
                         </h2>
-                        <div className="space-y-8">
+                        <div className="space-y-2">
                             {formData.members.map((member, index) => (
                                 <div key={index} className="space-y-4">
                                     <div className="flex items-center justify-between flex-wrap gap-2">
@@ -557,7 +557,7 @@ const RegistrationPage = () => {
                                     </div>
                                 </div>
                             ))}
-                            <div className="flex justify-between">
+                            <div className="flex-col flex gap-3 md:flex-row md:justify-between">
                                 {formData.members.length < 18 && (
                                     <button
                                         type="button"
@@ -567,7 +567,7 @@ const RegistrationPage = () => {
                                         + Anggota
                                     </button>
                                 )}
-                                <div className="flex gap-3">
+                                <div className="flex flex-col gap-3 md:flex-row items-center ">
                                     <a
                                         href="https://www.canva.com/design/DAG5kSicvtY/BXo_38G0V_om296veat4Fg/edit?utm_content=DAG5kSicvtY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
                                         target="_blank"

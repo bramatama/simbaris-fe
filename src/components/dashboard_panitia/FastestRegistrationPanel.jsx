@@ -80,7 +80,7 @@ const FastestRegistrantsPanel = ({ teams }) => {
                         type="primary"
                         size="full"
                         rightIcon={<ArrowRight size={20} className="ml-2" />}
-                        className="transition-all duration-500"
+                        className="transition-all duration-500 text-sm md:text-base"
                     ></Button>
                 </Link>
             </div>
