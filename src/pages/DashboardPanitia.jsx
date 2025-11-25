@@ -1,14 +1,15 @@
 import Button from '../components/Button';
+import { Link } from 'react-router-dom';
 import PieChart from '../components/dashboard_panitia/PieChart';
 import FastestRegistrantsPanel from '../components/dashboard_panitia/FastestRegistrationPanel';
-import { Link } from 'react-router-dom';
-import SimpleCard from '../components/dashboard_panitia/SimpleCards';
+import SimpleCard from '../components/SimpleCards';
+import { PenTool, ExternalLink } from 'lucide-react';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
     // Data Dummy untuk jumlah pendaftar
     const registrationData = {
         labels: ['SD / MI', 'SMP / MTs', 'SMA / SMK / MA'],
-        values: [12, 23, 29],
+        values: [5, 5, 5],
     };
 
     // Data Dummy untuk pendaftar tercepat
@@ -19,10 +20,10 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
     ];
 
     const cards = [
-        { color: 'bg-blue-800', title: 'Tim Terdaftar', data: '100 Data' },
-        { color: 'bg-yellow-500', title: 'Tim Butuh Verifikasi', data: '100 Data' },
-        { color: 'bg-red-600', title: 'Tim Butuh Revisi', data: '100 Data' },
-        { color: 'bg-green-600', title: 'Tim Terverifikasi', data: '100 Data' },
+        { color: 'bg-simbaris-secondary', title: 'Tim Terdaftar', data: '15 Data', leftIcon: <PenTool className="text-white" size={20} /> , rightIcon: <ExternalLink size={16} className="text-gray-400" />, navigateTo: '/tim-terdaftar' },
+        { color: 'bg-simbaris-warning', title: 'Tim Butuh Verifikasi', data: '8 Data', leftIcon: <PenTool className="text-white" size={20} /> , rightIcon: <ExternalLink size={16} className="text-gray-400" />, navigateTo: '/tim-terdaftar' },
+        { color: 'bg-simbaris-hazard', title: 'Tim Butuh Revisi', data: '2 Data', leftIcon: <PenTool className="text-white" size={20} /> , rightIcon: <ExternalLink size={16} className="text-gray-400" />, navigateTo: '/tim-terdaftar' },
+        { color: 'bg-simbaris-success', title: 'Tim Terverifikasi', data: '5 Data', leftIcon: <PenTool className="text-white" size={20} /> , rightIcon: <ExternalLink size={16} className="text-gray-400" />, navigateTo: '/tim-terdaftar' },
     ];
 
     return (
@@ -45,6 +46,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 color={card.color}
                                 title={card.title}
                                 data={card.data}
+                                leftIcon= {card.leftIcon}
+                                rightIcon= {card.rightIcon}
+                                navigateTo= {card.navigateTo}
                             />
                         ))}
                     </div>

@@ -11,9 +11,9 @@ import RegistrationPage from './pages/RegistrationPage';
 import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
+import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
-
 
 function App() {
     const location = useLocation();
@@ -46,6 +46,7 @@ function App() {
         '/reset-password',
         '/forgot-password',
         '/tim-saya/detail',
+        '/tim-terdaftar',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -118,7 +119,22 @@ function App() {
                     }
                 />
                 <Route
-                    path = "/tim-saya/detail" element={<DashboardRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
+                    path="/tim-saya/detail"
+                    element={
+                        <DashboardRoute
+                            isSidebarOpen={isSidebarOpen}
+                            userRole={currentUser.role}
+                        />
+                    }
+                />
+                <Route
+                    path="/tim-terdaftar"
+                    element={
+                        <TimTerdaftarRoute
+                            isSidebarOpen={isSidebarOpen}
+                            userRole={currentUser.role}
+                        />
+                    }
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />

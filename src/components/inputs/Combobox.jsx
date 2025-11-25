@@ -62,7 +62,7 @@ const ComboBox = ({
                     }}
                     onClick={() => setIsOpen(true)}
                     className={`w-full h-11 px-3 py-2 border rounded-lg transition duration-200
-            border-simbaris-primary focus:ring-2 focus:ring-simbaris-primary-light
+            border-simbaris-primary focus:outline-none
             text-gray-700 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 />
 
