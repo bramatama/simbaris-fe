@@ -13,149 +13,11 @@ import InputField from '../components/inputs/InputField';
 import Table from '../components/Table';
 import Pagination from '../components/Pagination';
 import FilterDropdown from '../components/FilterDropdown';
-
-// ... (Data dummy initialData tetap sama) ...
-const initialData = [
-    {
-        id: 1,
-        team: 'Human Torch',
-        school: 'SMP Negeri 29 Samarinda',
-        level: 'SMP/MTs Sederajat',
-        time: '25/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 2,
-        team: 'Garuda Muda',
-        school: 'SMP Negeri 89 Balikpapan',
-        level: 'SMP/MTs Sederajat',
-        time: '26/10/2025',
-        status: 'Telah Diverifikasi',
-        verified_by: 'Joko',
-    },
-    {
-        id: 3,
-        team: 'Elang Perkasa',
-        school: 'SD Negeri 087 Pontianak',
-        level: 'SD/MI Sederajat',
-        time: '24/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 4,
-        team: 'Kijang Mata Satu',
-        school: 'SMK Kesehatan Samarinda',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '25/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 5,
-        team: 'Ksatria Muda',
-        school: 'SMP Negeri 99 Singkawang',
-        level: 'SMP/MTs Sederajat',
-        time: '26/10/2025',
-        status: 'Ditolak',
-        verified_by: 'Bambang',
-    },
-    {
-        id: 6,
-        team: 'Arjuna',
-        school: 'SMA Negeri 10 Balikpapan',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '24/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 7,
-        team: 'Budiono Siregar',
-        school: 'SD Negeri 1 Palangkaraya',
-        level: 'SD/MI Sederajat',
-        time: '25/10/2025',
-        status: 'Telah Diverifikasi',
-        verified_by: 'Bambang',
-    },
-    {
-        id: 8,
-        team: 'Bina Bangsa',
-        school: 'SD Negeri 77 Balikpapan',
-        level: 'SD/MI Sederajat',
-        time: '26/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 9,
-        team: 'Ksatria Nusantara',
-        school: 'SMP Nusantara Pontianak',
-        level: 'SMP/MTs Sederajat',
-        time: '25/10/2025',
-        status: 'Telah Diverifikasi',
-        verified_by: 'Joko',
-    },
-    {
-        id: 10,
-        team: 'Harimau Sakti',
-        school: 'MAN 5 Balikpapan',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '26/10/2025',
-        status: 'Telah Diverifikasi',
-        verified_by: 'Sulis',
-    },
-    {
-        id: 11,
-        team: 'Rajawali',
-        school: 'SMA 1 Samarinda',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '24/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 12,
-        team: 'Pangeran Antasari',
-        school: 'SMP 1 Banjarmasin',
-        level: 'SMP/MTs Sederajat',
-        time: '23/10/2025',
-        status: 'Telah Diverifikasi',
-        verified_by: 'Joko',
-    },
-    {
-        id: 13,
-        team: 'Srikandi',
-        school: 'SMK 2 Balikpapan',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '27/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 14,
-        team: 'Gatot Kaca',
-        school: 'SD 1 Tenggarong',
-        level: 'SD/MI Sederajat',
-        time: '22/10/2025',
-        status: 'Perlu Verifikasi',
-        verified_by: '-',
-    },
-    {
-        id: 15,
-        team: 'Panglima Burung',
-        school: 'SMA 3 Pontianak',
-        level: 'SMA/SMK/MA Sederajat',
-        time: '27/10/2025',
-        status: 'Ditolak',
-        verified_by: 'Bambang',
-    },
-];
+import registrantList from '../dummy/registrantList';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     // --- STATE ---
-    const [data] = useState(initialData);
+    const [data] = useState(registrantList);
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState({ level: '', status: '' });
     const [currentPage, setCurrentPage] = useState(1);
@@ -324,7 +186,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                     </div>
 
                     {/* Main Content */}
-                    <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                    <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <h1 className="text-xl font-bold text-gray-900">
                                 Daftar Tim
