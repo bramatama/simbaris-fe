@@ -15,6 +15,9 @@ import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import DashboardMember from './pages/Member/DashboardMember';
 import DetailTimView from './pages/Member/DetailTimView';
+import DaftarAnggotaView from './pages/Member/DaftarAnggotaView';
+import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
+
 
 
 
@@ -50,6 +53,8 @@ function App() {
         '/forgot-password',
         '/member',
         '/tim-saya/detail',
+        '/tim-saya/anggota',
+        '/tim-terdaftar',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -128,6 +133,14 @@ function App() {
                 <Route
                     path="/tim-saya/detail"
                     element={<DetailTimView isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
+                />
+                <Route
+                    path="/tim-saya/anggota"
+                    element={<DaftarAnggotaView isSidebarOpen={isSidebarOpen} />}
+                />
+                <Route
+                    path="/tim-terdaftar"
+                    element={<TimTerdaftarRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role}/>}
                 />
                 <Route path="/sample" element={<Sample />} />
                 <Route path="*" element={<NotFoundPage />} />
