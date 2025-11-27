@@ -13,6 +13,9 @@ import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
+import DetailPendaftaran from './pages/DetailPendaftaran';
+import TimSayaDetail from './pages/TimSayaDetail';
+import TimSayaAnggota from './pages/TimSayaAnggota';
 
 
 function App() {
@@ -45,7 +48,9 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/detail-pendaftaran',
         '/tim-saya/detail',
+        '/tim-saya/anggota',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -116,6 +121,18 @@ function App() {
                     element={
                         <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
+                />
+                <Route
+                    path="/detail-pendaftaran"
+                    element={<DetailPendaftaran isSidebarOpen={isSidebarOpen} />}
+                />
+                <Route
+                    path="/tim-saya/detail"
+                    element={<TimSayaDetail isSidebarOpen={isSidebarOpen} />}
+                />
+                <Route
+                    path="/tim-saya/anggota"
+                    element={<TimSayaAnggota isSidebarOpen={isSidebarOpen} />}
                 />
                 <Route
                     path = "/tim-saya/detail" element={<DashboardRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}

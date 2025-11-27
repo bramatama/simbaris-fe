@@ -84,7 +84,7 @@ const Button = ({
             onClick={onClick}
             disabled={disabled}
             className={`
-        inline-flex items-center justify-center gap-2 font-semibold transition-colors duration-200 focus:${focusedStyles[type][color]}
+        inline-flex items-center justify-center gap-2 font-semibold text-sm leading-none transition-colors duration-200 focus:${focusedStyles[type][color]}
         ${sizeStyles[size]}
         ${roundStyles[round]}
         ${
