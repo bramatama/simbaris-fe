@@ -1,19 +1,16 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
     GraduationCapIcon,
     Users,
-    Filter,
     SearchIcon,
     MoreVertical,
-    XCircle,
-    ChevronDown, // Tambahkan import ChevronDown
 } from 'lucide-react';
-import SimpleCard from '../components/SimpleCards';
-import InputField from '../components/inputs/InputField';
-import Table from '../components/Table';
-import Pagination from '../components/Pagination';
-import FilterDropdown from '../components/FilterDropdown';
-import registrantList from '../dummy/registrantList';
+import SimpleCard from '../../components/SimpleCards';
+import InputField from '../../components/inputs/InputField';
+import Table from '../../components/Table';
+import Pagination from '../../components/Pagination';
+import FilterDropdown from '../../components/FilterDropdown';
+import registrantList from '../../dummy/registrantList';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     // --- STATE ---

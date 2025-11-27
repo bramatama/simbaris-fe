@@ -1,16 +1,16 @@
-import Button from '../components/Button';
+import Button from '../../components/Button';
 import { useState, useMemo } from 'react';
-import PieChart from '../components/dashboard_panitia/PieChart';
-import FastestRegistrantsPanel from '../components/dashboard_panitia/FastestRegistrationPanel';
-import SimpleCard from '../components/SimpleCards';
-import Table from '../components/Table';
-import registrantList from '../dummy/registrantList';
+import PieChart from '../../components/dashboard_panitia/PieChart';
+import FastestRegistrantsPanel from '../../components/dashboard_panitia/FastestRegistrationPanel';
+import SimpleCard from '../../components/SimpleCards';
+import Table from '../../components/Table';
+import registrantList from '../../dummy/registrantList';
 import { PenTool, ExternalLink } from 'lucide-react';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
-    const [registrantData, setRegistrantData] = useState(registrantList);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [registrantData] = useState(registrantList);
+    const [currentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: 'asc',
@@ -54,7 +54,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             title: 'Tim Terdaftar',
             data: '15 Data',
             leftIcon: <PenTool className="text-white" size={20} />,
-            rightIcon: <ExternalLink size={16} className="text-gray-400" />,
+            rightIcon: <ExternalLink size={18} className="text-gray-400" />,
             navigateTo: '/tim-terdaftar',
         },
         {
@@ -62,7 +62,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             title: 'Tim Butuh Verifikasi',
             data: '8 Data',
             leftIcon: <PenTool className="text-white" size={20} />,
-            rightIcon: <ExternalLink size={16} className="text-gray-400" />,
+            rightIcon: <ExternalLink size={18} className="text-gray-400" />,
             navigateTo: '/tim-terdaftar',
         },
         {
@@ -70,7 +70,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             title: 'Tim Butuh Revisi',
             data: '2 Data',
             leftIcon: <PenTool className="text-white" size={20} />,
-            rightIcon: <ExternalLink size={16} className="text-gray-400" />,
+            rightIcon: <ExternalLink size={18} className="text-gray-400" />,
             navigateTo: '/tim-terdaftar',
         },
         {
@@ -78,7 +78,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             title: 'Tim Terverifikasi',
             data: '5 Data',
             leftIcon: <PenTool className="text-white" size={20} />,
-            rightIcon: <ExternalLink size={16} className="text-gray-400" />,
+            rightIcon: <ExternalLink size={18} className="text-gray-400" />,
             navigateTo: '/tim-terdaftar',
         },
     ];
@@ -148,7 +148,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4 aspect-auto">
                         <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3">
-                            <h3 className="font-bold text-lg">Tim Terdaftar</h3>
+                            <h3 className="font-bold text-xl">Tim Terdaftar</h3>
                             <Table
                                 columns={columns}
                                 data={paginatedData}
@@ -160,7 +160,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                         <div className="flex bg-white shadow-md rounded-lg overflow-hidden col-span-1 row-span-1">
                             <div className="h-full w-full overflow-auto p-6">
                                 <div className="flex justify-between items-center mb-4">
-                                    <span className="text-lg text-simbaris-text font-bold">
+                                    <span className="text-xl text-simbaris-text font-bold">
                                         Pendaftar Tercepat
                                     </span>
                                 </div>

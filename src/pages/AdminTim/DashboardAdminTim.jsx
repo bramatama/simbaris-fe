@@ -1,5 +1,5 @@
-import Button from '../components/Button';
-import PieChart from '../components/dashboard_panitia/PieChart';
+import Button from '../../components/Button';
+import PieChart from '../../components/dashboard_panitia/PieChart';
 
 const DashboardAdminTim = ({ isSidebarOpen }) => {
     const registrationData = {

@@ -11,15 +11,17 @@ import RegistrationPage from './pages/RegistrationPage';
 import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
-import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
+import DetailTimView from './pages/Member/DetailTimView';
+import DaftarAnggotaView from './pages/Member/DaftarAnggotaView';
+import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
 
 function App() {
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [currentUser, setCurrentUser] = useState({
-        role: 'panitia', // table user -> role
+        role: 'member', // table user -> role
         parent: `User`, // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
@@ -46,6 +48,8 @@ function App() {
         '/reset-password',
         '/forgot-password',
         '/tim-saya/detail',
+        '/tim-saya/anggota',
+        '/tim-terdaftar',
         '/tim-terdaftar',
     ];
 
@@ -121,10 +125,16 @@ function App() {
                 <Route
                     path="/tim-saya/detail"
                     element={
-                        <DashboardRoute
+                        <DetailTimView
                             isSidebarOpen={isSidebarOpen}
                             userRole={currentUser.role}
                         />
+                    }
+                />
+                <Route
+                    path="/tim-saya/anggota"
+                    element={
+                        <DaftarAnggotaView isSidebarOpen={isSidebarOpen} />
                     }
                 />
                 <Route

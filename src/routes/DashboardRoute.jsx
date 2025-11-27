@@ -1,10 +1,10 @@
 import React from 'react';
-import DashboardPanitia from '../pages/DashboardPanitia';
-import DashboardAdminTim from '../pages/DashboardAdminTim';
-import DashboardMember from '../pages/DashboardMember';
+import DashboardPanitia from '../pages/Panitia/DashboardPanitia';
+import DashboardAdminTim from '../pages/AdminTim/DashboardAdminTim';
+import DashboardMember from '../pages/Member/DashboardMember';
 import NotFoundPage from '../pages/NotFoundPage';
 
-const DashboardRoute = ({ userRole, isSidebarOpen}) => {
+const DashboardRoute = ({ userRole, isSidebarOpen }) => {
     // Gunakan object mapping untuk pendekatan yang lebih modern dan skalabel
     const dashboardComponents = {
         panitia: <DashboardPanitia isSidebarOpen={isSidebarOpen} />,

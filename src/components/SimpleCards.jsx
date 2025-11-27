@@ -10,7 +10,7 @@ export default function SimpleCard({
     navigateTo,
 }) {
     return (
-        <Link to={navigateTo} className="flex-1 flex items-center justify-between bg-white rounded-xl shadow-sm overflow-hidden mx-1 max-h-16">
+        <Link to={navigateTo} className="flex-1 flex items-center justify-between bg-white rounded-xl shadow-sm overflow-hidden mx-1 max-h-16 cursor-default">
             {/* Bagian ikon kiri */}
             <div
                 className={`flex items-center justify-center w-14 h-full ${color}`}
@@ -25,7 +25,7 @@ export default function SimpleCard({
             </div>
 
             {/* Ikon kanan */}
-            <div className="pr-4">{rightIcon}</div>
+            <div className="pr-4 cursor-pointer">{rightIcon}</div>
         </Link>
     );
 }

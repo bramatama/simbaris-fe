@@ -7,6 +7,9 @@ const registrantList = [
         time: '25/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Samarinda',
+        district: 'Samarinda Utara', // lokasi SMPN 29
     },
     {
         id: 2,
@@ -16,6 +19,9 @@ const registrantList = [
         time: '26/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
+        province: 'Kalimantan Timur',
+        city: 'Balikpapan',
+        district: 'Balikpapan Selatan', // lokasi SMPN 89
     },
     {
         id: 3,
@@ -25,6 +31,9 @@ const registrantList = [
         time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Barat',
+        city: 'Pontianak',
+        district: 'Pontianak Kota', // SD 087 → di pusat Pontianak
     },
     {
         id: 4,
@@ -34,6 +43,9 @@ const registrantList = [
         time: '25/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Samarinda',
+        district: 'Samarinda Kota', // SMK Kesehatan Samarinda pusat
     },
     {
         id: 5,
@@ -43,6 +55,9 @@ const registrantList = [
         time: '26/10/2025',
         status: 'Ditolak',
         verified_by: 'Bambang',
+        province: 'Kalimantan Barat',
+        city: 'Singkawang',
+        district: 'Singkawang Tengah', // sekolah SMPN 99 ada di area tengah
     },
     {
         id: 6,
@@ -52,6 +67,9 @@ const registrantList = [
         time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Balikpapan',
+        district: 'Balikpapan Utara', // lokasi SMAN 10
     },
     {
         id: 7,
@@ -61,6 +79,9 @@ const registrantList = [
         time: '25/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Bambang',
+        province: 'Kalimantan Tengah',
+        city: 'Palangkaraya',
+        district: 'Pahandut', // SDN 1 Palangka Raya
     },
     {
         id: 8,
@@ -70,6 +91,9 @@ const registrantList = [
         time: '26/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Balikpapan',
+        district: 'Balikpapan Barat', // SDN 77
     },
     {
         id: 9,
@@ -79,6 +103,9 @@ const registrantList = [
         time: '25/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
+        province: 'Kalimantan Barat',
+        city: 'Pontianak',
+        district: 'Pontianak Utara', // SMP Nusantara → di Pontianak Utara
     },
     {
         id: 10,
@@ -88,6 +115,9 @@ const registrantList = [
         time: '26/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Sulis',
+        province: 'Kalimantan Timur',
+        city: 'Balikpapan',
+        district: 'Balikpapan Selatan', // lokasi MAN 5
     },
     {
         id: 11,
@@ -97,6 +127,9 @@ const registrantList = [
         time: '24/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Samarinda',
+        district: 'Samarinda Ulu', // SMAN 1 Samarinda
     },
     {
         id: 12,
@@ -106,6 +139,9 @@ const registrantList = [
         time: '23/10/2025',
         status: 'Telah Diverifikasi',
         verified_by: 'Joko',
+        province: 'Kalimantan Selatan',
+        city: 'Banjarmasin',
+        district: 'Banjarmasin Utara', // SMPN 1 Banjarmasin
     },
     {
         id: 13,
@@ -115,6 +151,9 @@ const registrantList = [
         time: '27/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Balikpapan',
+        district: 'Balikpapan Timur', // lokasi SMKN 2 Balikpapan
     },
     {
         id: 14,
@@ -124,6 +163,9 @@ const registrantList = [
         time: '22/10/2025',
         status: 'Perlu Verifikasi',
         verified_by: '-',
+        province: 'Kalimantan Timur',
+        city: 'Kutai Kartanegara',
+        district: 'Tenggarong', // SDN 1 Tenggarong
     },
     {
         id: 15,
@@ -133,6 +175,9 @@ const registrantList = [
         time: '27/10/2025',
         status: 'Ditolak',
         verified_by: 'Bambang',
+        province: 'Kalimantan Barat',
+        city: 'Pontianak',
+        district: 'Pontianak Selatan', // lokasi SMAN 3 Pontianak
     },
 ];
 
