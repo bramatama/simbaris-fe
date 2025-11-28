@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
-import Button from '../../Button';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '../Button';
 import { ExternalLink } from 'lucide-react';
 
-const MyDataPanel = ({ myData }) => {
+const MyDataPanel = ({ myData, onButtonClick }) => {
+    const isMemberPage = location.pathname === '/tim-saya/anggota';
     return (
-        <div className='flex flex-col gap-4'>
+        <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold text-simbaris-text">
                 Data Saya
             </h2>
@@ -44,16 +45,25 @@ const MyDataPanel = ({ myData }) => {
                             {myData.member_grade}
                         </span>
                     </div>
+                    {isMemberPage && (
+                        <div className="flex justify-between items-end border-b border-gray-200 pb-2">
+                            <span className="text-sm text-gray-600">
+                                Jenis Kelamin
+                            </span>
+                            <span className="text-sm font-medium text-gray-900 text-right">
+                                {myData.gender}
+                            </span>
+                        </div>
+                    )}
                     <div className="flex w-full justify-end items-center">
-                        <Link to="/tim-saya/anggota">
                             <Button
                                 text="Lihat Selengkapnya"
                                 size="long"
                                 type="primary"
                                 color="secondary"
+                                onClick={onButtonClick}
                                 leftIcon={<ExternalLink size={18} />}
                             ></Button>
-                        </Link>
                     </div>
                 </div>
             </div>

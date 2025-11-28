@@ -208,11 +208,9 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                     </div>
 
                     <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <h1 className="text-xl font-bold text-gray-900">
-                                Daftar Tim
-                            </h1>
-                        </div>
+                        <h2 className="text-xl font-semibold text-simbaris-text">
+                            Daftar Tim
+                        </h2>
 
                         {/* search + filters */}
                         <div className="flex flex-col lg:flex-row gap-4">

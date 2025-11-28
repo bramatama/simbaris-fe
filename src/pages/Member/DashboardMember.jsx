@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import Button from '../../components/Button';
-import MyDataPanel from '../../components/member/dashboard_member/MyDataPanel';
+import MyDataPanel from '../../components/member/MyDataPanel';
 import MyTeamPanel from '../../components/member/dashboard_member/MyTeamPanel';
+import MyMemberPanel from '../../components/member/MyMemberPanel';
 import myData from '../../dummy/singleMemberData';
 import teamData from '../../dummy/singleTeamData';
 import memberList from '../../dummy/memberList';
-import MyMemberPanel from '../../components/member/dashboard_member/MyMemberPanel';
 
 const DashboardMember = ({ isSidebarOpen = true }) => {
     return (
