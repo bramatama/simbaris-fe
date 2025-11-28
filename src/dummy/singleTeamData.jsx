@@ -1,11 +1,11 @@
-const teamdata = {
+const teamData = {
     team: {
         name: 'Specta Squad',
         coach: 'Mariposa',
-        mentor: 'Roman Reigns',
+        supervisor: 'Roman Reigns',
         contact: '+62 812 3456 7890',
         email: 'pelatih/pembina@gmail.com',
-        logoUrl: 'https://via.placeholder.com/150?text=LOGO', // Ganti dengan URL logo asli jika ada
+        logoUrl: '/images/logo_transparant.png'  // Ganti dengan URL logo asli jika ada
     },
     school: {
         name: 'SMP Negeri 18 Balikpapan',

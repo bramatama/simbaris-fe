@@ -13,9 +13,9 @@ import Sample from './pages/Sample';
 import DashboardRoute from './routes/DashboardRoute';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
-import DetailTimView from './pages/Member/DetailTimView';
 import DaftarAnggotaView from './pages/Member/DaftarAnggotaView';
 import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
+import DetailTimRoute from './routes/DetailTimRoute';
 
 function App() {
     const location = useLocation();
@@ -49,7 +49,6 @@ function App() {
         '/forgot-password',
         '/tim-saya/detail',
         '/tim-saya/anggota',
-        '/tim-terdaftar',
         '/tim-terdaftar',
     ];
 
@@ -95,15 +94,6 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/pendaftaran" element={<RegistrationPage />} />
                 <Route
-                    path="/dashboard/"
-                    element={
-                        <DashboardRoute
-                            isSidebarOpen={isSidebarOpen}
-                            userRole={currentUser.role}
-                        />
-                    }
-                />
-                <Route
                     path="/dashboard/*"
                     element={<Navigate to="/dashboard" replace />}
                 />
@@ -117,19 +107,8 @@ function App() {
                     }
                 />
                 <Route
-                    path="/sample-dashboard"
-                    element={
-                        <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
-                    }
-                />
-                <Route
                     path="/tim-saya/detail"
-                    element={
-                        <DetailTimView
-                            isSidebarOpen={isSidebarOpen}
-                            userRole={currentUser.role}
-                        />
-                    }
+                    element={<DetailTimRoute userRole={currentUser.role} />}
                 />
                 <Route
                     path="/tim-saya/anggota"
@@ -144,6 +123,12 @@ function App() {
                             isSidebarOpen={isSidebarOpen}
                             userRole={currentUser.role}
                         />
+                    }
+                />
+                <Route
+                    path="/sample-dashboard"
+                    element={
+                        <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
                 />
                 <Route path="/sample" element={<Sample />} />

@@ -1,9 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-    GraduationCapIcon,
-    Users,
-    SearchIcon,
-} from 'lucide-react';
+import { GraduationCapIcon, Users, SearchIcon } from 'lucide-react';
 import SimpleCard from '../../components/SimpleCards';
 import InputField from '../../components/inputs/InputField';
 import Table from '../../components/Table';
@@ -49,33 +45,33 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
 
     const provinceOptions = useMemo(() => {
         const unique = Array.from(new Set(data.map((d) => d.province)));
-        return [
-            ...unique.map((item) => ({
-                label: item,
-                value: item,
-            })),
-        ];
+        return [...unique.map((item) => ({ label: item, value: item }))];
     }, [data]);
 
     const cityOptions = useMemo(() => {
-        const unique = Array.from(new Set(data.map((d) => d.city)));
-        return [
-            ...unique.map((item) => ({
-                label: item,
-                value: item,
-            })),
-        ];
-    }, [data]);
+        const filtered = filters.province
+            ? data.filter((d) => d.province === filters.province)
+            : data;
+
+        const unique = Array.from(new Set(filtered.map((d) => d.city)));
+
+        return [...unique.map((item) => ({ label: item, value: item }))];
+    }, [data, filters.province]);
 
     const districtOptions = useMemo(() => {
-        const unique = Array.from(new Set(data.map((d) => d.district)));
-        return [
-            ...unique.map((item) => ({
-                label: item,
-                value: item,
-            })),
-        ];
-    }, [data]);
+        let filtered = data;
+
+        if (filters.province) {
+            filtered = filtered.filter((d) => d.province === filters.province);
+        }
+        if (filters.city) {
+            filtered = filtered.filter((d) => d.city === filters.city);
+        }
+
+        const unique = Array.from(new Set(filtered.map((d) => d.district)));
+
+        return [...unique.map((item) => ({ label: item, value: item }))];
+    }, [data, filters.province, filters.city]);
 
     const filteredData = useMemo(() => {
         return data.filter((item) => {
@@ -135,7 +131,21 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
     };
 
     const handleFilterChange = (key, value) => {
-        setFilters((prev) => ({ ...prev, [key]: value }));
+        setFilters((prev) => {
+            let updated = { ...prev, [key]: value };
+
+            if (key === 'province') {
+                updated.city = '';
+                updated.district = '';
+            }
+
+            if (key === 'city') {
+                updated.district = '';
+            }
+
+            return updated;
+        });
+
         setCurrentPage(1);
     };
 
@@ -191,7 +201,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                         Tim Terdaftar
                     </header>
 
-                    <div className="hidden lg:flex gap-4 mb-4">
+                    <div className="hidden xl:flex gap-4 mb-4">
                         {cards.map((card, index) => (
                             <SimpleCard key={index} {...card} />
                         ))}

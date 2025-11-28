@@ -1,7 +1,6 @@
-import React from 'react';
-import { ArrowUpDown, MoreVertical } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 
-const Table = ({ columns, data, sortConfig, onSort }) => {
+const Table = ({ columns, data, onSort }) => {
     return (
         <div className="border border-gray-200 rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
@@ -17,10 +16,15 @@ const Table = ({ columns, data, sortConfig, onSort }) => {
                                     {col.sortable ? (
                                         <button
                                             className="flex items-center gap-2 hover:text-gray-200"
-                                            onClick={() => onSort && onSort(col.accessor)}
+                                            onClick={() =>
+                                                onSort && onSort(col.accessor)
+                                            }
                                         >
                                             {col.header}
-                                            <ArrowUpDown size={14} className="opacity-70" />
+                                            <ArrowUpDown
+                                                size={14}
+                                                className="opacity-70"
+                                            />
                                         </button>
                                     ) : (
                                         col.header
@@ -37,7 +41,9 @@ const Table = ({ columns, data, sortConfig, onSort }) => {
                                 <tr
                                     key={row.id || rowIndex}
                                     className={`hover:bg-gray-50 transition-colors ${
-                                        rowIndex % 2 !== 0 ? 'bg-gray-50/50' : 'bg-white'
+                                        rowIndex % 2 !== 0
+                                            ? 'bg-gray-50/50'
+                                            : 'bg-white'
                                     }`}
                                 >
                                     {columns.map((col, colIndex) => (
@@ -46,7 +52,9 @@ const Table = ({ columns, data, sortConfig, onSort }) => {
                                             className={`px-4 py-4 whitespace-nowrap text-sm ${col.cellClassName || 'text-gray-600'}`}
                                         >
                                             {/* Render custom cell jika ada fungsi render, jika tidak tampilkan data langsung */}
-                                            {col.render ? col.render(row) : row[col.accessor]}
+                                            {col.render
+                                                ? col.render(row)
+                                                : row[col.accessor]}
                                         </td>
                                     ))}
                                 </tr>

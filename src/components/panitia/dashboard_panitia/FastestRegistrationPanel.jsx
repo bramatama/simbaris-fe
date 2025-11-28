@@ -1,8 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // Asumsi Anda menggunakan react-router-dom
-import { Award, ArrowRight } from 'lucide-react';
-import Avatar from '../Avatar';
-import Button from '../Button';
+import { Award } from 'lucide-react';
+import Avatar from "../../Avatar"
 
 const RegistrantItem = ({ team, index }) => {
     const medalColors = {
@@ -61,7 +58,7 @@ const FastestRegistrantsPanel = ({ teams }) => {
                         <RegistrantItem key={index} team={team} index={index} />
                     ))}
                 </div>
-                <div className="flex flex-col gap-4 w-full mt-4 min-[425px]:mt-0 md:mt-4">
+                <div className="flex flex-col gap-4 w-full mt-4 min-[425px]:mt-0">
                     {top5Teams.slice(3, 5).map((team, index) => (
                         // index + 3 untuk menjaga urutan ranking tetap benar (4 dan 5)
                         <RegistrantItem
@@ -71,18 +68,6 @@ const FastestRegistrantsPanel = ({ teams }) => {
                         />
                     ))}
                 </div>
-            </div>
-            <div className="mt-4">
-                <Link to="/tim-terdaftar">
-                    <Button
-                        text="Lihat Semua Tim Terdaftar"
-                        color="accent"
-                        type="primary"
-                        size="full"
-                        rightIcon={<ArrowRight size={20} className="ml-2" />}
-                        className="transition-all duration-500 text-sm md:text-base"
-                    ></Button>
-                </Link>
             </div>
         </div>
     );

@@ -1,0 +1,336 @@
+const data = [
+    {
+        member_id: 'm-001',
+        member_name: 'Bahrul Alam',
+        member_grade: 'VII',
+        nisn: '0123456789',
+        gender: 'Laki-Laki',
+        email: 'bahrul@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-002',
+        member_name: 'Aulia Rahmadani',
+        member_grade: 'VIII',
+        nisn: '0123456790',
+        gender: 'Perempuan',
+        email: 'aulia.rahma@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-003',
+        member_name: 'Rizky Firmansyah',
+        member_grade: 'IX',
+        nisn: '0123456791',
+        gender: 'Laki-Laki',
+        email: 'rizky.firman@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-004',
+        member_name: 'Nadia Putri Salsabila',
+        member_grade: 'VII',
+        nisn: '0123456792',
+        gender: 'Perempuan',
+        email: 'nadia.putri@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-005',
+        member_name: 'Fadhil Prasetyo',
+        member_grade: 'VIII',
+        nisn: '0123456793',
+        gender: 'Laki-Laki',
+        email: 'fadhil.pras@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-006',
+        member_name: 'Cindy Maharani',
+        member_grade: 'IX',
+        nisn: '0123456794',
+        gender: 'Perempuan',
+        email: 'cindy.maharani@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-007',
+        member_name: 'Dimas Arya',
+        member_grade: 'VII',
+        nisn: '0123456795',
+        gender: 'Laki-Laki',
+        email: 'dimas.arya@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-008',
+        member_name: 'Siti Azzahra',
+        member_grade: 'VIII',
+        nisn: '0123456796',
+        gender: 'Perempuan',
+        email: 'siti.zzahra@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-009',
+        member_name: 'Raka Permadi',
+        member_grade: 'IX',
+        nisn: '0123456797',
+        gender: 'Laki-Laki',
+        email: 'raka.permadi@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-010',
+        member_name: 'Melani Ardhana',
+        member_grade: 'VII',
+        nisn: '0123456798',
+        gender: 'Perempuan',
+        email: 'melani.ardhana@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-011',
+        member_name: 'Yoga Saputra',
+        member_grade: 'VIII',
+        nisn: '0123456799',
+        gender: 'Laki-Laki',
+        email: 'yoga.saputra@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-012',
+        member_name: 'Keisha Aurel',
+        member_grade: 'IX',
+        nisn: '0123456800',
+        gender: 'Perempuan',
+        email: 'keisha.aurel@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+    {
+        member_id: 'm-013',
+        member_name: 'Fikri Ananda',
+        member_grade: 'VIII',
+        nisn: '0123456801',
+        gender: 'Laki-Laki',
+        email: 'fikri.ananda@gmail.com',
+        team: {
+            team_name: 'Specta Squad',
+            school: {
+                school_name: 'SMP Negeri 18 Balikpapan',
+                level: 'SMP/MTs Sederajat',
+            },
+        },
+    },
+];
+
+const photoList = [
+    {
+        photo_id: 'p-001',
+        team_id: 'team-001',
+        member_id: 'm-001',
+        file_url: 'https://picsum.photos/id/1011/400/400',
+        ocr_text: null,
+        verified_name: 'Bahrul Alam',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-002',
+        team_id: 'team-001',
+        member_id: 'm-002',
+        file_url: 'https://picsum.photos/id/1012/400/400',
+        ocr_text: null,
+        verified_name: 'Aulia Rahmadani',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-003',
+        team_id: 'team-001',
+        member_id: 'm-003',
+        file_url: 'https://picsum.photos/id/1013/400/400',
+        ocr_text: null,
+        verified_name: 'Rizky Firmansyah',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-004',
+        team_id: 'team-001',
+        member_id: 'm-004',
+        file_url: 'https://picsum.photos/id/1014/400/400',
+        ocr_text: null,
+        verified_name: 'Nadia Putri Salsabila',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-005',
+        team_id: 'team-001',
+        member_id: 'm-005',
+        file_url: 'https://picsum.photos/id/1015/400/400',
+        ocr_text: null,
+        verified_name: 'Fadhil Prasetyo',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-006',
+        team_id: 'team-001',
+        member_id: 'm-006',
+        file_url: 'https://picsum.photos/id/1016/400/400',
+        ocr_text: null,
+        verified_name: 'Cindy Maharani',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-007',
+        team_id: 'team-001',
+        member_id: 'm-007',
+        file_url: 'https://picsum.photos/id/1017/400/400',
+        ocr_text: null,
+        verified_name: 'Dimas Arya',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-008',
+        team_id: 'team-001',
+        member_id: 'm-008',
+        file_url: 'https://picsum.photos/id/1018/400/400',
+        ocr_text: null,
+        verified_name: 'Siti Azzahra',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-009',
+        team_id: 'team-001',
+        member_id: 'm-009',
+        file_url: 'https://picsum.photos/id/1019/400/400',
+        ocr_text: null,
+        verified_name: 'Raka Permadi',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-010',
+        team_id: 'team-001',
+        member_id: 'm-010',
+        file_url: 'https://picsum.photos/id/1020/400/400',
+        ocr_text: null,
+        verified_name: 'Melani Ardhana',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-011',
+        team_id: 'team-001',
+        member_id: 'm-011',
+        file_url: 'https://picsum.photos/id/1021/400/400',
+        ocr_text: null,
+        verified_name: 'Yoga Saputra',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-012',
+        team_id: 'team-001',
+        member_id: 'm-012',
+        file_url: 'https://picsum.photos/id/1022/400/400',
+        ocr_text: null,
+        verified_name: 'Keisha Aurel',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+    {
+        photo_id: 'p-013',
+        team_id: 'team-001',
+        member_id: 'm-013',
+        file_url: 'https://picsum.photos/id/1023/400/400',
+        ocr_text: null,
+        verified_name: 'Fikri Ananda',
+        created_at: '2025-01-01T00:00:00Z',
+    },
+];
+
+const flattenedMemberList = data.map((m) => {
+    const photo = photoList.find((p) => p.member_id === m.member_id);
+
+    return {
+        member_id: m.member_id,
+        member_name: m.member_name,
+        member_grade: m.member_grade,
+        nisn: m.nisn,
+        gender: m.gender,
+        email: m.email,
+        team_name: m.team.team_name,
+        school_name: m.team.school.school_name,
+        school_level: m.team.school.level,
+        photo_url: photo?.file_url ?? null,
+    };
+});
+
+export const memberList = flattenedMemberList;

@@ -176,7 +176,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                     </header>
 
                     {/* Cards */}
-                    <div className="hidden lg:flex gap-4 mb-4">
+                    <div className="hidden xl:flex gap-4 mb-4">
                         {cards.map((card, index) => (
                             <SimpleCard key={index} {...card} />
                         ))}

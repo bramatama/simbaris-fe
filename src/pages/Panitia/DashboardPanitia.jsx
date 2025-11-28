@@ -1,11 +1,14 @@
-import Button from '../../components/Button';
 import { useState, useMemo } from 'react';
-import PieChart from '../../components/dashboard_panitia/PieChart';
-import FastestRegistrantsPanel from '../../components/dashboard_panitia/FastestRegistrationPanel';
+import { PenTool, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+import Button from '../../components/Button';
+import PieChart from '../../components/panitia/dashboard_panitia/PieChart';
+import FastestRegistrantsPanel from '../../components/panitia/dashboard_panitia/FastestRegistrationPanel';
 import SimpleCard from '../../components/SimpleCards';
 import Table from '../../components/Table';
+
 import registrantList from '../../dummy/registrantList';
-import { PenTool, ExternalLink } from 'lucide-react';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
     const [registrantData] = useState(registrantList);
@@ -132,8 +135,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                         Dashboard
                     </header>
 
-                    {/* ✅ Tambahan: Section Simple Cards */}
-                    <div className="hidden md:flex gap-4 mb-4">
+                    <div className="hidden xl:flex gap-4 mb-4">
                         {cards.map((card, index) => (
                             <SimpleCard
                                 key={index}
@@ -146,8 +148,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                             />
                         ))}
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4 aspect-auto">
-                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-fit">
                             <h3 className="font-bold text-xl">Tim Terdaftar</h3>
                             <Table
                                 columns={columns}
@@ -155,16 +158,30 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 sortConfig={sortConfig}
                                 onSort={handleSort}
                             />
+                            <Link
+                                to="/tim-terdaftar"
+                                className="flex justify-end items-center"
+                            >
+                                <Button
+                                    text="Lihat Selengkapnya"
+                                    size="long"
+                                    round="half"
+                                    color="secondary"
+                                    leftIcon={<ExternalLink size={18} />}
+                                ></Button>
+                            </Link>
                         </div>
 
-                        <div className="flex bg-white shadow-md rounded-lg overflow-hidden col-span-1 row-span-1">
-                            <div className="h-full w-full overflow-auto p-6">
-                                <div className="flex justify-between items-center mb-4">
-                                    <span className="text-xl text-simbaris-text font-bold">
-                                        Pendaftar Tercepat
-                                    </span>
+                        <div className="flex bg-white shadow-md rounded-lg col-span-1 row-span-1">
+                            <div className="h-full w-full p-6 flex flex-col">
+                                <span className="text-xl text-simbaris-text font-bold">
+                                    Pendaftar Tercepat
+                                </span>
+                                <div className="flex items-center w-full h-full">
+                                    <FastestRegistrantsPanel
+                                        teams={fastestTeams}
+                                    />
                                 </div>
-                                <FastestRegistrantsPanel teams={fastestTeams} />
                             </div>
                         </div>
 
