@@ -4,7 +4,7 @@ import { ExternalLink } from 'lucide-react';
 
 const MyDataPanel = ({ myData }) => {
     return (
-        <>
+        <div className='flex flex-col gap-4'>
             <h2 className="text-xl font-semibold text-simbaris-text">
                 Data Saya
             </h2>
@@ -57,7 +57,7 @@ const MyDataPanel = ({ myData }) => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -7,7 +7,7 @@ const Pagination = ({
     itemsPerPage,
     onPageChange,
     onItemsPerPageChange,
-    pageSizeOptions = [10, 20, 50],
+    pageSizeOptions = [5, 10, 20, 50],
 }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const startItem =

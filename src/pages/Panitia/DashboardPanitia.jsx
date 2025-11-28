@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { PenTool, ExternalLink } from 'lucide-react';
+import { PenTool, ExternalLink, SearchIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import Button from '../../components/Button';
@@ -7,13 +7,17 @@ import PieChart from '../../components/panitia/dashboard_panitia/PieChart';
 import FastestRegistrantsPanel from '../../components/panitia/dashboard_panitia/FastestRegistrationPanel';
 import SimpleCard from '../../components/SimpleCards';
 import Table from '../../components/Table';
+import InputField from '../../components/inputs/InputField';
 
 import registrantList from '../../dummy/registrantList';
+import Pagination from '../../components/Pagination';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
     const [registrantData] = useState(registrantList);
-    const [currentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [search, setSearch] = useState('');
+
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: 'asc',
@@ -25,8 +29,17 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         values: [5, 5, 5],
     };
 
+    const filteredData = useMemo(() => {
+        return registrantData.filter((item) => {
+            const matchSearch =
+                item.team.toLowerCase().includes(search.toLowerCase()) ||
+                item.school.toLowerCase().includes(search.toLowerCase());
+            return matchSearch;
+        });
+    }, [registrantData, search]);
+
     const sortedData = useMemo(() => {
-        let sortableItems = [...registrantData];
+        let sortableItems = [...filteredData];
         if (sortConfig.key) {
             sortableItems.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key])
@@ -37,7 +50,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             });
         }
         return sortableItems;
-    }, [registrantData, sortConfig]);
+    }, [filteredData, sortConfig]);
 
     const paginatedData = useMemo(() => {
         const firstPageIndex = (currentPage - 1) * itemsPerPage;
@@ -152,24 +165,48 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
                         <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-fit">
                             <h3 className="font-bold text-xl">Tim Terdaftar</h3>
+                            <div className="flex">
+                                <InputField
+                                    leftIcon={
+                                        <SearchIcon
+                                            size={18}
+                                            className="text-gray-400"
+                                        />
+                                    }
+                                    name="search"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Cari Tim atau Sekolah..."
+                                    className="h-11"
+                                />
+                            </div>
                             <Table
                                 columns={columns}
                                 data={paginatedData}
                                 sortConfig={sortConfig}
                                 onSort={handleSort}
                             />
-                            <Link
-                                to="/tim-terdaftar"
-                                className="flex justify-end items-center"
-                            >
-                                <Button
-                                    text="Lihat Selengkapnya"
-                                    size="long"
-                                    round="half"
-                                    color="secondary"
-                                    leftIcon={<ExternalLink size={18} />}
-                                ></Button>
-                            </Link>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalItems={filteredData.length}
+                                itemsPerPage={itemsPerPage}
+                                onPageChange={setCurrentPage}
+                                onItemsPerPageChange={(val) => {
+                                    setItemsPerPage(val);
+                                    setCurrentPage(1);
+                                }}
+                            />
+                            <div className="flex justify-end items-center">
+                                <Link to="/tim-terdaftar">
+                                    <Button
+                                        text="Lihat Selengkapnya"
+                                        size="long"
+                                        round="half"
+                                        color="secondary"
+                                        leftIcon={<ExternalLink size={18} />}
+                                    ></Button>
+                                </Link>
+                            </div>
                         </div>
 
                         <div className="flex bg-white shadow-md rounded-lg col-span-1 row-span-1">

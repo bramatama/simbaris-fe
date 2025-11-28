@@ -21,7 +21,7 @@ const myPhoto = {
     photo_url: 'https://picsum.photos/id/1011/400/400',
 };
 
-export const myData = {
+const myData = {
     member_name : data.member_name,
     member_grade : data.member_grade,
     nisn : data.nisn,
@@ -32,3 +32,5 @@ export const myData = {
     level : data.team.school.level,
     photo_url : myPhoto.photo_url,
 }
+
+export default myData;

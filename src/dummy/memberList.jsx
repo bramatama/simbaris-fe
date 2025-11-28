@@ -316,7 +316,7 @@ const photoList = [
     },
 ];
 
-const flattenedMemberList = data.map((m) => {
+const memberList = data.map((m) => {
     const photo = photoList.find((p) => p.member_id === m.member_id);
 
     return {
@@ -333,4 +333,4 @@ const flattenedMemberList = data.map((m) => {
     };
 });
 
-export const memberList = flattenedMemberList;
+export default memberList;

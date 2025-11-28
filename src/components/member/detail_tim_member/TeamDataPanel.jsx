@@ -28,7 +28,7 @@ const TeamDataPanel = ({ teamData }) => {
                     <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                         <span className="text-sm text-gray-600">Nama Tim</span>
                         <span className="text-sm font-medium text-gray-900 text-right">
-                            {teamData.name}
+                            {teamData.team_name}
                         </span>
                     </div>
                     <div className="flex justify-between items-end border-b border-gray-200 pb-2">

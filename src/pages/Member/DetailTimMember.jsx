@@ -17,12 +17,12 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 lg:grid-cols-3 gap-4 flex-1">
                         <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-2">
-                            <TeamDataPanel teamData={teamData.team} />
-                            <SchoolDataPanel schoolData={teamData.school} />
+                            <TeamDataPanel teamData={teamData} />
+                            <SchoolDataPanel schoolData={teamData} />
                         </div>
 
                         {/* KANAN ATAS — NILAI & CATATAN JURI */}
-                        <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col items-center lg:col-span-1 lg:row-span-1">
+                        <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col  lg:col-span-1 lg:row-span-1">
                             <h2 className="text-xl font-semibold text-simbaris-text">
                                 Nilai dan Catatan Juri
                             </h2>
@@ -32,7 +32,7 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
                         </div>
 
                         {/* KANAN BAWAH — HASIL PERLOMBAAN */}
-                        <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col items-center lg:col-span-1 lg:row-span-1">
+                        <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col  lg:col-span-1 lg:row-span-1">
                             <h2 className="text-xl font-semibold mb-4 text-gray-900">
                                 Hasil Perlombaan
                             </h2>

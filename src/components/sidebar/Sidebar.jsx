@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import ProfileDropdown from './ProfileDropdown';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -23,6 +23,11 @@ const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
 // --- Helper Component: Tautan Sidebar dengan Dropdown ---
 const SidebarDropdown = ({ label, children, isActive }) => {
     const [isOpen, setIsOpen] = useState(isActive);
+    useEffect(() => {
+        if (isActive) {
+            setIsOpen(true);
+        }
+    }, [isActive]);
 
     return (
         <div>

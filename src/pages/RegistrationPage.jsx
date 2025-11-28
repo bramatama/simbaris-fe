@@ -584,7 +584,7 @@ const RegistrationPage = () => {
                                     </a>
                                     <Button
                                         onClick={handleOpenModal}
-                                        disabled={step2Validation}
+                                        // disabled={step2Validation}
                                         color="success"
                                         size="long"
                                         text="Upload Form Foto"

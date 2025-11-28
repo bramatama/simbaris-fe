@@ -9,7 +9,7 @@ const SchoolDataPanel = ({ schoolData }) => {
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Nama Sekolah</span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.name}
+                        {schoolData.school_name}
                     </span>
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
