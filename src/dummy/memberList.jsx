@@ -2,7 +2,7 @@ const data = [
     {
         member_id: 'm-001',
         member_name: 'Bahrul Alam',
-        member_grade: 'VII',
+        member_grade: '7',
         nisn: '0123456789',
         gender: 'Laki-Laki',
         email: 'bahrul@gmail.com',
@@ -17,7 +17,7 @@ const data = [
     {
         member_id: 'm-002',
         member_name: 'Aulia Rahmadani',
-        member_grade: 'VIII',
+        member_grade: '8',
         nisn: '0123456790',
         gender: 'Perempuan',
         email: 'aulia.rahma@gmail.com',
@@ -32,7 +32,7 @@ const data = [
     {
         member_id: 'm-003',
         member_name: 'Rizky Firmansyah',
-        member_grade: 'IX',
+        member_grade: '9',
         nisn: '0123456791',
         gender: 'Laki-Laki',
         email: 'rizky.firman@gmail.com',
@@ -47,7 +47,7 @@ const data = [
     {
         member_id: 'm-004',
         member_name: 'Nadia Putri Salsabila',
-        member_grade: 'VII',
+        member_grade: '7',
         nisn: '0123456792',
         gender: 'Perempuan',
         email: 'nadia.putri@gmail.com',
@@ -62,7 +62,7 @@ const data = [
     {
         member_id: 'm-005',
         member_name: 'Fadhil Prasetyo',
-        member_grade: 'VIII',
+        member_grade: '8',
         nisn: '0123456793',
         gender: 'Laki-Laki',
         email: 'fadhil.pras@gmail.com',
@@ -77,7 +77,7 @@ const data = [
     {
         member_id: 'm-006',
         member_name: 'Cindy Maharani',
-        member_grade: 'IX',
+        member_grade: '9',
         nisn: '0123456794',
         gender: 'Perempuan',
         email: 'cindy.maharani@gmail.com',
@@ -92,7 +92,7 @@ const data = [
     {
         member_id: 'm-007',
         member_name: 'Dimas Arya',
-        member_grade: 'VII',
+        member_grade: '7',
         nisn: '0123456795',
         gender: 'Laki-Laki',
         email: 'dimas.arya@gmail.com',
@@ -107,7 +107,7 @@ const data = [
     {
         member_id: 'm-008',
         member_name: 'Siti Azzahra',
-        member_grade: 'VIII',
+        member_grade: '8',
         nisn: '0123456796',
         gender: 'Perempuan',
         email: 'siti.zzahra@gmail.com',
@@ -122,7 +122,7 @@ const data = [
     {
         member_id: 'm-009',
         member_name: 'Raka Permadi',
-        member_grade: 'IX',
+        member_grade: '9',
         nisn: '0123456797',
         gender: 'Laki-Laki',
         email: 'raka.permadi@gmail.com',
@@ -137,7 +137,7 @@ const data = [
     {
         member_id: 'm-010',
         member_name: 'Melani Ardhana',
-        member_grade: 'VII',
+        member_grade: '7',
         nisn: '0123456798',
         gender: 'Perempuan',
         email: 'melani.ardhana@gmail.com',
@@ -152,7 +152,7 @@ const data = [
     {
         member_id: 'm-011',
         member_name: 'Yoga Saputra',
-        member_grade: 'VIII',
+        member_grade: '8',
         nisn: '0123456799',
         gender: 'Laki-Laki',
         email: 'yoga.saputra@gmail.com',
@@ -167,7 +167,7 @@ const data = [
     {
         member_id: 'm-012',
         member_name: 'Keisha Aurel',
-        member_grade: 'IX',
+        member_grade: '9',
         nisn: '0123456800',
         gender: 'Perempuan',
         email: 'keisha.aurel@gmail.com',
@@ -182,7 +182,7 @@ const data = [
     {
         member_id: 'm-013',
         member_name: 'Fikri Ananda',
-        member_grade: 'VIII',
+        member_grade: '8',
         nisn: '0123456801',
         gender: 'Laki-Laki',
         email: 'fikri.ananda@gmail.com',
@@ -328,7 +328,7 @@ const memberList = data.map((m) => {
         email: m.email,
         team_name: m.team.team_name,
         school_name: m.team.school.school_name,
-        school_level: m.team.school.level,
+        level: m.team.school.level,
         photo_url: photo?.file_url ?? null,
     };
 });

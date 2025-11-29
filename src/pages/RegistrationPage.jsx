@@ -27,9 +27,9 @@ const defaultMember = {
 };
 
 const gradeOptionsByLevel = {
-    "SD/MI Sederajat": ["I", "II", "III", "IV", "V", "VI"],
-    "SMP/MTs Sederajat": ["VII", "VIII", "IX"],
-    "SMA/SMK/MA Sederajat": ["X", "XI", "XII"],
+    'SD/MI Sederajat': ['1', '2', '3', '4', '5', '6'],
+    'SMP/MTs Sederajat': ['7', '8', '9'],
+    'SMA/SMK/MA Sederajat': ['10', '11', '12'],
 };
 
 const RegistrationPage = () => {

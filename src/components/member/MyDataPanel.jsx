@@ -1,9 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Button from '../Button';
 import { ExternalLink } from 'lucide-react';
+import MemberModal from '../MemberModal';
 
-const MyDataPanel = ({ myData, onButtonClick }) => {
+const MyDataPanel = ({ myData, userRole }) => {
+    const [isModalOpen, setIsModalOpen]= useState(false);
+    const navigate = useNavigate();
+
     const isMemberPage = location.pathname === '/tim-saya/anggota';
+    const role = 'member'|| userRole;
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold text-simbaris-text">
@@ -56,17 +63,28 @@ const MyDataPanel = ({ myData, onButtonClick }) => {
                         </div>
                     )}
                     <div className="flex w-full justify-end items-center">
-                            <Button
-                                text="Lihat Selengkapnya"
-                                size="long"
-                                type="primary"
-                                color="secondary"
-                                onClick={onButtonClick}
-                                leftIcon={<ExternalLink size={18} />}
-                            ></Button>
+                        <Button
+                            text="Lihat Selengkapnya"
+                            size="long"
+                            type="primary"
+                            color="secondary"
+                            onClick={
+                                isMemberPage
+                                    ? () => setIsModalOpen(true)
+                                    : () => navigate('/tim-saya/anggota')
+                            }
+                            leftIcon={<ExternalLink size={18} />}
+                        ></Button>
                     </div>
                 </div>
             </div>
+            <MemberModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                memberData={myData}
+                title="Detail Saya"
+                userRole={role}
+            />
         </div>
     );
 };

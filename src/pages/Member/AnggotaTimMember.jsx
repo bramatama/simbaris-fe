@@ -1,20 +1,10 @@
-import React, { useState, useMemo } from 'react';
 import myData from '../../dummy/singleMemberData';
 import memberList from '../../dummy/memberList';
 import MyDataPanel from '../../components/member/MyDataPanel';
 import MyMemberPanel from '../../components/member/MyMemberPanel';
 
 const AnggotaTimMember = ({ isSidebarOpen = true }) => {
-    // helpers
-    const openMemberModal = (member) => {
-        setSelectedMember(member);
-        setShowMemberModal(true);
-    };
-
-    const handleOpenMyDetail = () => {
-        openMemberModal(myData);
-    }
-
+    const userRole = 'member';
     return (
         <div className="flex bg-gray-100 min-h-screen font-inter">
             <div
@@ -28,11 +18,11 @@ const AnggotaTimMember = ({ isSidebarOpen = true }) => {
 
                     {/* Data Saya card (full width, like DashboardMember's style) */}
                     <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
-                        <MyDataPanel
-                            myData={myData}
-                            onButtonClick={handleOpenMyDetail}
+                        <MyDataPanel myData={myData} userRole={userRole} />
+                        <MyMemberPanel
+                            myMemberData={memberList}
+                            userRole={userRole}
                         />
-                        <MyMemberPanel myMemberData={memberList} />
                     </div>
                 </div>
             </div>

@@ -8,9 +8,13 @@ import Button from '../Button';
 import InputField from '../inputs/InputField';
 import Pagination from '../Pagination';
 import FilterDropdown from '../FilterDropdown';
+import MemberModal from '../MemberModal';
 
-const MyMemberPanel = ({ myMemberData }) => {
+const MyMemberPanel = ({ myMemberData, userRole }) => {
     const isMemberPage = location.pathname === '/tim-saya/anggota';
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMember, setSelectedMember] = useState(null);
 
     const [memberData] = useState(myMemberData);
     const [currentPage, setCurrentPage] = useState(1);
@@ -48,7 +52,10 @@ const MyMemberPanel = ({ myMemberData }) => {
                     member.member_name
                         .toLowerCase()
                         .includes(search.toLowerCase()) ||
-                    member.email.toLowerCase().includes(search.toLowerCase());
+                    member.email
+                        .toLowerCase()
+                        .split('@')[0]
+                        .includes(search.toLowerCase());
                 const matchGender = filters.gender
                     ? member.gender === filters.gender
                     : true;
@@ -100,8 +107,11 @@ const MyMemberPanel = ({ myMemberData }) => {
                 accessor: 'actions',
                 className: 'text-center',
                 cellClassName: 'text-center',
-                render: () => (
-                    <button className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50">
+                render: (row) => (
+                    <button
+                        onClick={() => handleViewDetail(row)}
+                        className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50"
+                    >
                         <MoreVertical size={18} />
                     </button>
                 ),
@@ -125,6 +135,28 @@ const MyMemberPanel = ({ myMemberData }) => {
             return updated;
         });
         setCurrentPage(1);
+    };
+
+    const handleViewDetail = (row) => {
+        const mappedData = {
+            ...row,
+            member_name: row.member_name,
+            team_name: row.team_name,
+            school_name: row.school_name,
+            level: row.level,
+            member_grade: row.member_grade,
+            nisn: row.nisn,
+            gender: row.gender,
+            email: row.email,
+        };
+
+        setSelectedMember(mappedData);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedMember(null);
     };
 
     return (
@@ -195,6 +227,13 @@ const MyMemberPanel = ({ myMemberData }) => {
                     </Link>
                 </div>
             )}
+            <MemberModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                memberData={selectedMember}
+                title="Detail Anggota"
+                userRole={userRole}
+            />
         </div>
     );
 };

@@ -1,7 +1,7 @@
 const data = {
     member_id: 'm-001',
     member_name: 'Tri Setiawan Budiono',
-    member_grade: 'VII',
+    member_grade: '7',
     nisn: '1234567890',
     gender: 'Laki-Laki',
     email: 'tri@gmail.com',
