@@ -16,6 +16,7 @@ import LoginPage from './pages/LoginPage';
 import DetailPendaftaran from './pages/DetailPendaftaran';
 import TimSayaDetail from './pages/TimSayaDetail';
 import TimSayaAnggota from './pages/TimSayaAnggota';
+import ComponentsCheck from './pages/ComponentsCheck';
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
         '/detail-pendaftaran',
         '/tim-saya/detail',
         '/tim-saya/anggota',
+        '/componentscheck',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -138,6 +140,7 @@ function App() {
                     path = "/tim-saya/detail" element={<DashboardRoute isSidebarOpen={isSidebarOpen} userRole={currentUser.role} />}
                 />
                 <Route path="/sample" element={<Sample />} />
+                <Route path="/componentscheck" element={<ComponentsCheck />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 const ComboBox = ({
-    label = 'Label',
+    label = '',
     placeholder = 'Select option',
     helperText = '',
     status = 'primary',
@@ -40,7 +40,9 @@ const ComboBox = ({
 
     return (
         <div className={`flex flex-col gap-1 ${className}`} ref={containerRef}>
-            <label className="font-medium text-sm text-gray-700">{label}</label>
+            {label ? (
+                <label className="font-medium text-sm text-gray-700">{label}</label>
+            ) : null}
 
             {/* wrapper MUST be relative */}
             <div className="relative flex items-center">
@@ -107,7 +109,9 @@ const ComboBox = ({
                 )}
             </div>
 
-            <span className="text-xs text-simbaris-primary">{helperText}</span>
+            {helperText ? (
+                <span className="text-xs text-simbaris-primary">{helperText}</span>
+            ) : null}
         </div>
     );
 };

@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { UploadCloud, X } from 'lucide-react';
+import React, { useMemo, useRef, useState } from 'react';
+import { UploadCloud, X, Check } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Button from '../components/Button';
 
@@ -15,6 +15,9 @@ const InfoLine = ({ label, value }) => (
 
 const DetailPendaftaran = ({ isSidebarOpen }) => {
     const [showUploadModal, setShowUploadModal] = useState(false);
+    const [uploadFile, setUploadFile] = useState(null);
+    const [uploadPreview, setUploadPreview] = useState('');
+    const uploadInputRef = useRef(null);
 
     const teamProfile = {
         crest: '/images/logo_simbaris_default.png',
@@ -49,6 +52,36 @@ const DetailPendaftaran = ({ isSidebarOpen }) => {
     );
     const isRejected = statusKey.includes('tolak');
     const isAccepted = statusKey.includes('terima');
+
+    const handleUploadFile = (file) => {
+        if (!file) return;
+        setUploadFile(file);
+        if (file.type.startsWith('image/')) {
+            setUploadPreview(URL.createObjectURL(file));
+        } else {
+            setUploadPreview('');
+        }
+    };
+
+    const handleUploadChange = (e) => {
+        const file = e.target.files?.[0];
+        handleUploadFile(file);
+    };
+
+    const handleUploadDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer?.files?.[0];
+        handleUploadFile(file);
+    };
+
+    const closeUploadModal = () => {
+        setShowUploadModal(false);
+        setUploadFile(null);
+        setUploadPreview('');
+        if (uploadInputRef.current) {
+            uploadInputRef.current.value = '';
+        }
+    };
 
     return (
         <div className="flex bg-simbaris-primary-lightest/50">
@@ -211,44 +244,69 @@ const DetailPendaftaran = ({ isSidebarOpen }) => {
             {showUploadModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative">
-                        <button
-                            onClick={() => setShowUploadModal(false)}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-simbaris-text"
+                        <Button
+                            text=""
+                            leftIcon={<X size={18} />}
+                            type="secondary"
+                            color="secondary"
+                            round="full"
+                            size="default"
+                            className="absolute top-4 right-4 w-9 h-9 px-0 gap-0 border border-gray-200 text-gray-500 hover:bg-simbaris-primary-lightest"
                             aria-label="Close upload modal"
-                        >
-                            <X size={20} />
-                        </button>
-                        <h3 className="text-lg font-semibold text-simbaris-text mb-4">
-                            Upload Kembali Bukti Pembayaran
+                            onClick={closeUploadModal}
+                        />
+                        <h3 className="text-xl font-semibold text-simbaris-text mb-4">
+                            Upload Form Foto
                         </h3>
-                        <div className="border-2 border-dashed border-gray-300 rounded-xl h-64 flex flex-col items-center justify-center text-gray-500">
-                            <UploadCloud size={40} className="mb-3 text-simbaris-primary" />
-                            <p className="font-semibold text-simbaris-text">
-                                Click atau drop file di area ini untuk upload
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Maksimal 5 MB, format JPG/PNG/PDF
-                            </p>
+                        <div
+                            className="border-2 border-dashed border-gray-400 rounded-xl h-72 flex flex-col items-center justify-center text-gray-600 cursor-pointer"
+                            onClick={() => uploadInputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={handleUploadDrop}
+                        >
+                            <UploadCloud size={42} className="mb-3 text-[#2c2f8a]" />
+                            {uploadPreview ? (
+                                <div className="flex flex-col items-center gap-2">
+                                    <img
+                                        src={uploadPreview}
+                                        alt="Preview"
+                                        className="w-40 h-32 object-cover rounded-md border border-gray-200"
+                                    />
+                                    <p className="text-xs text-gray-600">{uploadFile?.name}</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="font-semibold text-simbaris-text">
+                                        Click atau drop file di area ini untuk upload
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        Maksimal 5 MB, format JPG/PNG/PDF
+                                    </p>
+                                </>
+                            )}
+                            <input
+                                ref={uploadInputRef}
+                                type="file"
+                                accept=".jpg,.jpeg,.png,.pdf"
+                                className="hidden"
+                                onChange={handleUploadChange}
+                            />
                         </div>
                         <div className="mt-6 flex justify-end gap-3">
-                            <Button
-                                text="Simpan"
-                                color="success"
-                                type="secondary"
-                                round="half"
-                                size="default"
-                                className="whitespace-nowrap w-auto px-4"
-                                onClick={() => setShowUploadModal(false)}
-                            />
-                            <Button
-                                text="Batal"
-                                color="hazard"
-                                type="secondary"
-                                round="half"
-                                size="default"
-                                className="whitespace-nowrap w-auto px-4"
-                                onClick={() => setShowUploadModal(false)}
-                            />
+                            <button
+                                type="button"
+                                className="flex items-center justify-center gap-2 h-11 px-5 rounded-md bg-[#35a853] text-white font-medium hover:bg-[#2f9449]"
+                                onClick={closeUploadModal}
+                            >
+                                <Check size={16} /> Proses
+                            </button>
+                            <button
+                                type="button"
+                                className="flex items-center justify-center gap-2 h-11 px-5 rounded-md bg-[#c44536] text-white font-medium hover:bg-[#b03d30]"
+                                onClick={closeUploadModal}
+                            >
+                                <X size={16} /> Batal
+                            </button>
                         </div>
                     </div>
                 </div>
