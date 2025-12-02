@@ -16,6 +16,7 @@ import {
     Upload,
     Pen,
     PenLine,
+    Save,
 } from 'lucide-react';
 
 const defaultMember = {
@@ -127,6 +128,11 @@ const RegistrationPage = () => {
 
     const registrationSteps = [
         {
+            title: 'Buat Akun',
+            description: 'Pembuatan Akun Tim',
+            icon: <CircleUserRound className="w-4 h-4" />,
+        },
+        {
             title: 'Data Tim',
             description: 'Input Data Tim dan Sekolah Asal Tim',
             icon: <Users className="w-4 h-4" />,
@@ -140,11 +146,6 @@ const RegistrationPage = () => {
             title: 'Pembayaran',
             description: 'Metode Pembayaran dan Bukti Pembayaran',
             icon: <ScrollText className="w-4 h-4" />,
-        },
-        {
-            title: 'Akun Tim',
-            description: 'Pembuatan Akun Tim',
-            icon: <CircleUserRound className="w-4 h-4" />,
         },
         {
             title: 'Kode Tim',
@@ -303,6 +304,63 @@ const RegistrationPage = () => {
 
             <div className="w-full max-w-7xl">
                 {currentStep === 1 && (
+                    <div className="flex items-center justify-center mt-10 bg-transparent">
+                        <div className="bg-white shadow-lg rounded-2xl flex flex-col items-center justify-center w-[500px] h-[450px]">
+                            <div className="flex justify-center mb-6">
+                                <img
+                                    src="/images/logo_simbaris_lined.png"
+                                    alt="SIMBARIS"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <InputField
+                                    label=""
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    placeholder="Email"
+                                    type="email"
+                                />
+                                <InputField
+                                    label=""
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                    placeholder="Password"
+                                    type="password"
+                                />
+                                <InputField
+                                    label=""
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleInputChange}
+                                    placeholder="Konfirmasi Password"
+                                    type="password"
+                                />
+
+                                <div className="flex flex-col-reverse md:flex-row md:justify-end pt-8 gap-4 mt-6">
+                                    <Button
+                                        onClick={handlePrev}
+                                        color="primary"
+                                        variant="outline"
+                                        size="default"
+                                        text="← Kembali"
+                                        className="w-full md:w-40"
+                                    />
+                                    <Button
+                                        onClick={handleNext}
+                                        color="accent"
+                                        size="default"
+                                        text="Buat Akun!"
+                                        className="w-full md:w-40"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {currentStep === 2 && (
                     <form className="bg-white p-4 mx-4 md:p-8 md:mx-8 rounded-lg shadow-md">
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">
                             DATA TIM
@@ -391,17 +449,6 @@ const RegistrationPage = () => {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <InputField
-                                        label="Email Pelatih / Pembina"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        type="email"
-                                        placeholder="Masukkan email"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Jenjang */}
                                     <ComboBox
                                         label="Jenjang Sekolah"
@@ -456,7 +503,7 @@ const RegistrationPage = () => {
                     </form>
                 )}
 
-                {currentStep === 2 && (
+                {currentStep === 3 && (
                     <div className="bg-white p-4 mx-4 md:p-8 md:mx-8 rounded-lg shadow-md">
                         <h2 className="text-2xl font-bold text-gray-900 mb-6">
                             DATA ANGGOTA TIM
@@ -568,6 +615,13 @@ const RegistrationPage = () => {
                                     </button>
                                 )}
                                 <div className="flex flex-col gap-3 md:flex-row items-center ">
+                                    <Button
+                                        disabled={step2Validation}
+                                        color="accent"
+                                        size="long"
+                                        text="Simpan Data Anggota"
+                                        leftIcon={<Save className="w-4 h-4" />}
+                                    />
                                     <a
                                         href="https://www.canva.com/design/DAG5kSicvtY/BXo_38G0V_om296veat4Fg/edit?utm_content=DAG5kSicvtY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
                                         target="_blank"
@@ -584,7 +638,7 @@ const RegistrationPage = () => {
                                     </a>
                                     <Button
                                         onClick={handleOpenModal}
-                                        // disabled={step2Validation}
+                                        disabled={step2Validation}
                                         color="success"
                                         size="long"
                                         text="Upload Form Foto"
@@ -603,7 +657,7 @@ const RegistrationPage = () => {
                     </div>
                 )}
 
-                {currentStep === 3 && (
+                {currentStep === 4 && (
                     <div className="space-y-6 bg-white p-4 mx-4 md:p-8 md:mx-8 rounded-lg shadow-md">
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">
                             PEMBAYARAN
@@ -669,16 +723,16 @@ const RegistrationPage = () => {
                                             Transfer Bank Manual
                                         </span>
                                     </div>
-                                    <div className="flex gap-2 self-end md:self-auto">
+                                    <div className="flex gap-2 ">
                                         <img
-                                            src="/mandiri-logo.png"
+                                            src="/images/logo_mandiri.png"
                                             alt="Mandiri"
                                             className="h-8"
                                         />
                                         <img
-                                            src="/bni-logo.png"
+                                            src="/images/logo_bni.png"
                                             alt="BNI"
-                                            className="h-8"
+                                            className='h-8'
                                         />
                                     </div>
                                 </div>
@@ -692,7 +746,7 @@ const RegistrationPage = () => {
                                             }
                                         >
                                             <img
-                                                src="/mandiri-logo.png"
+                                                src="/images/logo_mandiri.png"
                                                 alt="Mandiri"
                                                 className="h-8"
                                             />
@@ -712,7 +766,7 @@ const RegistrationPage = () => {
                                             }
                                         >
                                             <img
-                                                src="/bni-logo.png"
+                                                src="/images/logo_bni.png"
                                                 alt="BNI"
                                                 className="h-8"
                                             />
@@ -755,7 +809,7 @@ const RegistrationPage = () => {
                                         <img
                                             src="/images/csan-qr-a.jpg"
                                             alt="QRIS Code"
-                                            className="max-w-xs"
+                                            className="max-w-3xl"
                                         />
                                     </div>
                                 )}
@@ -809,66 +863,6 @@ const RegistrationPage = () => {
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {currentStep === 4 && (
-                    <div className="max-w-sm mx-auto bg-white rounded-lg p-6 md:p-8 shadow-md">
-                        <div className="flex justify-center mb-6">
-                            <img
-                                src="/images/logo_simbaris_lined.png"
-                                alt="SIMBARIS"
-                                className="h-8"
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <InputField
-                                label=""
-                                name="teamAccount"
-                                value={formData.teamAccount}
-                                onChange={handleInputChange}
-                                placeholder="Nama Tim"
-                                type="text"
-                            />
-                            <InputField
-                                label=""
-                                name="password"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                placeholder="Password"
-                                type="password"
-                            />
-                            <InputField
-                                label=""
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                placeholder="Konfirmasi Password"
-                                type="password"
-                            />
-
-                            <div className="flex flex-col-reverse md:flex-row md:justify-end pt-8 gap-4 mt-6">
-                                <Button
-                                    onClick={handlePrev}
-                                    color="primary"
-                                    variant="outline"
-                                    size="default"
-                                    text="← Kembali"
-                                    className="w-full md:w-40"
-                                />
-                                <Button
-                                    onClick={handleNext}
-                                    disabled={
-                                        currentStep === registrationSteps.length
-                                    }
-                                    color="accent"
-                                    size="default"
-                                    text="Buat Akun!"
-                                    className="w-full md:w-40"
-                                />
                             </div>
                         </div>
                     </div>
@@ -928,7 +922,7 @@ const RegistrationPage = () => {
                     </div>
                 )}
 
-                {currentStep !== 4 && currentStep !== 5 && (
+                {currentStep !== 1 && currentStep !== 5 && (
                     <div className="flex flex-col-reverse md:flex-row md:justify-end gap-4 mt-8 mx-4 md:mx-8">
                         <Button
                             onClick={handlePrev}

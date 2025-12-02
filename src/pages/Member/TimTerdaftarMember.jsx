@@ -77,11 +77,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
         return data.filter((item) => {
             const matchSearch =
                 item.team.toLowerCase().includes(search.toLowerCase()) ||
-                item.level.toLowerCase().includes(search.toLowerCase()) ||
-                item.school.toLowerCase().includes(search.toLowerCase()) ||
-                item.city.toLowerCase().includes(search.toLowerCase()) ||
-                item.province.toLowerCase().includes(search.toLowerCase()) ||
-                item.district.toLowerCase().includes(search.toLowerCase());
+                item.school.toLowerCase().includes(search.toLowerCase());
             const matchLevel = filters.level
                 ? item.level === filters.level
                 : true;
@@ -157,10 +153,10 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
             cellClassName: 'text-gray-900 font-medium',
         },
         { header: 'Nama Sekolah', accessor: 'school', sortable: true },
-        { header: 'Jenjang', accessor: 'level', sortable: true },
-        { header: 'Provinsi', accessor: 'province', sortable: true },
-        { header: 'Kota', accessor: 'city', sortable: true },
-        { header: 'Kecamatan', accessor: 'district', sortable: true },
+        { header: 'Jenjang', accessor: 'level' },
+        { header: 'Provinsi', accessor: 'province' },
+        { header: 'Kota', accessor: 'city' },
+        { header: 'Kecamatan', accessor: 'district' },
     ];
 
     const cards = [

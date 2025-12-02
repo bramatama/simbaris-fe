@@ -107,11 +107,15 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             cellClassName: 'text-gray-900 font-medium',
         },
         { header: 'Nama Sekolah', accessor: 'school', sortable: true },
-        { header: 'Jenjang', accessor: 'level', sortable: true },
+        { header: 'Jenjang', accessor: 'level' },
+        {
+            header: 'Waktu Pendaftaran',
+            accessor: 'submitted_at',
+            sortable: true,
+        },
         {
             header: 'Status Pendaftaran',
             accessor: 'status',
-            sortable: true,
             render: (row) => {
                 let colorClass = 'text-gray-600';
                 if (row.status === 'Perlu Verifikasi')

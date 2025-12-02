@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 import myData from '../../dummy/singleMemberData';
 import memberList from '../../dummy/memberList';
 import MyDataPanel from '../../components/member/MyDataPanel';
