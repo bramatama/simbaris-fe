@@ -9,14 +9,18 @@ import InputField from '../inputs/InputField';
 import Pagination from '../Pagination';
 import FilterDropdown from '../FilterDropdown';
 import MemberModal from '../MemberModal';
+import memberService from '../../services/member_service';
 
-const MyMemberPanel = ({ myMemberData, userRole }) => {
+const MyMemberPanel = ({ myMemberData, userRole, teamId }) => {
     const isMemberPage = location.pathname === '/tim-saya/anggota';
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
 
-    const [memberData] = useState(myMemberData);
+    const [memberData, setMemberData] = useState(myMemberData);
+    const [totalItems, setTotalItems] = useState(0); // Untuk total data dari server
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(isMemberPage ? 10 : 5);
     const [filters, setFilters] = useState({ gender: '', member_grade: '' });
@@ -25,6 +29,57 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
         key: null,
         direction: 'asc',
     });
+
+    // Effect untuk mengambil data dari API
+    useEffect(() => {
+        // Jangan jalankan jika teamId belum tersedia
+        if (!teamId) return;
+
+        const fetchMembers = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const params = {
+                    team_id: teamId,
+                    page: currentPage,
+                    limit: itemsPerPage,
+                    search: search,
+                    gender: filters.gender,
+                    member_grade: filters.member_grade,
+                    sortBy: sortConfig.key,
+                    order: sortConfig.direction,
+                };
+                // Hapus parameter yang kosong agar URL lebih bersih
+                Object.keys(params).forEach(
+                    (key) =>
+                        (params[key] === '' || params[key] === null) &&
+                        delete params[key]
+                );
+
+                const response = await memberService.getAllMembers(params);
+                // Karena backend mengembalikan array langsung, kita tangani sebagai array.
+                setMemberData(response || []); 
+                // PERINGATAN: Paginasi tidak akan akurat dengan cara ini.
+                // `response.length` hanya jumlah item di halaman ini, bukan total keseluruhan.
+                setTotalItems(response.length || 0); 
+            } catch (err) {
+                setError('Gagal memuat daftar anggota.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMembers();
+    }, [
+        teamId,
+        currentPage,
+        itemsPerPage,
+        filters,
+        search,
+        sortConfig,
+        isMemberPage,
+    ]);
 
     const genderOptions = useMemo(() => {
         const unique = Array.from(
@@ -44,48 +99,6 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
         setItemsPerPage(isMemberPage ? 10 : 5);
         setCurrentPage(1); // Reset ke halaman 1 saat mode berubah
     }, [isMemberPage]);
-
-    const filteredData = useMemo(() => {
-        return memberData.filter(
-            (member) => {
-                const matchSearch =
-                    member.member_name
-                        .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                    member.email
-                        .toLowerCase()
-                        .split('@')[0]
-                        .includes(search.toLowerCase());
-                const matchGender = filters.gender
-                    ? member.gender === filters.gender
-                    : true;
-                const matchMemberGrade = filters.member_grade
-                    ? member.member_grade === filters.member_grade
-                    : true;
-                return matchSearch && matchGender && matchMemberGrade;
-            },
-            [memberData, filters, search]
-        );
-    });
-
-    const sortedData = useMemo(() => {
-        let sortableItems = [...filteredData];
-        if (sortConfig.key) {
-            sortableItems.sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key])
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                if (a[sortConfig.key] > b[sortConfig.key])
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [filteredData, sortConfig]);
-
-    const paginatedData = useMemo(() => {
-        const firstPageIndex = (currentPage - 1) * itemsPerPage;
-        return sortedData.slice(firstPageIndex, firstPageIndex + itemsPerPage);
-    }, [sortedData, currentPage, itemsPerPage]);
 
     const columns = useMemo(() => {
         const cols = [
@@ -198,15 +211,18 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
                     </div>
                 )}
             </div>
+            {loading && <p className="text-center text-gray-500">Memuat...</p>}
+            {error && <p className="text-center text-red-500">{error}</p>}
             <Table
                 columns={columns}
-                data={paginatedData}
+                data={memberData} // Langsung gunakan data dari state
                 sortConfig={sortConfig}
                 onSort={handleSort}
+                isLoading={loading}
             />
             <Pagination
                 currentPage={currentPage}
-                totalItems={filteredData.length}
+                totalItems={totalItems} // Gunakan total dari server
                 itemsPerPage={itemsPerPage}
                 onPageChange={setCurrentPage}
                 onItemsPerPageChange={(val) => {

@@ -98,7 +98,7 @@ function App() {
         };
 
         checkAuth();
-    }, []);
+    }, [location.pathname, navigate]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);

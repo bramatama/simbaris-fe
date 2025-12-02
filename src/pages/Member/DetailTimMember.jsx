@@ -1,8 +1,32 @@
-import teamData from '../../dummy/singleTeamData';
+import { useState, useEffect } from 'react';
 import TeamDataPanel from '../../components/member/detail_tim_member/TeamDataPanel';
 import SchoolDataPanel from '../../components/member/detail_tim_member/SchoolDataPanels';
+import teamService from '../../services/team_service';
 
 const DetailTimMember = ({ isSidebarOpen = true }) => {
+    const [teamData, setTeamData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchTeamData = async () => {
+            try {
+                setLoading(true);
+                const data = await teamService.getMyTeamDetails({
+                    include_registration: false,
+                });
+                setTeamData(data);
+            } catch (err) {
+                setError('Gagal memuat data tim.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTeamData();
+    }, []);
+
     return (
         <div className="flex bg-gray-100">
             <div
@@ -15,12 +39,17 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
                         Tim Saya
                     </header>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 lg:grid-cols-3 gap-4 flex-1">
-                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-2">
-                            <TeamDataPanel teamData={teamData} />
-                            <SchoolDataPanel schoolData={teamData} />
-                        </div>
+                    {loading && <p>Memuat data tim...</p>}
+                    {error && <p className="text-red-500">{error}</p>}
 
+                    {!loading && !error && teamData && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 lg:grid-cols-3 gap-4 flex-1">
+                            <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-2">
+                                <TeamDataPanel teamData={teamData} />
+                                <SchoolDataPanel schoolData={teamData} />
+                            </div>
+
+                            {/* KANAN ATAS — NILAI & CATATAN JURI */}
                         {/* KANAN ATAS — NILAI & CATATAN JURI */}
                         <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col  lg:col-span-1 lg:row-span-1">
                             <h2 className="text-xl font-semibold text-simbaris-text">
@@ -40,7 +69,8 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
                                 COMING SOON
                             </p>
                         </div>
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
