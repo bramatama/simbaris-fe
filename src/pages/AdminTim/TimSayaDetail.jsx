@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Breadcrumbs from '../components/Breadcrumbs';
-import Button from '../components/Button';
-import InputField from '../components/inputs/InputField';
-import ComboBox from '../components/inputs/Combobox';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import Button from '../../components/Button';
+import InputField from '../../components/inputs/InputField';
+import ComboBox from '../../components/inputs/Combobox';
 
 const infoRow = (label, value) => (
     <div className="flex items-center border-b border-gray-200 py-2 text-sm">
@@ -33,7 +33,11 @@ const TimSayaDetail = ({ isSidebarOpen }) => {
     const jenjangOptions = ['SD/MI', 'SMP/MTs Sederajat', 'SMA/SMK/MA'];
     const provinsiOptions = ['Kalimantan Timur', 'Jawa Tengah', 'DKI Jakarta'];
     const kotaOptions = ['Balikpapan', 'Samarinda', 'Semarang', 'Jakarta'];
-    const kecamatanOptions = ['Balikpapan Selatan', 'Balikpapan Utara', 'Others'];
+    const kecamatanOptions = [
+        'Balikpapan Selatan',
+        'Balikpapan Utara',
+        'Others',
+    ];
 
     const handleChange = (key) => (eOrValue) => {
         const value = eOrValue?.target ? eOrValue.target.value : eOrValue;
@@ -76,10 +80,22 @@ const TimSayaDetail = ({ isSidebarOpen }) => {
                                     </div>
                                     <div className="w-full space-y-3">
                                         {infoRow('Nama Tim', teamData.namaTim)}
-                                        {infoRow('Nama Pelatih', teamData.namaPelatih)}
-                                        {infoRow('Nama Pembina', teamData.namaPembina)}
-                                        {infoRow('Kontak Pelatih/Pembina', teamData.kontak)}
-                                        {infoRow('Email Pelatih/Pembina', teamData.email)}
+                                        {infoRow(
+                                            'Nama Pelatih',
+                                            teamData.namaPelatih
+                                        )}
+                                        {infoRow(
+                                            'Nama Pembina',
+                                            teamData.namaPembina
+                                        )}
+                                        {infoRow(
+                                            'Kontak Pelatih/Pembina',
+                                            teamData.kontak
+                                        )}
+                                        {infoRow(
+                                            'Email Pelatih/Pembina',
+                                            teamData.email
+                                        )}
                                     </div>
                                 </div>
 
@@ -88,11 +104,20 @@ const TimSayaDetail = ({ isSidebarOpen }) => {
                                         Data Sekolah
                                     </h3>
                                     <div className="w-full space-y-3">
-                                        {infoRow('Nama Sekolah', teamData.namaSekolah)}
-                                        {infoRow('Jenjang Sekolah', teamData.jenjang)}
+                                        {infoRow(
+                                            'Nama Sekolah',
+                                            teamData.namaSekolah
+                                        )}
+                                        {infoRow(
+                                            'Jenjang Sekolah',
+                                            teamData.jenjang
+                                        )}
                                         {infoRow('Provinsi', teamData.provinsi)}
                                         {infoRow('Kota', teamData.kota)}
-                                        {infoRow('Kecamatan', teamData.kecamatan)}
+                                        {infoRow(
+                                            'Kecamatan',
+                                            teamData.kecamatan
+                                        )}
                                     </div>
                                 </div>
 

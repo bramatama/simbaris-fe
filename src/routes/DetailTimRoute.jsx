@@ -1,5 +1,5 @@
 import DetailTimMember from '../pages/Member/DetailTimMember';
-import TimSayaDetail from '../pages/TimSayaDetail';
+import TimSayaDetail from '../pages/AdminTim/TimSayaDetail';
 import NotFoundPage from '../pages/NotFoundPage';
 
 const DetailTimRoute = ({ userRole, isSidebarOpen }) => {

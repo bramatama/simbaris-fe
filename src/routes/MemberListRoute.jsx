@@ -1,5 +1,5 @@
 import AnggotaTimMember from '../pages/Member/AnggotaTimMember';
-import TimSayaAnggota from '../pages/TimSayaAnggota'
+import TimSayaAnggota from '../pages/AdminTim/TimSayaAnggota';
 import NotFoundPage from '../pages/NotFoundPage';
 
 const MemberListRoute = ({ userRole, isSidebarOpen }) => {
