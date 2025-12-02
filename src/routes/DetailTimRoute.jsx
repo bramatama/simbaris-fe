@@ -1,10 +1,10 @@
 import DetailTimMember from '../pages/Member/DetailTimMember';
-// import DetailTimAdminTim from '../pages/AdminTim/TeamDetailAdminTm';
+import TimSayaDetail from '../pages/TimSayaDetail';
 import NotFoundPage from '../pages/NotFoundPage';
 
 const DetailTimRoute = ({ userRole, isSidebarOpen }) => {
     const components = {
-        // admin_tim: <DetailTimAdminTim isSidebarOpen={isSidebarOpen} />,
+        admin_tim: <TimSayaDetail isSidebarOpen={isSidebarOpen} />,
         member: <DetailTimMember isSidebarOpen={isSidebarOpen} />,
     };
 

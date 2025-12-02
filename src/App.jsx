@@ -12,6 +12,9 @@ import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
+import DetailPendaftaran from './pages/DetailPendaftaran';
+import TimSayaDetail from './pages/TimSayaDetail';
+import ComponentsCheck from './pages/ComponentsCheck';
 
 import DashboardRoute from './routes/DashboardRoute';
 import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
@@ -22,7 +25,7 @@ function App() {
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [currentUser, setCurrentUser] = useState({
-        role: 'panitia', // table user -> role
+        role: 'admin_tim', // table user -> role
         parent: `User`, // panitia -> name, admin -> team_name, member -> name
         children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
         imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
@@ -48,10 +51,12 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/detail-pendaftaran',
         '/tim-saya/detail',
         '/tim-saya/anggota',
         '/tim-terdaftar',
         '/tim-terdaftar/:uuid',
+        '/componentscheck',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
@@ -121,7 +126,12 @@ function App() {
                         />
                     }
                 />
-
+                <Route
+                    path="/detail-pendaftaran"
+                    element={
+                        <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
+                    }
+                />
                 <Route
                     path="/tim-terdaftar"
                     element={
@@ -138,6 +148,7 @@ function App() {
                     }
                 />
                 <Route path="/sample" element={<Sample />} />
+                <Route path="/componentscheck" element={<ComponentsCheck />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

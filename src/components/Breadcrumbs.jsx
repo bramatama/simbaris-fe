@@ -7,33 +7,34 @@ const Breadcrumbs = () => {
   const pathname = location.pathname;
 
   // Mapping halaman ke struktur breadcrumb
+  const rootPath = '/dashboard';
   const breadcrumbMap = {
-    '/': [{ name: 'Dashboard', path: '/' }],
+    [rootPath]: [{ name: 'Dashboard', path: rootPath }],
     '/detail-pendaftaran': [
-      { name: 'Dashboard', path: '/' },
+      { name: 'Dashboard', path: rootPath },
       { name: 'Detail Pendaftaran', path: '/detail-pendaftaran' },
     ],
     '/tim-saya': [
-      { name: 'Dashboard', path: '/' },
+      { name: 'Dashboard', path: rootPath },
       { name: 'Tim Saya', path: '/tim-saya' },
     ],
     '/tim-saya/detail': [
-      { name: 'Dashboard', path: '/' },
+      { name: 'Dashboard', path: rootPath },
       { name: 'Tim Saya', path: '/tim-saya' },
       { name: 'Detail Tim', path: '/tim-saya/detail' },
     ],
     '/tim-saya/anggota': [
-      { name: 'Dashboard', path: '/' },
+      { name: 'Dashboard', path: rootPath },
       { name: 'Tim Saya', path: '/tim-saya' },
       { name: 'Daftar Anggota Tim', path: '/tim-saya/anggota' },
     ],
     '/tim-terdaftar': [
-      { name: 'Dashboard', path: '/' },
+      { name: 'Dashboard', path: rootPath },
       { name: 'Tim Terdaftar', path: '/tim-terdaftar' },
     ],
   };
 
-  const items = breadcrumbMap[pathname] || [{ name: 'Dashboard', path: '/' }];
+  const items = breadcrumbMap[pathname] || [{ name: 'Dashboard', path: rootPath }];
 
   return (
     <nav className="flex items-center text-sm text-gray-600">
