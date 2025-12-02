@@ -9,8 +9,6 @@ import {
     Navigate,
 } from 'react-router-dom';
 
-import authService from './services/auth_service';
-
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
 
@@ -98,7 +96,7 @@ function App() {
         };
 
         checkAuth();
-    }, []);
+    }, [location.pathname, navigate]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);

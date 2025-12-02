@@ -29,10 +29,10 @@ const RegistrantItem = ({ team, index }) => {
                 {' '}
                 {/* min-w-0 diperlukan agar truncate berfungsi di dalam flexbox */}
                 <p className="font-semibold text-sm text-simbaris-text truncate">
-                    {team.name}
+                    {team.team_name}
                 </p>
                 <p className="text-xs text-simbaris-neutral-500 truncate">
-                    {team.school}
+                    {team.school_name}
                 </p>
             </div>
         </div>
