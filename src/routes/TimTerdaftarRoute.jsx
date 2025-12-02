@@ -6,7 +6,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 const TimTerdaftarRoute = ({ userRole, isSidebarOpen }) => {
     // Gunakan object mapping untuk pendekatan yang lebih modern dan skalabel
     const components = {
-        panitia: <TimTerdaftarPanitia isSidebarOpen={isSidebarOpen} />,
+        committee: <TimTerdaftarPanitia isSidebarOpen={isSidebarOpen} />,
         member: <TimTerdaftarMember isSidebarOpen={isSidebarOpen} />,
     };
 

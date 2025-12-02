@@ -4,7 +4,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 const MemberListRoute = ({ userRole, isSidebarOpen }) => {
     const components = {
-        admin_tim: <TimSayaAnggota isSidebarOpen={isSidebarOpen} />,
+        team_admin: <TimSayaAnggota isSidebarOpen={isSidebarOpen} />,
         member: <AnggotaTimMember isSidebarOpen={isSidebarOpen} />,
     };
 

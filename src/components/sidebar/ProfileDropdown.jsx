@@ -86,7 +86,6 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                     </li>
                     <li>
                         <a
-                            href="#"
                             onClick={(e) => {
                                 e.preventDefault();
                                 onLogout();

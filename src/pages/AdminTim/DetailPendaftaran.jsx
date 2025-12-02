@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { UploadCloud, X, Check } from 'lucide-react';
-import Breadcrumbs from '../components/Breadcrumbs';
-import Button from '../components/Button';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import Button from '../../components/Button';
 
 const InfoLine = ({ label, value }) => (
     <div className="flex items-center border-b border-gray-200 pb-2 text-sm">

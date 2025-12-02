@@ -7,8 +7,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 const DashboardRoute = ({ userRole, isSidebarOpen }) => {
     // Gunakan object mapping untuk pendekatan yang lebih modern dan skalabel
     const dashboardComponents = {
-        panitia: <DashboardPanitia isSidebarOpen={isSidebarOpen} />,
-        admin_tim: <DashboardAdminTim isSidebarOpen={isSidebarOpen} />,
+        committee: <DashboardPanitia isSidebarOpen={isSidebarOpen} />,
+        team_admin: <DashboardAdminTim isSidebarOpen={isSidebarOpen} />,
         member: <DashboardMember isSidebarOpen={isSidebarOpen} />,
     };
 

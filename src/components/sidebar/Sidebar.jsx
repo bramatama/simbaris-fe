@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import ProfileDropdown from './ProfileDropdown';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import authService from '../../services/auth_service';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
 const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
@@ -59,6 +60,16 @@ const SidebarDropdown = ({ label, children, isActive }) => {
 const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
     // Definisikan struktur navigasi untuk setiap peran
     const navigator = useNavigate();
+    const handleLogout = async ()=>{
+        try{
+            await authService.logout()
+            navigator("/")
+        }
+        catch(err){
+            console.log("Logout gagal", err)
+        }
+    };
+
     const navConfig = {
         panitia: [
             {
@@ -114,7 +125,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
         ],
     };
 
-    const userNav = navConfig[user.role] || [];
+    const userNav = navConfig[user] || [];
 
     return (
         <div className="flex">
@@ -124,7 +135,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                 <div className="">
                     <ProfileDropdown
                         user={user}
-                        onLogout={() => navigator('/')}
+                        onLogout={handleLogout}
                         onPreferences={() => console.log('Preferences')}
                     />
                 </div>

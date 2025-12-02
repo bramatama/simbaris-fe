@@ -1,14 +1,41 @@
 // src/components/LoginCard.jsx
 import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../../services/auth_service';
 
 export default function LoginCard() {
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(true);
+
+        if (!email || !password) {
+            setError('Harap Mengisi Email dan Password');
+        }
+
+        setIsLoading(true);
+        setError('');
+
+        try {
+            const data =  await authService.login(email, password);
+            
+            localStorage.setItem('authToken', data.access_token);
+            console.log(data)
+            console.log(data.user.role)
+            navigate('/dashboard');
+        } catch (err) {
+            const errorMessages =
+                err.response?.data?.message || 'Email atau password Salah';
+            setError(errorMessages);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -41,8 +68,10 @@ export default function LoginCard() {
                         <input
                             type="email"
                             placeholder="Email"
+                            value={email}
                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-simbaris-primary"
                             required
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
@@ -55,8 +84,10 @@ export default function LoginCard() {
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
+                            value={password}
                             className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-simbaris-primary"
                             required
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                         <button
                             type="button"
@@ -73,17 +104,19 @@ export default function LoginCard() {
 
                     {/* Error Message */}
                     {error && (
-                        <p className="text-sm text-simbaris-hazard text-left">
-                            Email atau Password tidak ditemukan
-                        </p>
+                        <div className="flex w-full items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg mt-4">
+                            <XCircle className="w-5 h-5 flex-shrink-0" />
+                            <p className="text-sm">{error}</p>
+                        </div>
                     )}
 
                     {/* Login Button */}
                     <button
                         type="submit"
                         className="w-full bg-simbaris-primary text-white font-medium py-2 rounded-md hover:bg-simbaris-primary-dark transition-colors"
+                        disabled={error}
                     >
-                        Log In
+                        {isLoading ? 'Loading..' : 'Login'}
                     </button>
 
                     {/* Forgot Password */}

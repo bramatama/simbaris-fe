@@ -1,7 +1,15 @@
 import React from 'react';
 import './App.css';
-import { useState } from 'react';
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import {
+    Routes,
+    Route,
+    useLocation,
+    useNavigate,
+    Navigate,
+} from 'react-router-dom';
+
+import authService from './services/auth_service';
 
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
@@ -12,8 +20,7 @@ import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
-import DetailPendaftaran from './pages/DetailPendaftaran';
-import TimSayaDetail from './pages/AdminTim/TimSayaDetail';
+import DetailPendaftaran from './pages/AdminTim/DetailPendaftaran';
 import ComponentsCheck from './pages/ComponentsCheck';
 
 import DashboardRoute from './routes/DashboardRoute';
@@ -23,16 +30,70 @@ import MemberListRoute from './routes/MemberListRoute';
 
 function App() {
     const location = useLocation();
+    const navigate = useNavigate(); // Butuh ini untuk redirect manual
+
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [currentUser, setCurrentUser] = useState({
-        role: 'panitia', // table user -> role
-        parent: `User`, // panitia -> name, admin -> team_name, member -> name
-        children: 'admin', // panitia -> position, admin -> school_name, member -> team_name
-        imageUrl: '', // panitia -> photo_url, admin -> logo_url, member -> photo_url
-        get initials() {
-            return getInitials(this.parent);
-        },
-    });
+
+    // 1. State currentUser defaultnya null (belum login)
+    const [currentUser, setCurrentUser] = useState(null);
+
+    // 2. State loading untuk menunggu proses pengecekan token selesai
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Helper untuk mengembalikan fungsi 'initials' karena JSON.parse menghilangkan function
+    const hydrateUser = (userData) => {
+        return {
+            ...userData,
+            get initials() {
+                // Pastikan parent ada untuk menghindari error split of undefined
+                return this.parent
+                    ? this.parent.split(' ')[0][0].toUpperCase()
+                    : 'U';
+            },
+        };
+    };
+
+    // 3. EFFECT: Cek Token & User saat aplikasi dimuat
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem('access_token');
+            const savedUser = localStorage.getItem('user');
+
+            if (token && savedUser) {
+                try {
+                    // Parse data user dari string JSON localstorage
+                    const parsedUser = JSON.parse(savedUser);
+                    if (!parsedUser) throw new Error('User data invalid');
+
+                    // Kembalikan getter/function yang hilang saat stringify
+                    const userWithMethods = hydrateUser(parsedUser);
+
+                    setCurrentUser(userWithMethods);
+
+                    // LOGIC REDIRECT:
+                    // Jika user akses halaman Login/Landing padahal sudah punya token,
+                    // lempar ke dashboard.
+                    if (
+                        location.pathname === '/login' ||
+                        location.pathname === '/'
+                    ) {
+                        navigate('/dashboard', { replace: true });
+                    }
+                } catch (error) {
+                    console.error('Gagal parse user data', error);
+                    authService.logout(); // Bersihkan storage jika data korup
+                }
+            }
+            else {
+                // Jika tidak ada token, dan mencoba akses halaman yang butuh login
+                // (Kamu bisa tambahkan logika protected route yang lebih ketat di sini)
+            }
+
+            setIsLoading(false); // Selesai loading
+        };
+
+        checkAuth();
+    }, []);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -51,9 +112,9 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
-        '/detail-pendaftaran',
         '/tim-saya/detail',
         '/tim-saya/anggota',
+        '/detail-pendaftaran',
         '/tim-terdaftar',
         '/tim-terdaftar/:uuid',
         '/componentscheck',
@@ -86,7 +147,7 @@ function App() {
                 <Sidebar
                     toggleSidebar={toggleSidebar}
                     isOpen={isSidebarOpen}
-                    user={currentUser}
+                    user={currentUser.role}
                     activePath={location.pathname}
                 />
             )}
@@ -102,43 +163,65 @@ function App() {
                 <Route path="/pendaftaran" element={<RegistrationPage />} />
                 <Route
                     path="/dashboard/*"
-                    element={<Navigate to="/dashboard" replace />}
-                />
-                <Route
-                    path="/dashboard"
                     element={
-                        <DashboardRoute
-                            isSidebarOpen={isSidebarOpen}
-                            userRole={currentUser.role}
-                        />
+                        currentUser ? (
+                            // Kirim role ke DashboardRoute
+                            <DashboardRoute
+                                isSidebarOpen={isSidebarOpen}
+                                userRole={currentUser?.role}
+                            />
+                        ) : (
+                            <Navigate to="/login" replace />
+                        )
                     }
                 />
                 <Route
                     path="/tim-saya/detail"
-                    element={<DetailTimRoute userRole={currentUser.role} />}
+                    element={
+                        currentUser ? (
+                            <DetailTimRoute userRole={currentUser?.role} />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
                 />
+
                 <Route
                     path="/tim-saya/anggota"
                     element={
-                        <MemberListRoute
-                            userRole={currentUser.role}
-                            isSidebarOpen={isSidebarOpen}
-                        />
+                        currentUser ? (
+                            <MemberListRoute
+                                userRole={currentUser?.role}
+                                isSidebarOpen={isSidebarOpen}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
                     }
                 />
+
                 <Route
                     path="/detail-pendaftaran"
                     element={
-                        <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
+                        currentUser ? (
+                            <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
                     }
                 />
+
                 <Route
                     path="/tim-terdaftar"
                     element={
-                        <TimTerdaftarRoute
-                            isSidebarOpen={isSidebarOpen}
-                            userRole={currentUser.role}
-                        />
+                        currentUser ? (
+                            <TimTerdaftarRoute
+                                isSidebarOpen={isSidebarOpen}
+                                userRole={currentUser?.role}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
                     }
                 />
                 <Route

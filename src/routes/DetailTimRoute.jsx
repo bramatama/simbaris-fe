@@ -4,7 +4,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 const DetailTimRoute = ({ userRole, isSidebarOpen }) => {
     const components = {
-        admin_tim: <TimSayaDetail isSidebarOpen={isSidebarOpen} />,
+        team_admin: <TimSayaDetail isSidebarOpen={isSidebarOpen} />,
         member: <DetailTimMember isSidebarOpen={isSidebarOpen} />,
     };
 

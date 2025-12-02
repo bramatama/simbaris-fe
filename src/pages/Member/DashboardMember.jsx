@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { ExternalLink } from 'lucide-react';
-import Button from '../../components/Button';
 import MyDataPanel from '../../components/member/MyDataPanel';
 import MyTeamPanel from '../../components/member/dashboard_member/MyTeamPanel';
 import MyMemberPanel from '../../components/member/MyMemberPanel';
