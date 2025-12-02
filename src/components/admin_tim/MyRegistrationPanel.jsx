@@ -3,14 +3,16 @@ import Button from '../Button';
 import { ExternalLink, Eye } from 'lucide-react';
 
 const MyRegistrationPanel = ({ teamData }) => {
+    const isDetailPage = location.pathname === '/tim-terdaftar/detail';
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold text-simbaris-text">
                 Detail Pendaftaran
             </h2>
-            <div className="flex flex-col items-center md:flex-row gap-6">
+            <div className="flex flex-col items-center md:flex-row gap-2">
                 {/* Info Tim */}
-                <div className="flex flex-col w-full gap-4">
+                <div className="flex flex-col w-full gap-2">
                     <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                         <span className="text-sm text-gray-600">Jenjang</span>
                         <span className="text-sm font-medium text-gray-900 text-right px-2 py-1">
@@ -62,17 +64,43 @@ const MyRegistrationPanel = ({ teamData }) => {
                 <h2 className="text-xl font-semibold text-simbaris-text">
                     Status
                 </h2>
-                <button className="flex items-center gap-2 text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-md border border-simbaris-secondary-light">
+                <div className="flex items-center gap-2 text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-md border border-simbaris-secondary-light">
                     Dalam Proses Verifikasi
-                </button>
+                </div>
             </div>
-            <div className="flex flex-col w-full gap-4">
+            <div className="flex flex-col w-full gap-2">
                 <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Verifikatur</span>
                     <span className="text-sm font-medium text-gray-900 text-right px-2 py-2">
                         -
                     </span>
                 </div>
+                {isDetailPage && (
+                    <>
+                        <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span className="text-sm text-gray-600">
+                                Waktu Verifikasi
+                            </span>
+                            <span className="text-sm font-medium text-gray-900 text-right px-2 py-2">
+                                -
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span className="text-sm text-gray-600">
+                                Kontak Verifikatur
+                            </span>
+                            <span className="text-sm font-medium text-gray-900 text-right px-2 py-2">
+                                -
+                            </span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span className="text-sm text-gray-600">
+                                Catatan Verifikatur
+                            </span>
+                        </div>
+                        <div className='flex justify-between items-center border border-gray-700 rounded-lg min-h-24 p-2'></div>
+                    </>
+                )}
             </div>
             <div className="flex w-full justify-end items-center">
                 <Link to="/tim-saya/detail">

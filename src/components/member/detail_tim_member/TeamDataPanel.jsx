@@ -1,12 +1,13 @@
 import React from 'react';
 
 const TeamDataPanel = ({ teamData }) => {
+    const isMemberPage = location.pathname=== "/tim-saya/detail"
     return (
         <>
             <h2 className="text-xl font-semibold text-simbaris-text">
                 Data Tim
             </h2>
-            <div className="flex flex-col items-center md:flex-row gap-6">
+            <div className={`flex ${isMemberPage? "md:flex-row" : ""} items-center md:flex-col gap-6`}>
                 {/* Logo Tim */}
                 <div className="shrink-0">
                     <div className="w-48 h-48 border-2 border-gray-300 rounded-full flex items-center justify-center overflow-hidden bg-white">

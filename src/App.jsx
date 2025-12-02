@@ -119,14 +119,14 @@ function App() {
         '/tim-saya/anggota',
         '/detail-pendaftaran',
         '/tim-terdaftar',
-        '/tim-terdaftar/:uuid',
         '/componentscheck',
     ];
 
     const isNotFoundPage = !availableRoutes.some(
         (route) =>
             route === location.pathname ||
-            location.pathname.startsWith('/dashboard/')
+            location.pathname.startsWith('/dashboard/') ||
+            location.pathname.startsWith('/tim-terdaftar/')
     );
 
     const excludedRoutes = [
@@ -225,7 +225,7 @@ function App() {
                 />
 
                 <Route
-                    path="/detail-pendaftaran"
+                    path="/tim-terdaftar/detail"
                     element={
                         currentUser ? (
                             <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
@@ -248,6 +248,7 @@ function App() {
                         )
                     }
                 />
+
                 <Route
                     path="/sample-dashboard"
                     element={

@@ -15,7 +15,7 @@ import SimpleCard from '../../components/SimpleCards';
 import Table from '../../components/Table';
 import InputField from '../../components/inputs/InputField';
 import Pagination from '../../components/Pagination';
-import SimpleCardSkeleton from '../../components/skeleton/SimpleCardSkeleton';
+import SimpleCardSkeleton from '../../components/skeleton/CardSkeleton';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
     const [currentPage, setCurrentPage] = useState(1);
