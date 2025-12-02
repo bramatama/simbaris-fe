@@ -1,13 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileDropdown from './ProfileDropdown';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import authService from '../../services/auth_service';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
 const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
-    <a
-        href={href}
+    <Link
+        to={href}
         className={`flex items-center w-full ${isChildren ? 'px-8' : 'px-4'} py-3 text-sm font-semibold transition-colors duration-200
             ${
                 isActive
@@ -18,7 +18,7 @@ const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
     >
         {icon}
         <span className="ml-3">{label}</span>
-    </a>
+    </Link>
 );
 
 // --- Helper Component: Tautan Sidebar dengan Dropdown ---
@@ -60,18 +60,18 @@ const SidebarDropdown = ({ label, children, isActive }) => {
 const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
     // Definisikan struktur navigasi untuk setiap peran
     const navigator = useNavigate();
-    const handleLogout = async ()=>{
-        try{
-            await authService.logout()
-            navigator("/")
-        }
-        catch(err){
-            console.log("Logout gagal", err)
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+            localStorage.removeItem('authToken');
+            navigator('/');
+        } catch (err) {
+            console.log('Logout gagal', err);
         }
     };
 
     const navConfig = {
-        panitia: [
+        committee: [
             {
                 type: 'link',
                 path: '/dashboard',
@@ -83,7 +83,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
                 label: 'Tim Terdaftar',
             },
         ],
-        admin_tim: [
+        team_admin: [
             {
                 type: 'link',
                 path: '/dashboard',
@@ -125,7 +125,7 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
         ],
     };
 
-    const userNav = navConfig[user] || [];
+    const userNav = navConfig[user.role] || [];
 
     return (
         <div className="flex">

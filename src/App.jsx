@@ -80,13 +80,18 @@ function App() {
                         navigate('/dashboard', { replace: true });
                     }
                 } catch (error) {
-                    console.error('Gagal parse user data', error);
-                    authService.logout(); // Bersihkan storage jika data korup
+                    console.error(
+                        '❌ Gagal restore session (JSON Error):',
+                        error
+                    );
+                    console.log('Raw savedUser:', savedUser); // Bersihkan storage jika data korup
                 }
-            }
-            else {
+            } else {
                 // Jika tidak ada token, dan mencoba akses halaman yang butuh login
                 // (Kamu bisa tambahkan logika protected route yang lebih ketat di sini)
+                console.log(
+                    '4. Token atau User tidak ditemukan di LocalStorage'
+                );
             }
 
             setIsLoading(false); // Selesai loading
@@ -141,13 +146,34 @@ function App() {
     const showSidebar =
         !excludedRoutes.includes(location.pathname) && !isNotFoundPage;
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-50">
+                <div className="flex flex-col items-center gap-2">
+                    {/* Spinner sederhana */}
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    <p className="text-gray-500 text-sm">Memuat sesi...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // --- HELPER UNTUK PROTECTED ROUTE ---
+    const Protected = ({ children }) => {
+        // Logika: Loading sudah selesai (false), tapi currentUser masih null? Berarti tidak login.
+        if (!currentUser) {
+            return <Navigate to="/login" replace />;
+        }
+        return children;
+    };
+
     return (
         <div className="App">
             {currentUser && showSidebar && (
                 <Sidebar
                     toggleSidebar={toggleSidebar}
                     isOpen={isSidebarOpen}
-                    user={currentUser.role}
+                    user={currentUser}
                     activePath={location.pathname}
                 />
             )}
