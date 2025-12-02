@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
     GraduationCapIcon,
     Users,
@@ -10,17 +10,21 @@ import InputField from '../../components/inputs/InputField';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
 import FilterDropdown from '../../components/FilterDropdown';
-import registrantList from '../../dummy/registrantList';
+import teamService from '../../services/team_service';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     // --- STATE ---
-    const [data] = useState(registrantList);
+    const [teamData, setTeamData] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [loadingTable, setLoadingTable] = useState(false);
+    const [errorTable, setErrorTable] = useState(null);
+
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState({ level: '', status: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortConfig, setSortConfig] = useState({
-        key: null,
+        key: 'submitted_at',
         direction: 'asc',
     });
 
@@ -32,55 +36,80 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     ];
 
     const statusOptions = [
-        { label: 'Perlu Verifikasi', value: 'Perlu Verifikasi' },
-        { label: 'Telah Diverifikasi', value: 'Telah Diverifikasi' },
-        { label: 'Ditolak', value: 'Ditolak' },
+        { label: 'Perlu Verifikasi', value: 'pending' },
+        { label: 'Telah Diverifikasi', value: 'verified' },
+        { label: 'Ditolak', value: 'rejected' },
     ];
 
     // --- DATA PROCESSING ---
-    const stats = useMemo(() => {
-        const counts = { total: data.length, sma: 0, smp: 0, sd: 0 };
-        data.forEach((item) => {
-            if (item.level === 'SMA/SMK/MA Sederajat') counts.sma++;
-            else if (item.level === 'SMP/MTs Sederajat') counts.smp++;
-            else if (item.level === 'SD/MI Sederajat') counts.sd++;
-        });
-        return counts;
-    }, [data]);
+    const [stats, setStats] = useState({
+        total: 0,
+        sma: 0,
+        smp: 0,
+        sd: 0,
+    });
+    const [loadingStats, setLoadingStats] = useState(true);
 
-    const filteredData = useMemo(() => {
-        return data.filter((item) => {
-            const matchSearch =
-                item.team.toLowerCase().includes(search.toLowerCase()) ||
-                item.school.toLowerCase().includes(search.toLowerCase());
-            const matchLevel = filters.level
-                ? item.level === filters.level
-                : true;
-            const matchStatus = filters.status
-                ? item.status === filters.status
-                : true;
-            return matchSearch && matchLevel && matchStatus;
-        });
-    }, [data, search, filters]);
+    useEffect(() => {
+        const fetchStats = async () => {
+            setLoadingStats(true);
+            try {
+                const response = await teamService.getLevelCounts();
+                const counts = response.data; // Mengambil objek data dari response
+                setStats({
+                    total: counts.total || 0,
+                    sma: counts.senior_high || 0,
+                    smp: counts.junior_high || 0,
+                    sd: counts.elementary || 0,
+                });
+            } catch (error) {
+                console.error('Gagal memuat statistik jenjang.', error);
+                // Biarkan stats tetap 0 jika gagal
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+        fetchStats();
+    }, []);
 
-    const sortedData = useMemo(() => {
-        let sortableItems = [...filteredData];
-        if (sortConfig.key) {
-            sortableItems.sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key])
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                if (a[sortConfig.key] > b[sortConfig.key])
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [filteredData, sortConfig]);
+    useEffect(() => {
+        const fetchTeams = async () => {
+            setLoadingTable(true);
+            setErrorTable(null);
+            try {
+                const params = {
+                    page: currentPage,
+                    limit: itemsPerPage,
+                    search: search,
+                    level: filters.level,
+                    status: filters.status,
+                    sortBy: sortConfig.key,
+                    order: sortConfig.direction,
+                };
 
-    const paginatedData = useMemo(() => {
-        const firstPageIndex = (currentPage - 1) * itemsPerPage;
-        return sortedData.slice(firstPageIndex, firstPageIndex + itemsPerPage);
-    }, [sortedData, currentPage, itemsPerPage]);
+                const response = await teamService.getTeams(params);
+                setTeamData(response.data || []);
+                setTotalItems(response.count || 0);
+            } catch (err) {
+                if (err.code === 'ERR_NETWORK') {
+                    setErrorTable(
+                        'Koneksi ke server gagal. Pastikan server backend berjalan.'
+                    );
+                } else {
+                    setErrorTable('Gagal memuat daftar tim.');
+                }
+                console.error(err);
+            } finally {
+                setLoadingTable(false);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            fetchTeams();
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [currentPage, itemsPerPage, filters, search, sortConfig]);
 
     // --- HANDLERS ---
     const handleSort = (key) => {
@@ -99,12 +128,12 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     const columns = [
         {
             header: 'Nama Tim',
-            accessor: 'team',
+            accessor: 'team_name',
             sortable: true,
             cellClassName: 'text-gray-900 font-medium',
         },
-        { header: 'Nama Sekolah', accessor: 'school', sortable:true },
-        { header: 'Jenjang', accessor: 'level' },
+        { header: 'Nama Sekolah', accessor: 'school_name', sortable: true },
+        { header: 'Jenjang', accessor: 'school_level' },
         {
             header: 'Waktu Pendaftaran',
             accessor: 'submitted_at',
@@ -116,16 +145,16 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
 
             render: (row) => {
                 let colorClass = 'text-gray-600';
-                if (row.status === 'Perlu Verifikasi')
+                if (row.status === 'pending')
                     colorClass =
                         'text-simbaris-warning font-medium bg-simbaris-warning-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-warning-light';
-                if (row.status === 'Telah Diverifikasi')
+                if (row.status === 'verified')
                     colorClass =
                         'text-simbaris-success font-medium bg-simbaris-success-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-success-light';
-                if (row.status === 'Ditolak')
+                if (row.status === 'rejected')
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
-                return <span className={colorClass}>{row.status}</span>;
+                return <span className={colorClass}>{row.status || 'N/A'}</span>;
             },
         },
         { header: 'Verifikator', accessor: 'verified_by', sortable: true },
@@ -146,25 +175,25 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
         {
             color: 'bg-simbaris-accent',
             title: 'Tim Terdaftar',
-            data: `${stats.total}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.total} Tim`,
             leftIcon: <Users className="text-white" size={20} />,
         },
         {
             color: 'bg-gray-500',
             title: 'SMA/SMK/MA Sederajat',
-            data: `${stats.sma}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.sma} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-secondary',
             title: 'SMP/MTs Sederajat',
-            data: `${stats.smp}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.smp} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-hazard',
             title: 'SD/MI Sederajat',
-            data: `${stats.sd}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.sd} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
     ];
@@ -208,10 +237,11 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Cari Tim atau Sekolah..."
-                                    className="h-11"
+                                    className="h-11"                                    
+                                    disabled={loadingTable}
                                 />
                             </div>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="relative z-10 flex flex-wrap gap-2">
                                 <FilterDropdown
                                     label="Jenjang"
                                     options={levelOptions}
@@ -219,6 +249,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     onChange={(val) =>
                                         handleFilterChange('level', val)
                                     }
+                                    disabled={loadingTable}
                                 />
                                 <FilterDropdown
                                     label="Status"
@@ -227,20 +258,27 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     onChange={(val) =>
                                         handleFilterChange('status', val)
                                     }
+                                    disabled={loadingTable}
                                 />
                             </div>
                         </div>
 
-                        <Table
-                            columns={columns}
-                            data={paginatedData}
-                            sortConfig={sortConfig}
-                            onSort={handleSort}
-                        />
+                        <div className="relative">
+                            {errorTable && <p className="text-center text-red-500">{errorTable}</p>}
+                            <div className={`transition-opacity duration-300 ${loadingTable ? 'opacity-50' : 'opacity-100'}`}>
+                                <Table
+                                    columns={columns}
+                                    data={teamData}
+                                    sortConfig={sortConfig}
+                                    onSort={handleSort}
+                                    isLoading={loadingTable}
+                                />
+                            </div>
+                        </div>
 
                         <Pagination
                             currentPage={currentPage}
-                            totalItems={filteredData.length}
+                            totalItems={totalItems}
                             itemsPerPage={itemsPerPage}
                             onPageChange={setCurrentPage}
                             onItemsPerPageChange={(val) => {
