@@ -58,9 +58,9 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                 const counts = response.data; // Mengambil objek data dari response
                 setStats({
                     total: counts.total || 0,
-                    sma: counts.senior_high || 0,
-                    smp: counts.junior_high || 0,
-                    sd: counts.elementary || 0,
+                    sma: counts["SMA/SMK/MA Sederajat"] || 0,
+                    smp: counts["SMP/MTs Sederajat"] || 0,
+                    sd: counts["SD/MI Sederajat"] || 0,
                 });
             } catch (error) {
                 console.error('Gagal memuat statistik jenjang.', error);
@@ -138,6 +138,12 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
             header: 'Waktu Pendaftaran',
             accessor: 'submitted_at',
             sortable: true,
+            render: (row) =>
+                new Date(row.submitted_at).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                }),
         },
         {
             header: 'Status Pendaftaran',
@@ -154,7 +160,9 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                 if (row.status === 'rejected')
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
-                return <span className={colorClass}>{row.status || 'N/A'}</span>;
+                return (
+                    <span className={colorClass}>{row.status || 'N/A'}</span>
+                );
             },
         },
         { header: 'Verifikator', accessor: 'verified_by', sortable: true },

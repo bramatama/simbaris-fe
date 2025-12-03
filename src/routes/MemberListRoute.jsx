@@ -1,10 +1,10 @@
 import AnggotaTimMember from '../pages/Member/AnggotaTimMember';
-import TimSayaAnggota from '../pages/AdminTim/TimSayaAnggota';
 import NotFoundPage from '../pages/NotFoundPage';
+import AnggotaTimAdminTim from '../pages/AdminTim/TimSayaAnggota';
 
 const MemberListRoute = ({ userRole, isSidebarOpen }) => {
     const components = {
-        team_admin: <TimSayaAnggota isSidebarOpen={isSidebarOpen} />,
+        team_admin: <AnggotaTimAdminTim isSidebarOpen={isSidebarOpen} />,
         member: <AnggotaTimMember isSidebarOpen={isSidebarOpen} />,
     };
 

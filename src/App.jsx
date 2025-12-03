@@ -18,7 +18,7 @@ import SampleWithDashboard from './pages/SampleWithDashboard';
 import Sample from './pages/Sample';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
-import DetailPendaftaran from './pages/AdminTim/DetailPendaftaran';
+import DetailPendaftaran from './pages/Panitia/DetailPendaftaran';
 import ComponentsCheck from './pages/ComponentsCheck';
 
 import DashboardRoute from './routes/DashboardRoute';
@@ -226,6 +226,16 @@ function App() {
 
                 <Route
                     path="/tim-terdaftar/detail"
+                    element={
+                        currentUser ? (
+                            <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/detail-pendaftaran"
                     element={
                         currentUser ? (
                             <DetailPendaftaran isSidebarOpen={isSidebarOpen} />

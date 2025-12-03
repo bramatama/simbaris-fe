@@ -68,14 +68,14 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 const counts = levelsRes.data;
                 setRegistrationData({
                     labels: [
-                        'SMA Sederajat',
-                        'SMP Sederajat',
-                        'SD Sederajat',
+                        'SMA/SMK/MA Sederajat',
+                        'SMP/MTs Sederajat',
+                        'SD/MI Sederajat',
                     ],
                     values: [
-                        counts.senior_high,
-                        counts.junior_high,
-                        counts.elementary,
+                        counts['SMA/SMK/MA Sederajat'],
+                        counts["SMP/MTs Sederajat"],
+                        counts["SD/MI Sederajat"],
                     ],
                 });
 
