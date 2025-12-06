@@ -34,14 +34,14 @@ const MemberModal = ({
     }, [isOpen, onClose, showFullImage]);
 
     const handleViewImage = () => {
-        if (memberData?.photo_url) {
+        if (memberData?.file_url) {
             setShowFullImage(true); // Buka preview internal
         }
     };
 
     if (!isOpen || !memberData) return null;
 
-    const hasPhoto = !!memberData.photo_url;
+    const hasPhoto = !!memberData.file_url;
 
     return (
         <>
@@ -62,7 +62,7 @@ const MemberModal = ({
 
                     {/* Gambar Full */}
                     <img
-                        src={memberData.photo_url}
+                        src={memberData.file_url}
                         alt={`Full Preview ${memberData.member_name}`}
                         className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
                         onClick={(e) => e.stopPropagation()} // Mencegah klik gambar menutup lightbox
@@ -131,9 +131,9 @@ const MemberModal = ({
                             <div className="md:w-48 w-full flex flex-col gap-4 shrink-0">
                                 {/* Foto Anggota */}
                                 <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                    {memberData.photo_url ? (
+                                    {memberData.file_url ? (
                                         <img
-                                            src={memberData.photo_url}
+                                            src={memberData.file_url}
                                             alt={`Foto ${memberData.member_name}`}
                                             className="w-full h-full object-cover"
                                         />

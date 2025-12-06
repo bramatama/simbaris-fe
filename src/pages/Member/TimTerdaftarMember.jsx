@@ -1,65 +1,133 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { GraduationCapIcon, Users, SearchIcon } from 'lucide-react';
 import SimpleCard from '../../components/SimpleCards';
 import InputField from '../../components/inputs/InputField';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
 import FilterDropdown from '../../components/FilterDropdown';
-import registrantList from '../../dummy/registrantList';
+import {team_service} from '../../services/team_service';
 
 const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
-    const [data] = useState(registrantList);
+    const [teamData, setTeamData] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [loadingTable, setLoadingTable] = useState(false);
+    const [errorTable, setErrorTable] = useState(null);
+
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState({
         level: '',
         province: '',
         city: '',
-        district: '',
+        subdistrict: '',
+        status: '',
     });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortConfig, setSortConfig] = useState({
-        key: null,
+        key: 'created_at', // Default sort
         direction: 'asc',
     });
 
-    const stats = useMemo(() => {
-        const counts = { total: data.length, sma: 0, smp: 0, sd: 0 };
-        data.forEach((item) => {
-            if (item.level === 'SMA/SMK/MA Sederajat') counts.sma++;
-            else if (item.level === 'SMP/MTs Sederajat') counts.smp++;
-            else if (item.level === 'SD/MI Sederajat') counts.sd++;
-        });
-        return counts;
-    }, [data]);
+    const [stats, setStats] = useState({
+        total: 0,
+        sma: 0,
+        smp: 0,
+        sd: 0,
+    });
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            setLoadingStats(true);
+            try {
+                const counts = await team_service.getLevelCounts();
+                setStats({
+                    total: counts.total || 0,
+                    sma: counts.senior_high || 0,
+                    smp: counts.junior_high || 0,
+                    sd: counts.elementary || 0,
+                });
+            } catch (error) {
+                console.error('Gagal memuat statistik jenjang.', error);
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    // Effect untuk mengambil data tabel
+    useEffect(() => {
+        const fetchTeams = async () => {
+            setLoadingTable(true);
+            setErrorTable(null);
+            try {
+                const params = {
+                    page: currentPage,
+                    limit: itemsPerPage,
+                    search: search,
+                    level: filters.level,
+                    province: filters.province,
+                    city: filters.city,
+                    subdistrict: filters.subdistrict,
+                    status: filters.status,
+                    sortBy: sortConfig.key,
+                    order: sortConfig.direction,
+                };
+
+                // Hapus parameter yang kosong agar URL lebih bersih
+                Object.keys(params).forEach(
+                    (key) =>
+                        (params[key] === '' || params[key] === null) &&
+                        delete params[key]
+                );
+
+                const response = await team_service.getAllTeams(params);
+                setTeamData(response.data || []);
+                setTotalItems(response.total || 0);
+            } catch (err) {
+                setErrorTable('Gagal memuat daftar tim.');
+                console.error(err);
+            } finally {
+                setLoadingTable(false);
+            }
+        };
+
+        // Debounce search input
+        const timer = setTimeout(() => {
+            fetchTeams();
+        }, 500); // Tunda request 500ms setelah user berhenti mengetik
+
+        return () => clearTimeout(timer);
+    }, [currentPage, itemsPerPage, filters, search, sortConfig]);
 
     const levelOptions = useMemo(() => {
-        const unique = Array.from(new Set(data.map((d) => d.level)));
+        const unique = Array.from(new Set(teamData.map((d) => d.level)));
         return [
             ...unique.map((item) => ({
                 label: item,
                 value: item,
             })),
         ];
-    }, [data]);
+    }, [teamData]);
 
     const provinceOptions = useMemo(() => {
-        const unique = Array.from(new Set(data.map((d) => d.province)));
+        const unique = Array.from(new Set(teamData.map((d) => d.province)));
         return [...unique.map((item) => ({ label: item, value: item }))];
-    }, [data]);
+    }, [teamData]);
 
     const cityOptions = useMemo(() => {
         const filtered = filters.province
-            ? data.filter((d) => d.province === filters.province)
-            : data;
+            ? teamData.filter((d) => d.province === filters.province)
+            : teamData;
 
         const unique = Array.from(new Set(filtered.map((d) => d.city)));
 
         return [...unique.map((item) => ({ label: item, value: item }))];
-    }, [data, filters.province]);
+    }, [teamData, filters.province]);
 
     const districtOptions = useMemo(() => {
-        let filtered = data;
+        let filtered = teamData;
 
         if (filters.province) {
             filtered = filtered.filter((d) => d.province === filters.province);
@@ -68,55 +136,10 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
             filtered = filtered.filter((d) => d.city === filters.city);
         }
 
-        const unique = Array.from(new Set(filtered.map((d) => d.district)));
+        const unique = Array.from(new Set(filtered.map((d) => d.subdistrict)));
 
         return [...unique.map((item) => ({ label: item, value: item }))];
-    }, [data, filters.province, filters.city]);
-
-    const filteredData = useMemo(() => {
-        return data.filter((item) => {
-            const matchSearch =
-                item.team.toLowerCase().includes(search.toLowerCase()) ||
-                item.school.toLowerCase().includes(search.toLowerCase());
-            const matchLevel = filters.level
-                ? item.level === filters.level
-                : true;
-            const matchProvince = filters.province
-                ? item.province === filters.province
-                : true;
-            const matchCity = filters.city ? item.city === filters.city : true;
-            const matchDistrict = filters.district
-                ? item.district === filters.district
-                : true;
-            return (
-                matchSearch &&
-                matchLevel &&
-                matchProvince &&
-                matchCity &&
-                matchDistrict
-            );
-        });
-    }, [data, search, filters]);
-
-    const sortedData = useMemo(() => {
-        let sortableItems = [...filteredData];
-        if (sortConfig.key) {
-            sortableItems.sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key]) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (a[sortConfig.key] > b[sortConfig.key])
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [filteredData, sortConfig]);
-
-    const paginatedData = useMemo(() => {
-        const firstPageIndex = (currentPage - 1) * itemsPerPage;
-        return sortedData.slice(firstPageIndex, firstPageIndex + itemsPerPage);
-    }, [sortedData, currentPage, itemsPerPage]);
+    }, [teamData, filters.province, filters.city]);
 
     const handleSort = (key) => {
         let direction = 'asc';
@@ -132,11 +155,11 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
 
             if (key === 'province') {
                 updated.city = '';
-                updated.district = '';
+                updated.subdistrict = '';
             }
 
             if (key === 'city') {
-                updated.district = '';
+                updated.subdistrict = '';
             }
 
             return updated;
@@ -148,40 +171,40 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
     const columns = [
         {
             header: 'Nama Tim',
-            accessor: 'team',
+            accessor: 'team_name',
             sortable: true,
             cellClassName: 'text-gray-900 font-medium',
         },
-        { header: 'Nama Sekolah', accessor: 'school', sortable: true },
+        { header: 'Nama Sekolah', accessor: 'school_name', sortable: true },
         { header: 'Jenjang', accessor: 'level' },
         { header: 'Provinsi', accessor: 'province' },
         { header: 'Kota', accessor: 'city' },
-        { header: 'Kecamatan', accessor: 'district' },
+        { header: 'Kecamatan', accessor: 'subdistrict' },
     ];
 
     const cards = [
         {
             color: 'bg-simbaris-accent',
             title: 'Tim Terdaftar',
-            data: `${stats.total}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.total} Tim`,
             leftIcon: <Users className="text-white" size={20} />,
         },
         {
             color: 'bg-gray-500',
             title: 'SMA/SMK/MA Sederajat',
-            data: `${stats.sma}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.sma} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-secondary',
             title: 'SMP/MTs Sederajat',
-            data: `${stats.smp}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.smp} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-hazard',
             title: 'SD/MI Sederajat',
-            data: `${stats.sd}  Data`,
+            data: loadingStats ? 'Memuat...' : `${stats.sd} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
     ];
@@ -236,6 +259,16 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                     }
                                 />
                                 <FilterDropdown
+                                    label="Status"
+                                    options={[
+                                        { label: 'Pending', value: 'pending' },
+                                        { label: 'Verified', value: 'verified' },
+                                        { label: 'Rejected', value: 'rejected' },
+                                    ]}
+                                    value={filters.status}
+                                    onChange={(val) => handleFilterChange('status', val)}
+                                />
+                                <FilterDropdown
                                     label="Provinsi"
                                     options={provinceOptions}
                                     value={filters.province}
@@ -254,25 +287,25 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                 <FilterDropdown
                                     label="Kecamatan"
                                     options={districtOptions}
-                                    value={filters.district}
-                                    onChange={(val) =>
-                                        handleFilterChange('district', val)
-                                    }
+                                    value={filters.subdistrict}
+                                    onChange={(val) => handleFilterChange('subdistrict', val)}
                                 />
                             </div>
                         </div>
 
+                        {errorTable && <p className="text-center text-red-500">{errorTable}</p>}
                         <Table
                             columns={columns}
-                            data={paginatedData}
+                            data={teamData}
                             sortConfig={sortConfig}
                             onSort={handleSort}
+                            isLoading={loadingTable}
                         />
 
                         {/* footer pagination */}
                         <Pagination
                             currentPage={currentPage}
-                            totalItems={filteredData.length}
+                            totalItems={totalItems}
                             itemsPerPage={itemsPerPage}
                             onPageChange={setCurrentPage}
                             onItemsPerPageChange={(val) => {

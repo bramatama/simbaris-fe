@@ -10,7 +10,7 @@ import InputField from '../../components/inputs/InputField';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
 import FilterDropdown from '../../components/FilterDropdown';
-import teamService from '../../services/team_service';
+import {team_service} from '../../services/team_service';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     // --- STATE ---
@@ -54,8 +54,9 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
         const fetchStats = async () => {
             setLoadingStats(true);
             try {
-                const response = await teamService.getLevelCounts();
-                const counts = response.data; // Mengambil objek data dari response
+                const response = await team_service.getLevelCounts();
+                console.log("hasil fetch: ", response);
+                const counts = response; // Mengambil objek data dari response
                 setStats({
                     total: counts.total || 0,
                     sma: counts["SMA/SMK/MA Sederajat"] || 0,
@@ -87,7 +88,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                     order: sortConfig.direction,
                 };
 
-                const response = await teamService.getTeams(params);
+                const response = await team_service.getAllTeams(params);
                 setTeamData(response.data || []);
                 setTotalItems(response.count || 0);
             } catch (err) {

@@ -1,5 +1,6 @@
 // src/services/api.js
 import axios from 'axios';
+import authService from './auth_service'; // Impor authService untuk logout
 
 // Sesuaikan port backend FastAPI kamu
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
@@ -32,8 +33,13 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // Jika error 401 (Unauthorized) dan belum pernah dicoba refresh
-        if (error.response.status === 401 && !originalRequest._retry) {
+        // Perbaikan: Cek apakah error.response ada sebelum mengakses status.
+        // Ini mencegah crash saat terjadi network error (backend mati, koneksi putus, dll).
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            !originalRequest._retry
+        ) {
             originalRequest._retry = true;
 
             try {
@@ -61,9 +67,11 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (refreshError) {
                 // Jika refresh juga gagal, logout user
-                console.error('Session expired', refreshError);
-                localStorage.clear();
-                window.location.href = '/login'; // Redirect ke login
+                console.error('Session expired. Gagal refresh token.', refreshError);
+                // Gunakan service logout yang sudah ada
+                await authService.logout();
+                window.location.href = '/login';
+                return Promise.reject(refreshError);
             }
         }
         return Promise.reject(error);

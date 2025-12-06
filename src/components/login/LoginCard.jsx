@@ -1,6 +1,7 @@
 // src/components/LoginCard.jsx
 import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/auth_service';
 

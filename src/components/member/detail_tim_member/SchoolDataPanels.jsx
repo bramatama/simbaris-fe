@@ -9,7 +9,7 @@ const SchoolDataPanel = ({ schoolData }) => {
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Nama Sekolah</span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.school_name}
+                        {schoolData.school.school_name}
                     </span>
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
@@ -17,25 +17,25 @@ const SchoolDataPanel = ({ schoolData }) => {
                         Jenjang Sekolah
                     </span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.level}
+                        {schoolData.school.level}
                     </span>
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Provinsi</span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.province}
+                        {schoolData.school.province}
                     </span>
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Kota</span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.city}
+                        {schoolData.school.city}
                     </span>
                 </div>
                 <div className="flex justify-between items-end border-b border-gray-200 pb-2">
                     <span className="text-sm text-gray-600">Kecamatan</span>
                     <span className="text-sm font-medium text-gray-900 text-right">
-                        {schoolData.district}
+                        {schoolData.school.subdistrict}
                     </span>
                 </div>
             </div>

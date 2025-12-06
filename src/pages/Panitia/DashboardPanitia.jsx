@@ -3,7 +3,7 @@ import { PenTool, ExternalLink, SearchIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Services
-import teamService from '../../services/team_service';
+import {team_service} from '../../services/team_service';
 import registrationService from '../../services/registration_service';
 
 // Components
@@ -64,8 +64,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 setStatsLoading(false);
 
                 // Fetch data for Pie Chart
-                const levelsRes = await teamService.getLevelCounts();
-                const counts = levelsRes.data;
+                const levelsRes = await team_service.getLevelCounts();
+                // Perbaikan: levelsRes adalah objek data itu sendiri, tidak perlu .data
+                const counts = levelsRes;
                 setRegistrationData({
                     labels: [
                         'SMA/SMK/MA Sederajat',
@@ -110,7 +111,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     sortBy: sortConfig.key,
                     order: sortConfig.direction,
                 };
-                const response = await teamService.getTeams(params);
+                const response = await team_service.getAllTeams(params);
                 setTeams(response.data || []);
                 setTotalItems(response.count || 0);
             } catch (error) {
