@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { PenTool, ExternalLink, SearchIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -37,6 +37,8 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         labels: [],
         values: [],
     });
+
+    const hasFetched = useRef(false);
 
     // --- DATA PROCESSING ---
     useEffect(() => {
@@ -82,6 +84,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                         reg.teams?.schools?.school_level ||
                         'N/A',
                     submitted_at: reg.created_at || reg.submitted_at,
+                    status: reg.status,
                 }));
                 setTeams(formattedRegistrations);
                 setTotalItems(formattedRegistrations.length);
@@ -90,9 +93,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     fastestRes.data.map((t) => ({
                         team_name: t.teams.team_name || 'N/A',
                         school_name: t.teams.schools.school_name || 'N/A',
-                        initials: t.teams.team_name
-                            ? t.teams.team_name.substring(0, 2).toUpperCase()
-                            : 'N/A',
+                        logo: t.teams.team_logo_url,
                     }))
                 );
             } catch (error) {
@@ -102,6 +103,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 setTeamsLoading(false);
             }
         };
+
+        if (hasFetched.current) return;
+        hasFetched.current = true;
 
         fetchDashboardData();
     }, []);
@@ -201,6 +205,11 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             header: 'Status Pendaftaran',
             accessor: 'status',
             render: (row) => {
+                const statusMapping = {
+                    pending: 'Menunggu Verifikasi',
+                    verified: 'Terverifikasi',
+                    rejected: 'Ditolak',
+                };
                 let colorClass = 'text-gray-600';
                 if (row.status === 'pending')
                     colorClass =
@@ -212,7 +221,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
                 return (
-                    <span className={colorClass}>{row.status || 'N/A'}</span>
+                    <span className={colorClass}>
+                        {statusMapping[row.status] || row.status || 'N/A'}
+                    </span>
                 );
             },
         },
@@ -277,7 +288,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                 <div
                                     className={`transition-opacity duration-300 ${teamsLoading ? 'opacity-50' : 'opacity-100'} space-y-2`}
                                 >
-                                {/* <div className="space-y-2"> */}
+                                    {/* <div className="space-y-2"> */}
                                     <Table
                                         columns={columns}
                                         data={paginatedTeams}
@@ -305,6 +316,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                         size="long"
                                         round="half"
                                         color="secondary"
+                                        disabled={teamsLoading}
                                         leftIcon={<ExternalLink size={18} />}
                                     ></Button>
                                 </Link>

@@ -75,7 +75,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
 
                 // Process Table Data
                 const formattedRegistrations = allRegRes.data.map((reg) => ({
-                    registration_id : reg.registration_id,
+                    registration_id: reg.registration_id,
                     team_name: reg.team_name || reg.teams?.team_name || 'N/A',
                     school_name:
                         reg.school_name ||
@@ -192,6 +192,11 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
             accessor: 'status',
 
             render: (row) => {
+                const statusMapping = {
+                    pending: 'Menunggu Verifikasi',
+                    verified: 'Terverifikasi',
+                    rejected: 'Ditolak',
+                };
                 let colorClass = 'text-gray-600';
                 if (row.status === 'pending')
                     colorClass =
@@ -203,7 +208,9 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
                 return (
-                    <span className={colorClass}>{row.status || 'N/A'}</span>
+                    <span className={colorClass}>
+                        {statusMapping[row.status] || row.status || 'N/A'}
+                    </span>
                 );
             },
         },
@@ -213,10 +220,10 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
             accessor: 'actions',
             className: 'text-center',
             cellClassName: 'text-center',
-            render: () => (
+            render: (row) => (
                 <button
                     onClick={() =>
-                        navigate(`/tim-terdatar/detail/${row.registration_id}`)
+                        navigate(`/tim-terdaftar/detail/${row.registration_id}`)
                     }
                     className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50"
                 >

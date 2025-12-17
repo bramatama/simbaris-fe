@@ -39,6 +39,14 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
         subText = additional.team_name;
     }
 
+    const member_name =
+        additional?.member_name?.split(' ')[1] ||
+        additional?.member_name?.split(' ')[0];
+    const committee_name =
+        additional?.committee_name?.split(' ')[1] ||
+        additional?.committee_name?.split(' ')[0];
+    const team_name = additional?.team_name;
+
     return (
         <div
             className="flex h-16 w-full max-w-xs font-sans shadow-md"
@@ -56,13 +64,7 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                 <Avatar imageUrl={avatar_url} initials={initials} name={name} />
                 <div className="ml-3 text-left">
                     <p className="font-semibold text-lg text-simbaris-text">
-                        {
-                            additional?.team_name ||
-                            additional?.committee_name.split(' ')[1] ||
-                            additional?.committee_name.split(' ')[0]||
-                            additional?.member_name.split(' ')[1] ||
-                            additional?.member_name.split(' ')[0] ||
-                            'User'}
+                        {member_name || committee_name || team_name || 'User'}
                     </p>
                     <p className="text-xs text-gray-500 capitalize">
                         {subText}

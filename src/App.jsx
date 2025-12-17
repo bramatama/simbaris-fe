@@ -1,6 +1,5 @@
-import React from 'react';
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     Routes,
     Route,
@@ -81,6 +80,11 @@ function App() {
     // 5. EFFECT: Cek Token & User saat aplikasi dimuat
     useEffect(() => {
         const checkAuth = async () => {
+            // Helper untuk delay loading agar transisi lebih halus (mencegah glitch)
+            const finishLoading = () => {
+                setTimeout(() => setIsLoading(false), 1000);
+            };
+
             const token = localStorage.getItem('access_token');
             const savedUser = localStorage.getItem('user');
 
@@ -95,7 +99,7 @@ function App() {
                         isOptimistic = true;
 
                         // OPTIMISASI: Langsung stop loading jika ada cache (UI muncul instan)
-                        setIsLoading(false);
+                        finishLoading();
 
                         // Cek redirect segera
                         if (
@@ -111,19 +115,24 @@ function App() {
                 }
 
                 // B. Fetch Sidebar User (Fresh from API) - Berjalan di Background
-                try {
-                    const response = await authService.getCurrentUser();
-                    const userData = response.data;
+                // Hanya fetch jika data sidebar belum ada, untuk efisiensi
+                if (!sidebarUser) {
+                    setIsSidebarLoading(true);
+                    try {
+                        const response = await authService.getCurrentUser();
+                        const userData = response.data;
 
-                    setSidebarUser(hydrateUser(userData));
+                        setSidebarUser(hydrateUser(userData));
 
-                    // Update cache & authUser dengan data terbaru
-                    localStorage.setItem('user', JSON.stringify(userData));
-                    setAuthUser(hydrateUser(userData));
-                } catch (error) {
-                    console.error('❌ Gagal sinkronisasi user:', error);
+                        // Update cache & authUser dengan data terbaru
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        setAuthUser(hydrateUser(userData));
+                    } catch (error) {
+                        console.error('❌ Gagal sinkronisasi user:', error);
+                    } finally {
+                        setIsSidebarLoading(false);
+                    }
                 }
-                setIsSidebarLoading(false);
 
                 // C. Fallback: Jika tidak ada cache, baru kita handle loading & redirect di sini
                 if (!isOptimistic) {
@@ -134,12 +143,12 @@ function App() {
                     ) {
                         navigate('/dashboard', { replace: true });
                     }
-                    setIsLoading(false);
+                    finishLoading();
                 }
             } else {
                 setAuthUser(null);
                 setSidebarUser(null);
-                setIsLoading(false);
+                finishLoading();
                 setIsSidebarLoading(false);
             }
         };
@@ -152,9 +161,19 @@ function App() {
             setIsSessionExpired(true);
         };
 
+        const handleLoginSuccess = () => {
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                setAuthUser(hydrateUser(JSON.parse(savedUser)));
+            }
+        };
+
         window.addEventListener('session-expired', handleSessionExpired);
-        return () =>
+        window.addEventListener('login-success', handleLoginSuccess);
+        return () => {
             window.removeEventListener('session-expired', handleSessionExpired);
+            window.removeEventListener('login-success', handleLoginSuccess);
+        };
     }, []);
 
     const handleExpiredLogout = async () => {
@@ -185,7 +204,7 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
-        '/tim-saya/detail',
+        '/tim-saya/detail/*',
         '/tim-saya/anggota',
         '/detail-pendaftaran',
         '/tim-terdaftar',
@@ -292,7 +311,7 @@ function App() {
                 />
 
                 <Route
-                    path="/tim-terdaftar/detail"
+                    path="/tim-terdaftar/detail/:registrationId"
                     element={
                         authUser ? (
                             <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
@@ -301,17 +320,6 @@ function App() {
                         )
                     }
                 />
-                <Route
-                    path="/detail-pendaftaran/:registrationId"
-                    element={
-                        authUser ? (
-                            <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
-                        ) : (
-                            <Navigate to="/login" />
-                        )
-                    }
-                />
-
                 <Route
                     path="/tim-terdaftar"
                     element={

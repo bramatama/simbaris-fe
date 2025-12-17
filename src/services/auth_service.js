@@ -73,31 +73,7 @@ const updatePassword = async (oldPassword, newPassword) => {
     }
 };
 
-// 6. Refresh Token
-// Endpoint: POST /api/auth/refresh
-// Body: { refresh_token }
-const refreshToken = async (refreshToken) => {
-    try {
-        const response = await api.post('/auth/refresh', {
-            refresh_token: refreshToken,
-        });
-
-        if (response.data.access_token) {
-            localStorage.setItem('access_token', response.data.access_token);
-            localStorage.setItem('refresh_token', response.data.refresh_token);
-            localStorage.setItem('expires_in', response.data.expires_in);
-        }
-
-        return response.data;
-    } catch (error) {
-        // If refresh fails, log the user out
-        logout();
-        window.dispatchEvent(new Event('session-expired'));
-        throw error.response ? error.response.data : error;
-    }
-};
-
-// 7. Get Current User
+// 6. Get Current User
 // Endpoint: GET /api/auth/me
 const getCurrentUser = async () => {
     try {
@@ -118,7 +94,6 @@ const authService = {
     registerTeamAdmin,
     requestResetPassword,
     updatePassword,
-    refreshToken,
     isAuthenticated,
     getCurrentUser,
 };
