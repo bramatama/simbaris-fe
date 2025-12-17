@@ -1,5 +1,5 @@
 import React from "react";
-import LoginCard from "../components/login/LoginCard"; // ✅ path sudah benar
+import LoginCard from "../../components/login/LoginCard"; // ✅ path sudah benar
 
 export default function LoginPage() {
   return (

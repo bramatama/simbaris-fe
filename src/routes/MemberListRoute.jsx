@@ -1,6 +1,6 @@
-import AnggotaTimMember from '../pages/Member/AnggotaTimMember';
-import NotFoundPage from '../pages/NotFoundPage';
-import AnggotaTimAdminTim from '../pages/AdminTim/TimSayaAnggota';
+import AnggotaTimMember from '../pages/member/AnggotaTimMember';
+import NotFoundPage from '../pages/others/NotFoundPage';
+import AnggotaTimAdminTim from '../pages/admin_tim/TimSayaAnggota';
 
 const MemberListRoute = ({ userRole, isSidebarOpen }) => {
     const components = {

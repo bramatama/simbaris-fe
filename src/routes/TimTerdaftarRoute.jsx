@@ -1,7 +1,7 @@
 import React from 'react';
 import TimTerdaftarPanitia from '../pages/Panitia/TimTerdaftarPanitia';
-import TimTerdaftarMember from '../pages/Member/TimTerdaftarMember';
-import NotFoundPage from '../pages/NotFoundPage';
+import TimTerdaftarMember from '../pages/member/TimTerdaftarMember';
+import NotFoundPage from '../pages/others/NotFoundPage';
 
 const TimTerdaftarRoute = ({ userRole, isSidebarOpen }) => {
     // Gunakan object mapping untuk pendekatan yang lebih modern dan skalabel

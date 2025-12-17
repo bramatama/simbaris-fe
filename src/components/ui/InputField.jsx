@@ -40,7 +40,11 @@ const InputField = ({
     return (
         <div className={`flex flex-col gap-1 ${className}`}>
             {/* Label */}
-            <label className="font-medium text-sm text-gray-700">{label}</label>
+            {label && (
+                <label className="font-medium text-sm text-gray-700">
+                    {label}
+                </label>
+            )}
 
             {/* Input Wrapper */}
             <div className="flex gap-2 items-center border border-simbaris-primary rounded-md w-full h-11 px-3 py-2">
@@ -53,7 +57,7 @@ const InputField = ({
                     placeholder={placeholder}
                     disabled={disabled}
                     className={`focus:outline-none w-full ${statusStyles[status]} ${
-                        disabled ? 'bg-gray-100 cursor-not-allowed' : ''
+                        disabled ? 'cursor-not-allowed bg-transparent' : ''
                     } `}
                     {...props}
                 />
@@ -63,7 +67,7 @@ const InputField = ({
                     <button
                         type="button"
                         onClick={handleTogglePassword}
-                        className="absolute right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                        className="relative right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
                     >
                         {showPassword ? (
                             <EyeOff size={18} />

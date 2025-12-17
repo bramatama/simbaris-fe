@@ -3,17 +3,17 @@ import { PenTool, ExternalLink, SearchIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Services
-import teamService from '../../services/team_service';
 import registrationService from '../../services/registration_service';
+import schoolService from '../../services/school_service';
 
 // Components
-import Button from '../../components/Button';
+import Button from '../../components/ui/Button';
 import PieChart from '../../components/panitia/dashboard_panitia/PieChart';
 import FastestRegistrantsPanel from '../../components/panitia/dashboard_panitia/FastestRegistrationPanel';
-import SimpleCard from '../../components/SimpleCards';
-import Table from '../../components/Table';
-import InputField from '../../components/inputs/InputField';
-import Pagination from '../../components/Pagination';
+import SimpleCard from '../../components/ui/SimpleCards';
+import Table from '../../components/ui/Table';
+import InputField from '../../components/ui/InputField';
+import Pagination from '../../components/ui/Pagination';
 import SimpleCardSkeleton from '../../components/skeleton/CardSkeleton';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
@@ -21,8 +21,6 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedSearch, setDebouncedSearch] = useState('');
-
     const [sortConfig, setSortConfig] = useState({
         key: 'submitted_at',
         direction: 'desc',
@@ -40,18 +38,6 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         values: [],
     });
 
-    // --- DEBOUNCE SEARCH ---
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearch(searchQuery);
-            setCurrentPage(1); // Reset halaman saat pencarian berubah
-        }, 500);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [searchQuery]);
-
     // --- DATA PROCESSING ---
     useEffect(() => {
         // Fetch all data in parallel
@@ -59,12 +45,17 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             try {
                 // Fetch stats for cards
                 setStatsLoading(true);
-                const statsRes = await registrationService.getStats();
-                setStats(statsRes.data);
-                setStatsLoading(false);
 
-                // Fetch data for Pie Chart
-                const levelsRes = await teamService.getLevelCounts();
+                const [statsRes, levelsRes, allRegRes, fastestRes] =
+                    await Promise.all([
+                        registrationService.getStats(),
+                        schoolService.getLevelCounts(),
+                        registrationService.getAllRegistrations(),
+                        registrationService.getFastestRegistrants(),
+                    ]);
+
+                setStats(statsRes.data);
+
                 const counts = levelsRes.data;
                 setRegistrationData({
                     labels: [
@@ -74,13 +65,27 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     ],
                     values: [
                         counts['SMA/SMK/MA Sederajat'],
-                        counts["SMP/MTs Sederajat"],
-                        counts["SD/MI Sederajat"],
+                        counts['SMP/MTs Sederajat'],
+                        counts['SD/MI Sederajat'],
                     ],
                 });
 
-                // Fetch fastest registrants
-                const fastestRes = await registrationService.getFastestRegistrants();
+                // Process and Set All Registrations for Table
+                const formattedRegistrations = allRegRes.data.map((reg) => ({
+                    team_name: reg.team_name || reg.teams?.team_name || 'N/A',
+                    school_name:
+                        reg.school_name ||
+                        reg.teams?.schools?.school_name ||
+                        'N/A',
+                    school_level:
+                        reg.school_level ||
+                        reg.teams?.schools?.school_level ||
+                        'N/A',
+                    submitted_at: reg.created_at || reg.submitted_at,
+                }));
+                setTeams(formattedRegistrations);
+                setTotalItems(formattedRegistrations.length);
+
                 setFastestTeams(
                     fastestRes.data.map((t) => ({
                         team_name: t.teams.team_name || 'N/A',
@@ -92,35 +97,50 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 );
             } catch (error) {
                 console.error('Failed to fetch dashboard widgets data:', error);
+            } finally {
                 setStatsLoading(false);
+                setTeamsLoading(false);
             }
         };
 
         fetchDashboardData();
     }, []);
 
-    useEffect(() => {
-        const fetchTeams = async () => {
-            setTeamsLoading(true);
-            try {
-                const params = {
-                    page: currentPage,
-                    limit: itemsPerPage,
-                    search: debouncedSearch,
-                    sortBy: sortConfig.key,
-                    order: sortConfig.direction,
-                };
-                const response = await teamService.getTeams(params);
-                setTeams(response.data || []);
-                setTotalItems(response.count || 0);
-            } catch (error) {
-                console.error('Failed to fetch teams:', error);
-            } finally {
-                setTeamsLoading(false);
-            }
-        };
-        fetchTeams();
-    }, [currentPage, itemsPerPage, debouncedSearch, sortConfig]);
+    // --- FILTERING & PAGINATION ---
+    const processedTeams = useMemo(() => {
+        let data = [...teams];
+
+        // 1. Search
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            data = data.filter(
+                (item) =>
+                    (item.team_name?.toLowerCase() || '').includes(
+                        lowerQuery
+                    ) ||
+                    (item.school_name?.toLowerCase() || '').includes(lowerQuery)
+            );
+        }
+
+        // 2. Sort
+        if (sortConfig.key) {
+            data.sort((a, b) => {
+                const aValue = a[sortConfig.key] || '';
+                const bValue = b[sortConfig.key] || '';
+                if (aValue < bValue)
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue)
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return data;
+    }, [teams, searchQuery, sortConfig]);
+
+    const paginatedTeams = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return processedTeams.slice(startIndex, startIndex + itemsPerPage);
+    }, [processedTeams, currentPage, itemsPerPage]);
 
     const cards = [
         {
@@ -191,7 +211,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 if (row.status === 'rejected')
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
-                return <span className={colorClass}>{row.status || 'N/A'}</span>;
+                return (
+                    <span className={colorClass}>{row.status || 'N/A'}</span>
+                );
             },
         },
     ];
@@ -223,14 +245,16 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
 
                     <div className="hidden xl:flex gap-4 mb-4">
                         {statsLoading
-                            ? [1, 2, 3, 4].map((_, i) => <SimpleCardSkeleton key={i} />)
+                            ? [1, 2, 3, 4].map((_, i) => (
+                                  <SimpleCardSkeleton key={i} />
+                              ))
                             : cards.map((card, index) => (
                                   <SimpleCard key={index} {...card} />
                               ))}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
-                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-fit">
+                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-full">
                             <h3 className="font-bold text-xl">Tim Terdaftar</h3>
                             <div className="flex relative z-10">
                                 <InputField
@@ -250,17 +274,20 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                             </div>
 
                             <div className="relative">
-                                <div className={`transition-opacity duration-300 ${teamsLoading ? 'opacity-50' : 'opacity-100'}`}>
+                                <div
+                                    className={`transition-opacity duration-300 ${teamsLoading ? 'opacity-50' : 'opacity-100'} space-y-2`}
+                                >
+                                {/* <div className="space-y-2"> */}
                                     <Table
                                         columns={columns}
-                                        data={teams}
+                                        data={paginatedTeams}
                                         sortConfig={sortConfig}
                                         onSort={handleSort}
                                         isLoading={teamsLoading}
                                     />
                                     <Pagination
                                         currentPage={currentPage}
-                                        totalItems={totalItems}
+                                        totalItems={processedTeams.length}
                                         itemsPerPage={itemsPerPage}
                                         onPageChange={setCurrentPage}
                                         onItemsPerPageChange={(val) => {

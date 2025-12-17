@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Button from '../components/Button';
-import InputField from '../components/inputs/InputField';
-import ComboBox from '../components/inputs/Combobox';
-import Breadcrumbs from '../components/Breadcrumbs';
-import Avatar from '../components/Avatar';
+import Button from '../../components/ui/Button';
+import InputField from '../../components/ui/InputField';
+import ComboBox from '../../components/ui/Combobox';
+import Avatar from '../../components/sidebar/Avatar';
 
 const ComponentsCheck = () => {
     const [selectedOption, setSelectedOption] = useState('');
@@ -19,9 +18,7 @@ const ComponentsCheck = () => {
 
     return (
         <div className="flex bg-gray-100">
-            <div
-                className="w-full min-h-screen overflow-hidden transition-all duration-300"
-            >
+            <div className="w-full min-h-screen overflow-hidden transition-all duration-300">
                 <div className="flex flex-col gap-6 p-6">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-1">
@@ -45,7 +42,11 @@ const ComponentsCheck = () => {
                             </span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <Button text="Primary" size="long" color="primary" />
+                            <Button
+                                text="Primary"
+                                size="long"
+                                color="primary"
+                            />
                             <Button
                                 text="Secondary"
                                 size="long"
@@ -53,8 +54,16 @@ const ComponentsCheck = () => {
                                 type="secondary"
                             />
                             <Button text="Accent" size="long" color="accent" />
-                            <Button text="Success" size="long" color="success" />
-                            <Button text="Warning" size="long" color="warning" />
+                            <Button
+                                text="Success"
+                                size="long"
+                                color="success"
+                            />
+                            <Button
+                                text="Warning"
+                                size="long"
+                                color="warning"
+                            />
                             <Button text="Hazard" size="long" color="hazard" />
                             <Button text="Disabled" size="long" disabled />
                             <Button
@@ -166,9 +175,6 @@ const ComponentsCheck = () => {
                                         Contoh avatar tanpa foto
                                     </span>
                                 </div>
-                            </div>
-                            <div className="flex-1">
-                                <Breadcrumbs />
                             </div>
                         </div>
                     </section>

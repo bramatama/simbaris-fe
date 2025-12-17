@@ -1,21 +1,24 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     GraduationCapIcon,
     Users,
     SearchIcon,
     MoreVertical,
 } from 'lucide-react';
-import SimpleCard from '../../components/SimpleCards';
-import InputField from '../../components/inputs/InputField';
-import Table from '../../components/Table';
-import Pagination from '../../components/Pagination';
-import FilterDropdown from '../../components/FilterDropdown';
-import teamService from '../../services/team_service';
+import SimpleCard from '../../components/ui/SimpleCards';
+import InputField from '../../components/ui/InputField';
+import Table from '../../components/ui/Table';
+import Pagination from '../../components/ui/Pagination';
+import FilterDropdown from '../../components/ui/FilterDropdown';
+import registrationService from '../../services/registration_service';
+import schoolService from '../../services/school_service';
+import SimpleCardSkeleton from '../../components/skeleton/CardSkeleton';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
+    const navigate = useNavigate();
     // --- STATE ---
-    const [teamData, setTeamData] = useState([]);
-    const [totalItems, setTotalItems] = useState(0);
+    const [allRegistrations, setAllRegistrations] = useState([]);
     const [loadingTable, setLoadingTable] = useState(false);
     const [errorTable, setErrorTable] = useState(null);
 
@@ -51,65 +54,104 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     const [loadingStats, setLoadingStats] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             setLoadingStats(true);
-            try {
-                const response = await teamService.getLevelCounts();
-                const counts = response.data; // Mengambil objek data dari response
-                setStats({
-                    total: counts.total || 0,
-                    sma: counts["SMA/SMK/MA Sederajat"] || 0,
-                    smp: counts["SMP/MTs Sederajat"] || 0,
-                    sd: counts["SD/MI Sederajat"] || 0,
-                });
-            } catch (error) {
-                console.error('Gagal memuat statistik jenjang.', error);
-                // Biarkan stats tetap 0 jika gagal
-            } finally {
-                setLoadingStats(false);
-            }
-        };
-        fetchStats();
-    }, []);
-
-    useEffect(() => {
-        const fetchTeams = async () => {
             setLoadingTable(true);
             setErrorTable(null);
             try {
-                const params = {
-                    page: currentPage,
-                    limit: itemsPerPage,
-                    search: search,
-                    level: filters.level,
-                    status: filters.status,
-                    sortBy: sortConfig.key,
-                    order: sortConfig.direction,
-                };
+                const [levelsRes, allRegRes] = await Promise.all([
+                    schoolService.getLevelCounts(),
+                    registrationService.getAllRegistrations(),
+                ]);
 
-                const response = await teamService.getTeams(params);
-                setTeamData(response.data || []);
-                setTotalItems(response.count || 0);
-            } catch (err) {
-                if (err.code === 'ERR_NETWORK') {
+                // Process Stats
+                const counts = levelsRes.data;
+                setStats({
+                    total: counts.total || 0,
+                    sma: counts['SMA/SMK/MA Sederajat'] || 0,
+                    smp: counts['SMP/MTs Sederajat'] || 0,
+                    sd: counts['SD/MI Sederajat'] || 0,
+                });
+
+                // Process Table Data
+                const formattedRegistrations = allRegRes.data.map((reg) => ({
+                    registration_id : reg.registration_id,
+                    team_name: reg.team_name || reg.teams?.team_name || 'N/A',
+                    school_name:
+                        reg.school_name ||
+                        reg.teams?.schools?.school_name ||
+                        'N/A',
+                    school_level:
+                        reg.school_level ||
+                        reg.teams?.schools?.school_level ||
+                        'N/A',
+                    submitted_at: reg.created_at || reg.submitted_at,
+                    status: reg.status,
+                    verified_by: reg.verifier_name,
+                }));
+                setAllRegistrations(formattedRegistrations);
+            } catch (error) {
+                console.error('Gagal memuat data.', error);
+                if (error.code === 'ERR_NETWORK') {
                     setErrorTable(
                         'Koneksi ke server gagal. Pastikan server backend berjalan.'
                     );
                 } else {
-                    setErrorTable('Gagal memuat daftar tim.');
+                    setErrorTable('Gagal memuat data tim.');
                 }
-                console.error(err);
             } finally {
+                setLoadingStats(false);
                 setLoadingTable(false);
             }
         };
+        fetchData();
+    }, []);
 
-        const timer = setTimeout(() => {
-            fetchTeams();
-        }, 500);
+    // --- CLIENT-SIDE FILTERING & PAGINATION ---
+    const processedData = useMemo(() => {
+        let data = [...allRegistrations];
 
-        return () => clearTimeout(timer);
-    }, [currentPage, itemsPerPage, filters, search, sortConfig]);
+        // 1. Search
+        if (search) {
+            const lowerQuery = search.toLowerCase();
+            data = data.filter(
+                (item) =>
+                    (item.team_name?.toLowerCase() || '').includes(
+                        lowerQuery
+                    ) ||
+                    (item.school_name?.toLowerCase() || '').includes(lowerQuery)
+            );
+        }
+
+        // 2. Filter Level
+        if (filters.level) {
+            data = data.filter((item) => item.school_level === filters.level);
+        }
+
+        // 3. Filter Status
+        if (filters.status) {
+            data = data.filter((item) => item.status === filters.status);
+        }
+
+        // 4. Sort
+        if (sortConfig.key) {
+            data.sort((a, b) => {
+                const aValue = a[sortConfig.key] || '';
+                const bValue = b[sortConfig.key] || '';
+                if (aValue < bValue)
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue)
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return data;
+    }, [allRegistrations, search, filters, sortConfig]);
+
+    const paginatedData = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return processedData.slice(startIndex, startIndex + itemsPerPage);
+    }, [processedData, currentPage, itemsPerPage]);
 
     // --- HANDLERS ---
     const handleSort = (key) => {
@@ -172,7 +214,12 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
             className: 'text-center',
             cellClassName: 'text-center',
             render: () => (
-                <button className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50">
+                <button
+                    onClick={() =>
+                        navigate(`/tim-terdatar/detail/${row.registration_id}`)
+                    }
+                    className="text-gray-400 hover:text-blue-600 transition-colors inline-block p-1 rounded-full hover:bg-blue-50"
+                >
                     <MoreVertical size={18} />
                 </button>
             ),
@@ -183,25 +230,25 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
         {
             color: 'bg-simbaris-accent',
             title: 'Tim Terdaftar',
-            data: loadingStats ? 'Memuat...' : `${stats.total} Tim`,
+            data: `${stats.total} Tim`,
             leftIcon: <Users className="text-white" size={20} />,
         },
         {
             color: 'bg-gray-500',
             title: 'SMA/SMK/MA Sederajat',
-            data: loadingStats ? 'Memuat...' : `${stats.sma} Tim`,
+            data: `${stats.sma} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-secondary',
             title: 'SMP/MTs Sederajat',
-            data: loadingStats ? 'Memuat...' : `${stats.smp} Tim`,
+            data: `${stats.smp} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
         {
             color: 'bg-simbaris-hazard',
             title: 'SD/MI Sederajat',
-            data: loadingStats ? 'Memuat...' : `${stats.sd} Tim`,
+            data: `${stats.sd} Tim`,
             leftIcon: <GraduationCapIcon className="text-white" size={20} />,
         },
     ];
@@ -218,9 +265,13 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
 
                     {/* Cards */}
                     <div className="hidden xl:flex gap-4 mb-4">
-                        {cards.map((card, index) => (
-                            <SimpleCard key={index} {...card} />
-                        ))}
+                        {loadingStats
+                            ? [1, 2, 3, 4].map((_, index) => (
+                                  <SimpleCardSkeleton key={index} />
+                              ))
+                            : cards.map((card, index) => (
+                                  <SimpleCard key={index} {...card} />
+                              ))}
                     </div>
 
                     {/* Main Content */}
@@ -245,7 +296,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Cari Tim atau Sekolah..."
-                                    className="h-11"                                    
+                                    className="h-11"
                                     disabled={loadingTable}
                                 />
                             </div>
@@ -272,11 +323,17 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                         </div>
 
                         <div className="relative">
-                            {errorTable && <p className="text-center text-red-500">{errorTable}</p>}
-                            <div className={`transition-opacity duration-300 ${loadingTable ? 'opacity-50' : 'opacity-100'}`}>
+                            {errorTable && (
+                                <p className="text-center text-red-500">
+                                    {errorTable}
+                                </p>
+                            )}
+                            <div
+                                className={`transition-opacity duration-300 ${loadingTable ? 'opacity-50' : 'opacity-100'}`}
+                            >
                                 <Table
                                     columns={columns}
-                                    data={teamData}
+                                    data={paginatedData}
                                     sortConfig={sortConfig}
                                     onSort={handleSort}
                                     isLoading={loadingTable}
@@ -286,7 +343,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
 
                         <Pagination
                             currentPage={currentPage}
-                            totalItems={totalItems}
+                            totalItems={processedData.length}
                             itemsPerPage={itemsPerPage}
                             onPageChange={setCurrentPage}
                             onItemsPerPageChange={(val) => {

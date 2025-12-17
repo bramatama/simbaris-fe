@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload, Check, FileUp, Image as ImageIcon } from 'lucide-react';
-import Button from '../Button'; // Pastikan path ini sesuai dengan lokasi Button.jsx Anda
+import Button from '../ui/Button'; // Pastikan path ini sesuai dengan lokasi Button.jsx Anda
 
 const UploadModal = ({ isOpen, onClose, onProcess }) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -153,18 +153,16 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
                         leftIcon={<Check size={18} />}
                         onClick={() => onProcess(file)}
                         disabled={!file}
-                        size={"default"}
-                        text='Lanjutkan'
-                        >
-                    </Button>
+                        size={'default'}
+                        text="Lanjutkan"
+                    ></Button>
                     <Button
                         color="hazard"
                         leftIcon={<X size={18} />}
                         onClick={onClose}
-                        size={"default"}
-                        text='Batal'
-                    >
-                    </Button>
+                        size={'default'}
+                        text="Batal"
+                    ></Button>
                 </div>
             </div>
         </div>

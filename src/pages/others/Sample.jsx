@@ -1,4 +1,4 @@
-import Button from '../components/Button';
+import Button from '../../components/ui/Button';
 const Sample = () => {
     return (
         <div className="flex bg-gray-100">

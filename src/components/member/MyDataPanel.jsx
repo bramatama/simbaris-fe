@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Button from '../Button';
+import Button from '../ui/Button';
 import { ExternalLink } from 'lucide-react';
-import MemberModal from '../MemberModal';
+import MemberModal from '../ui/MemberModal';
 
 const MyDataPanel = ({ myData, userRole }) => {
-    const [isModalOpen, setIsModalOpen]= useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const isMemberPage = location.pathname === '/tim-saya/anggota';
-    const role = 'member'|| userRole;
+    const role = 'member' || userRole;
 
     return (
         <div className="flex flex-col gap-4">

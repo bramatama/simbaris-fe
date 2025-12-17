@@ -1,6 +1,6 @@
-import DetailTimMember from '../pages/Member/DetailTimMember';
-import NotFoundPage from '../pages/NotFoundPage';
-import DetailTimAdminTim from '../pages/AdminTim/TimSayaDetail';
+import DetailTimMember from '../pages/member/DetailTimMember';
+import NotFoundPage from '../pages/others/NotFoundPage';
+import DetailTimAdminTim from '../pages/admin_tim/TimSayaDetail';
 
 const DetailTimRoute = ({ userRole, isSidebarOpen }) => {
     const components = {

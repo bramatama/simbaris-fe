@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Button from '../../Button';
+import Button from '../../ui/Button';
 import { ExternalLink } from 'lucide-react';
 
 const myTeamPanel = ({ teamData }) => {
@@ -33,17 +33,17 @@ const myTeamPanel = ({ teamData }) => {
                     </div>
                 </div>
             </div>
-                <div className="flex w-full justify-end items-center">
-                    <Link to="/tim-saya/detail">
-                        <Button
-                            text="Lihat Selengkapnya"
-                            size="long"
-                            type="primary"
-                            color="secondary"
-                            leftIcon={<ExternalLink size={18} />}
-                        ></Button>
-                    </Link>
-                </div>
+            <div className="flex w-full justify-end items-center">
+                <Link to="/tim-saya/detail">
+                    <Button
+                        text="Lihat Selengkapnya"
+                        size="long"
+                        type="primary"
+                        color="secondary"
+                        leftIcon={<ExternalLink size={18} />}
+                    ></Button>
+                </Link>
+            </div>
         </div>
     );
 };

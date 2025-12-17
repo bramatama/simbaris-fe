@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 import { ExternalLink, MoreVertical, SearchIcon } from 'lucide-react';
 
-import Table from '../Table';
-import Button from '../Button';
-import InputField from '../inputs/InputField';
-import Pagination from '../Pagination';
-import FilterDropdown from '../FilterDropdown';
-import MemberModal from '../MemberModal';
+import Table from '../ui/Table';
+import Button from '../ui/Button';
+import InputField from '../ui/InputField';
+import Pagination from '../ui/Pagination';
+import FilterDropdown from '../ui/FilterDropdown';
+import MemberModal from '../ui/MemberModal';
 
 const MyMemberPanel = ({ myMemberData, userRole }) => {
     const isMemberPage = location.pathname === '/tim-saya/anggota';

@@ -1,12 +1,12 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../components/Button';
-import InputField from '../components/inputs/InputField';
-import StepsIndicator from '../components/registration/StepsIndicator';
-import ComboBox from '../components/inputs/Combobox';
-import UploadModal from '../components/registration/UploadModal';
+import Button from '../../components/ui/Button';
+import InputField from '../../components/ui/InputField';
+import StepsIndicator from '../../components/registration/StepsIndicator';
+import ComboBox from '../../components/ui/Combobox';
+import UploadModal from '../../components/registration/UploadModal';
 
-import schoolList from '../dummy/schoolList';
+import schoolList from '../../dummy/schoolList';
 import {
     Users,
     User,
@@ -305,11 +305,12 @@ const RegistrationPage = () => {
             <div className="w-full max-w-7xl">
                 {currentStep === 1 && (
                     <div className="flex items-center justify-center mt-10 bg-transparent">
-                        <div className="bg-white shadow-lg rounded-2xl flex flex-col items-center justify-center w-[500px] h-[450px]">
+                        <div className="bg-white p-11 mx-4 md:px-24 md:py-16 md:mx-8 rounded-lg shadow-md">
                             <div className="flex justify-center mb-6">
                                 <img
                                     src="/images/logo_simbaris_lined.png"
                                     alt="SIMBARIS"
+                                    className="w-48 md:w-auto"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -320,6 +321,7 @@ const RegistrationPage = () => {
                                     onChange={handleInputChange}
                                     placeholder="Email"
                                     type="email"
+                                    className="text-sm md:text-base"
                                 />
                                 <InputField
                                     label=""
@@ -328,6 +330,7 @@ const RegistrationPage = () => {
                                     onChange={handleInputChange}
                                     placeholder="Password"
                                     type="password"
+                                    className="text-sm md:text-base"
                                 />
                                 <InputField
                                     label=""
@@ -336,6 +339,7 @@ const RegistrationPage = () => {
                                     onChange={handleInputChange}
                                     placeholder="Konfirmasi Password"
                                     type="password"
+                                    className="text-sm md:text-base"
                                 />
 
                                 <div className="flex flex-col-reverse md:flex-row md:justify-end pt-8 gap-4 mt-6">
@@ -345,14 +349,14 @@ const RegistrationPage = () => {
                                         variant="outline"
                                         size="default"
                                         text="← Kembali"
-                                        className="w-full md:w-40"
+                                        className="w-full md:w-40 text-sm md:text-base"
                                     />
                                     <Button
                                         onClick={handleNext}
                                         color="accent"
                                         size="default"
                                         text="Buat Akun!"
-                                        className="w-full md:w-40"
+                                        className="w-full md:w-40 text-sm md:text-base"
                                     />
                                 </div>
                             </div>
@@ -732,7 +736,7 @@ const RegistrationPage = () => {
                                         <img
                                             src="/images/logo_bni.png"
                                             alt="BNI"
-                                            className='h-8'
+                                            className="h-8"
                                         />
                                     </div>
                                 </div>

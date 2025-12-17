@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProfileDropdown from './ProfileDropdown';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import authService from '../../services/auth_service';
 
 // --- Helper Component: Tautan Sidebar Biasa ---
 const SidebarLink = ({ icon, label, isActive, isChildren, href = '#' }) => (
@@ -56,19 +55,34 @@ const SidebarDropdown = ({ label, children, isActive }) => {
     );
 };
 
+// --- Skeleton Loading Sidebar ---
+const SidebarSkeleton = () => (
+    <div className="flex flex-col h-full w-full animate-pulse">
+        <div className="flex items-center p-4 h-16 border-b border-gray-100">
+            <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+            <div className="ml-3 flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+        </div>
+        <div className="flex-1 py-4 space-y-5 px-4">
+            {[1, 2].map((i) => (
+                <div key={i} className="h-10 bg-gray-200 rounded"></div>
+            ))}
+        </div>
+    </div>
+);
+
 // --- Komponen Utama Sidebar ---
-const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
+const Sidebar = ({
+    user,
+    activePath,
+    isOpen,
+    toggleSidebar,
+    isLoading,
+    onLogout,
+}) => {
     // Definisikan struktur navigasi untuk setiap peran
-    const navigator = useNavigate();
-    const handleLogout = async () => {
-        try {
-            await authService.logout();
-            localStorage.removeItem('authToken');
-            navigator('/');
-        } catch (err) {
-            console.log('Logout gagal', err);
-        }
-    };
 
     const navConfig = {
         committee: [
@@ -125,59 +139,68 @@ const Sidebar = ({ user, activePath, isOpen, toggleSidebar }) => {
         ],
     };
 
-    const userNav = navConfig[user.role] || [];
+    const userNav = user ? navConfig[user.role] || [] : [];
 
     return (
         <div className="flex">
             <div
                 className={`fixed flex flex-col h-full bg-white text-simbaris-text w-64 z-20 border-r-2 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
-                <div className="">
-                    <ProfileDropdown
-                        user={user}
-                        onLogout={handleLogout}
-                        onPreferences={() => console.log('Preferences')}
-                    />
-                </div>
-                <nav className="flex-1 py-4">
-                    {userNav.map((item) => {
-                        if (item.type === 'link') {
-                            return (
-                                <SidebarLink
-                                    key={item.path}
-                                    href={item.path}
-                                    icon={item.icon}
-                                    label={item.label}
-                                    isActive={activePath === item.path}
-                                    isChildren={false}
-                                />
-                            );
-                        }
-                        if (item.type === 'dropdown') {
-                            const isChildActive = item.children.some(
-                                (child) => child.path === activePath
-                            );
-                            return (
-                                <SidebarDropdown
-                                    key={item.label}
-                                    label={item.label}
-                                    isActive={isChildActive}
-                                >
-                                    {item.children.map((child) => (
+                {isLoading ? (
+                    <SidebarSkeleton />
+                ) : (
+                    <>
+                        <div className="">
+                            <ProfileDropdown
+                                user={user}
+                                onLogout={onLogout}
+                                onPreferences={() => console.log('Preferences')}
+                            />
+                        </div>
+                        <nav className="flex-1 py-4">
+                            {userNav.map((item) => {
+                                if (item.type === 'link') {
+                                    return (
                                         <SidebarLink
-                                            key={child.path}
-                                            href={child.path}
-                                            label={child.label}
-                                            isActive={activePath === child.path}
-                                            isChildren={true}
+                                            key={item.path}
+                                            href={item.path}
+                                            icon={item.icon}
+                                            label={item.label}
+                                            isActive={activePath === item.path}
+                                            isChildren={false}
                                         />
-                                    ))}
-                                </SidebarDropdown>
-                            );
-                        }
-                        return null;
-                    })}
-                </nav>
+                                    );
+                                }
+                                if (item.type === 'dropdown') {
+                                    const isChildActive = item.children.some(
+                                        (child) => child.path === activePath
+                                    );
+                                    return (
+                                        <SidebarDropdown
+                                            key={item.label}
+                                            label={item.label}
+                                            isActive={isChildActive}
+                                        >
+                                            {item.children.map((child) => (
+                                                <SidebarLink
+                                                    key={child.path}
+                                                    href={child.path}
+                                                    label={child.label}
+                                                    isActive={
+                                                        activePath ===
+                                                        child.path
+                                                    }
+                                                    isChildren={true}
+                                                />
+                                            ))}
+                                        </SidebarDropdown>
+                                    );
+                                }
+                                return null;
+                            })}
+                        </nav>
+                    </>
+                )}
             </div>
             <div
                 onClick={toggleSidebar}

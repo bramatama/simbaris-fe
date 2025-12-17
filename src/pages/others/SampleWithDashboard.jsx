@@ -1,5 +1,5 @@
-import Button from '../components/Button';
-import PieChart from '../components/panitia/dashboard_panitia/PieChart';
+import Button from '../../components/ui/Button';
+import PieChart from '../../components/panitia/dashboard_panitia/PieChart';
 const SampleWithDashboard = ({ isSidebarOpen }) => {
     const registrationData = {
         labels: ['SD / MI', 'SMP / MTs', 'SMA / SMK / MA'],

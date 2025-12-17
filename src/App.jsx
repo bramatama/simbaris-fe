@@ -11,20 +11,22 @@ import {
 
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
+import ExpiredSessionModal from './components/ui/ExpiredSessionModal';
 
-import LandingPage from './pages/LandingPage';
-import RegistrationPage from './pages/RegistrationPage';
-import SampleWithDashboard from './pages/SampleWithDashboard';
-import Sample from './pages/Sample';
-import NotFoundPage from './pages/NotFoundPage';
-import LoginPage from './pages/LoginPage';
+import LandingPage from './pages/landing_page/LandingPage';
+import RegistrationPage from './pages/registration/RegistrationPage';
+// import SampleWithDashboard from './pages/SampleWithDashboard';
+// import Sample from './pages/Sample';
+import NotFoundPage from './pages/others/NotFoundPage';
+import LoginPage from './pages/Login/LoginPage';
 import DetailPendaftaran from './pages/Panitia/DetailPendaftaran';
-import ComponentsCheck from './pages/ComponentsCheck';
+import ComponentsCheck from './pages/others/ComponentsCheck';
 
 import DashboardRoute from './routes/DashboardRoute';
 import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
 import DetailTimRoute from './routes/DetailTimRoute';
 import MemberListRoute from './routes/MemberListRoute';
+import authService from './services/auth_service';
 
 function App() {
     const location = useLocation();
@@ -32,78 +34,146 @@ function App() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-    // 1. State currentUser defaultnya null (belum login)
-    const [currentUser, setCurrentUser] = useState(null);
+    // 1. Auth User (from Token/LocalStorage) - for Routing
+    const [authUser, setAuthUser] = useState(null);
 
-    // 2. State loading untuk menunggu proses pengecekan token selesai
+    // 2. Sidebar User (from API) - for Sidebar display
+    const [sidebarUser, setSidebarUser] = useState(null);
+    const [isSidebarLoading, setIsSidebarLoading] = useState(true);
+
+    // 3. State loading untuk menunggu proses pengecekan token selesai
     const [isLoading, setIsLoading] = useState(true);
+
+    // 4. State untuk modal expired session
+    const [isSessionExpired, setIsSessionExpired] = useState(false);
 
     // Helper untuk mengembalikan fungsi 'initials' karena JSON.parse menghilangkan function
     const hydrateUser = (userData) => {
+        const additional = userData.additional || {};
+        let displayName = userData.email; // Default fallback
+        let avatarUrl = null;
+
+        // Tentukan display name berdasarkan role dan data additional
+        if (userData.role === 'committee') {
+            if (additional.committee_name)
+                displayName = additional.committee_name;
+            if (additional.committee_profile_url)
+                avatarUrl = additional.committee_profile_url;
+        } else if (userData.role === 'team_admin') {
+            if (additional.team_name) displayName = additional.team_name;
+            if (additional.team_logo_url) avatarUrl = additional.team_logo_url;
+        } else if (userData.role === 'member') {
+            if (additional.member_name) displayName = additional.member_name;
+            if (additional.file_url) avatarUrl = additional.file_url;
+        }
+
         return {
             ...userData,
+            name: displayName, // Properti 'name' eksplisit untuk UI
+            avatar_url: avatarUrl,
             get initials() {
-                // Pastikan parent ada untuk menghindari error split of undefined
-                return this.parent
-                    ? this.parent.split(' ')[0][0].toUpperCase()
-                    : 'U';
+                const nameStr = this.name || this.email || 'U';
+                return nameStr.charAt(0).toUpperCase();
             },
         };
     };
 
-    // 3. EFFECT: Cek Token & User saat aplikasi dimuat
+    // 5. EFFECT: Cek Token & User saat aplikasi dimuat
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('access_token');
             const savedUser = localStorage.getItem('user');
 
-            if (token && savedUser) {
+            if (token) {
+                let isOptimistic = false;
+
+                // A. Set Auth User for Routing (Immediate from LocalStorage)
+                if (savedUser) {
+                    try {
+                        const parsedUser = JSON.parse(savedUser);
+                        setAuthUser(hydrateUser(parsedUser));
+                        isOptimistic = true;
+
+                        // OPTIMISASI: Langsung stop loading jika ada cache (UI muncul instan)
+                        setIsLoading(false);
+
+                        // Cek redirect segera
+                        if (
+                            location.pathname === '/login' ||
+                            location.pathname === '/' ||
+                            location.pathname === '/pendaftaran'
+                        ) {
+                            navigate('/dashboard', { replace: true });
+                        }
+                    } catch (e) {
+                        console.error('Gagal membaca cache user:', e);
+                    }
+                }
+
+                // B. Fetch Sidebar User (Fresh from API) - Berjalan di Background
                 try {
-                    // Parse data user dari string JSON localstorage
-                    const parsedUser = JSON.parse(savedUser);
-                    if (!parsedUser) throw new Error('User data invalid');
+                    const response = await authService.getCurrentUser();
+                    const userData = response.data;
 
-                    // Kembalikan getter/function yang hilang saat stringify
-                    const userWithMethods = hydrateUser(parsedUser);
+                    setSidebarUser(hydrateUser(userData));
 
-                    setCurrentUser(userWithMethods);
+                    // Update cache & authUser dengan data terbaru
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    setAuthUser(hydrateUser(userData));
+                } catch (error) {
+                    console.error('❌ Gagal sinkronisasi user:', error);
+                }
+                setIsSidebarLoading(false);
 
-                    // LOGIC REDIRECT:
-                    // Jika user akses halaman Login/Landing padahal sudah punya token,
-                    // lempar ke dashboard.
+                // C. Fallback: Jika tidak ada cache, baru kita handle loading & redirect di sini
+                if (!isOptimistic) {
                     if (
                         location.pathname === '/login' ||
-                        location.pathname === '/'
+                        location.pathname === '/' ||
+                        location.pathname === '/pendaftaran'
                     ) {
                         navigate('/dashboard', { replace: true });
                     }
-                } catch (error) {
-                    console.error(
-                        '❌ Gagal restore session (JSON Error):',
-                        error
-                    );
-                    console.log('Raw savedUser:', savedUser); // Bersihkan storage jika data korup
+                    setIsLoading(false);
                 }
             } else {
-                // Jika tidak ada token, dan mencoba akses halaman yang butuh login
-                // (Kamu bisa tambahkan logika protected route yang lebih ketat di sini)
-                console.log(
-                    '4. Token atau User tidak ditemukan di LocalStorage'
-                );
+                setAuthUser(null);
+                setSidebarUser(null);
+                setIsLoading(false);
+                setIsSidebarLoading(false);
             }
-
-            setIsLoading(false); // Selesai loading
         };
-
         checkAuth();
     }, [location.pathname, navigate]);
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
+    // 5. EFFECT: Listen event session-expired dari auth_service / api interceptor
+    useEffect(() => {
+        const handleSessionExpired = () => {
+            setIsSessionExpired(true);
+        };
+
+        window.addEventListener('session-expired', handleSessionExpired);
+        return () =>
+            window.removeEventListener('session-expired', handleSessionExpired);
+    }, []);
+
+    const handleExpiredLogout = async () => {
+        await authService.logout();
+        setIsSessionExpired(false);
+        setAuthUser(null);
+        setSidebarUser(null);
+        navigate('/login', { replace: true });
     };
 
-    const getInitials = (name) => {
-        return name.split(' ')[0][0].toUpperCase();
+    const handleUserLogout = async () => {
+        await authService.logout();
+        setAuthUser(null);
+        setSidebarUser(null);
+        navigate('/');
+    };
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
     };
 
     const availableRoutes = [
@@ -156,23 +226,20 @@ function App() {
         );
     }
 
-    // --- HELPER UNTUK PROTECTED ROUTE ---
-    const Protected = ({ children }) => {
-        // Logika: Loading sudah selesai (false), tapi currentUser masih null? Berarti tidak login.
-        if (!currentUser) {
-            return <Navigate to="/login" replace />;
-        }
-        return children;
-    };
-
     return (
         <div className="App">
-            {currentUser && showSidebar && (
+            <ExpiredSessionModal
+                isOpen={isSessionExpired}
+                onConfirm={handleExpiredLogout}
+            />
+            {authUser && showSidebar && (
                 <Sidebar
                     toggleSidebar={toggleSidebar}
                     isOpen={isSidebarOpen}
-                    user={currentUser}
+                    user={sidebarUser || authUser}
                     activePath={location.pathname}
+                    isLoading={isSidebarLoading}
+                    onLogout={handleUserLogout}
                 />
             )}
             {showHeader && (
@@ -188,11 +255,11 @@ function App() {
                 <Route
                     path="/dashboard/*"
                     element={
-                        currentUser ? (
+                        authUser ? (
                             // Kirim role ke DashboardRoute
                             <DashboardRoute
                                 isSidebarOpen={isSidebarOpen}
-                                userRole={currentUser?.role}
+                                userRole={authUser?.role}
                             />
                         ) : (
                             <Navigate to="/login" replace />
@@ -202,8 +269,8 @@ function App() {
                 <Route
                     path="/tim-saya/detail"
                     element={
-                        currentUser ? (
-                            <DetailTimRoute userRole={currentUser?.role} />
+                        authUser ? (
+                            <DetailTimRoute userRole={authUser?.role} />
                         ) : (
                             <Navigate to="/login" />
                         )
@@ -213,9 +280,9 @@ function App() {
                 <Route
                     path="/tim-saya/anggota"
                     element={
-                        currentUser ? (
+                        authUser ? (
                             <MemberListRoute
-                                userRole={currentUser?.role}
+                                userRole={authUser?.role}
                                 isSidebarOpen={isSidebarOpen}
                             />
                         ) : (
@@ -227,7 +294,7 @@ function App() {
                 <Route
                     path="/tim-terdaftar/detail"
                     element={
-                        currentUser ? (
+                        authUser ? (
                             <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
                         ) : (
                             <Navigate to="/login" />
@@ -235,9 +302,9 @@ function App() {
                     }
                 />
                 <Route
-                    path="/detail-pendaftaran"
+                    path="/detail-pendaftaran/:registrationId"
                     element={
-                        currentUser ? (
+                        authUser ? (
                             <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
                         ) : (
                             <Navigate to="/login" />
@@ -248,10 +315,10 @@ function App() {
                 <Route
                     path="/tim-terdaftar"
                     element={
-                        currentUser ? (
+                        authUser ? (
                             <TimTerdaftarRoute
                                 isSidebarOpen={isSidebarOpen}
-                                userRole={currentUser?.role}
+                                userRole={authUser?.role}
                             />
                         ) : (
                             <Navigate to="/login" />
@@ -259,13 +326,13 @@ function App() {
                     }
                 />
 
-                <Route
+                {/* <Route
                     path="/sample-dashboard"
                     element={
                         <SampleWithDashboard isSidebarOpen={isSidebarOpen} />
                     }
                 />
-                <Route path="/sample" element={<Sample />} />
+                <Route path="/sample" element={<Sample />} /> */}
                 <Route path="/componentscheck" element={<ComponentsCheck />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>

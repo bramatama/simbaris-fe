@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import Avatar from '../Avatar';
+import Avatar from './Avatar';
 
 const useOnClickOutside = (ref, handler) => {
     useEffect(() => {
@@ -27,7 +27,17 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
 
     useOnClickOutside(dropdownRef, () => setIsOpen(false));
 
-    const { parent, children, imageUrl, initials } = user;
+    const { role, email, avatar_url, initials, additional } = user || {};
+
+    // Tentukan subtext (baris kedua) di dropdown
+    let subText = role ? role.replace('_', ' ') : email;
+
+    // Tampilkan info tambahan yang relevan berdasarkan role
+    if (role === 'team_admin' && additional?.school_name) {
+        subText = additional.school_name;
+    } else if (role === 'member' && additional?.team_name) {
+        subText = additional.team_name;
+    }
 
     return (
         <div
@@ -43,16 +53,20 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                         : 'hover:bg-gray-50 border-transparent border-2 hover:border-transparent'
                 }`}
             >
-                <Avatar
-                    imageUrl={imageUrl}
-                    initials={initials}
-                    parent={parent}
-                />
+                <Avatar imageUrl={avatar_url} initials={initials} name={name} />
                 <div className="ml-3 text-left">
                     <p className="font-semibold text-lg text-simbaris-text">
-                        {parent}
+                        {
+                            additional?.team_name ||
+                            additional?.committee_name.split(' ')[1] ||
+                            additional?.committee_name.split(' ')[0]||
+                            additional?.member_name.split(' ')[1] ||
+                            additional?.member_name.split(' ')[0] ||
+                            'User'}
                     </p>
-                    <p className="text-xs text-gray-500">{children}</p>
+                    <p className="text-xs text-gray-500 capitalize">
+                        {subText}
+                    </p>
                 </div>
                 <div className="ml-auto text-gray-500">
                     {isOpen ? (

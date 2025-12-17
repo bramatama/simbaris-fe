@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import { GraduationCapIcon, Users, SearchIcon } from 'lucide-react';
-import SimpleCard from '../../components/SimpleCards';
-import InputField from '../../components/inputs/InputField';
-import Table from '../../components/Table';
-import Pagination from '../../components/Pagination';
-import FilterDropdown from '../../components/FilterDropdown';
+import SimpleCard from '../../components/ui/SimpleCards';
+import InputField from '../../components/ui/InputField';
+import Table from '../../components/ui/Table';
+import Pagination from '../../components/ui/Pagination';
+import FilterDropdown from '../../components/ui/FilterDropdown';
 import registrantList from '../../dummy/registrantList';
 
 const TimTerdaftarMember = ({ isSidebarOpen = true }) => {

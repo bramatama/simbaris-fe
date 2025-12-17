@@ -1,5 +1,5 @@
 import { Award } from 'lucide-react';
-import Avatar from "../../Avatar"
+import Avatar from '../../sidebar/Avatar';
 
 const RegistrantItem = ({ team, index }) => {
     const medalColors = {

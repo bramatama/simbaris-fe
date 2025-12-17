@@ -1,7 +1,5 @@
-// src/services/api.js
 import axios from 'axios';
 
-// Sesuaikan port backend FastAPI kamu
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 const api = axios.create({
@@ -11,34 +9,46 @@ const api = axios.create({
     },
 });
 
-// --- REQUEST INTERCEPTOR ---
-// Sebelum request dikirim, cek apakah ada token di localStorage
-api.interceptors.request.use(
-    (config) => {
+api.interceptors.request.use((config) => {
+    if (config.authType === 'registration') {
+        const token = localStorage.getItem('registration_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    } else {
         const token = localStorage.getItem('access_token');
         if (token) {
-            // Pasang token ke header Authorization: Bearer <token>
-            config.headers['Authorization'] = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`;
         }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+    }
+    return config;
+});
 
-// --- RESPONSE INTERCEPTOR (Opsional tapi Penting) ---
-// Menangani jika token expired (401), otomatis coba refresh
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        return response;
+    },
     async (error) => {
         const originalRequest = error.config;
 
-        // Jika error 401 (Unauthorized) dan belum pernah dicoba refresh
-        if (error.response.status === 401 && !originalRequest._retry) {
+        // Cek jika error 401 dan belum pernah diretry
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            !originalRequest._retry &&
+            !originalRequest.url.includes('/auth/login')
+        ) {
             originalRequest._retry = true;
 
             try {
                 const refreshToken = localStorage.getItem('refresh_token');
-                // Panggil endpoint refresh token di backend kamu
+
+                if (!refreshToken) {
+                    throw new Error('No refresh token available');
+                }
+
+                // Gunakan axios instance murni (bukan 'api') untuk refresh token
+                // agar tidak terkena interceptor ini lagi (menghindari infinite loop)
                 const response = await axios.post(
                     `${API_BASE_URL}/auth/refresh`,
                     {
@@ -46,24 +56,25 @@ api.interceptors.response.use(
                     }
                 );
 
-                const { access_token, refresh_token: newRefreshToken } =
-                    response.data;
+                const {
+                    access_token,
+                    refresh_token: newRefreshToken,
+                    expires_in,
+                } = response.data;
 
-                // Simpan token baru
                 localStorage.setItem('access_token', access_token);
-                if (newRefreshToken) {
-                    localStorage.setItem('refresh_token', newRefreshToken);
-                }
+                localStorage.setItem('refresh_token', newRefreshToken);
+                localStorage.setItem('expires_in', expires_in);
 
-                // Ulangi request yang tadi gagal dengan token baru
-                api.defaults.headers.common['Authorization'] =
-                    `Bearer ${access_token}`;
+                originalRequest.headers.Authorization = `Bearer ${access_token}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                // Jika refresh juga gagal, logout user
-                console.error('Session expired', refreshError);
-                localStorage.clear();
-                window.location.href = '/login'; // Redirect ke login
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('expires_in');
+                window.dispatchEvent(new Event('session-expired'));
+                return Promise.reject(refreshError);
             }
         }
         return Promise.reject(error);

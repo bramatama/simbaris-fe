@@ -1,6 +1,6 @@
 // src/components/LoginCard.jsx
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/auth_service';
 
@@ -23,11 +23,12 @@ export default function LoginCard() {
         setError('');
 
         try {
-            const data =  await authService.login(email, password);
-            
-            localStorage.setItem('authToken', data.access_token);
-            console.log(data)
-            console.log(data.user.role)
+            const userLogin = {
+                email: email,
+                password: password,
+            };
+            await authService.login(userLogin);
+
             navigate('/dashboard');
         } catch (err) {
             const errorMessages =
@@ -41,12 +42,7 @@ export default function LoginCard() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-transparent">
             {/* Card Section */}
-            <div
-                className="
-          bg-white shadow-lg rounded-2xl
-          flex flex-col items-center justify-center w-[500px] h-[450px]
-        "
-            >
+            <div className="bg-white shadow-lg rounded-xl flex flex-col items-center justify-center py-11 px-14 md:w-[500px] md:py-24">
                 {/* Logo */}
 
                 <img
@@ -114,7 +110,7 @@ export default function LoginCard() {
                     <button
                         type="submit"
                         className="w-full bg-simbaris-primary text-white font-medium py-2 rounded-md hover:bg-simbaris-primary-dark transition-colors"
-                        disabled={error}
+                        disabled={isLoading}
                     >
                         {isLoading ? 'Loading..' : 'Login'}
                     </button>
