@@ -24,7 +24,7 @@ const ErrorPanel = ({ message, onRetry, onLogout }) => {
     return (
         <div className="flex flex-col items-center justify-center w-full h-full min-h-[400px] bg-white rounded-lg shadow-sm border border-red-100 p-8 text-center animate-in fade-in zoom-in duration-300">
             <div className="w-56 h-56 bg-red-50 rounded-full flex items-center justify-center mb-6">
-                <TriangleAlert size={28}/>
+                <TriangleAlert size={80} color='red'/>
             </div>
 
             <h3 className="text-xl font-bold text-gray-900 mb-3">

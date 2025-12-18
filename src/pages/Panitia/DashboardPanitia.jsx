@@ -101,7 +101,9 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 );
             } catch (error) {
                 console.error('Failed to fetch dashboard widgets data:', error);
-                setError('Gagal memuat data dashboard. Silakan periksa koneksi internet Anda atau coba lagi nanti.');
+                setError(
+                    'Gagal memuat data dashboard. Silakan periksa koneksi internet Anda atau coba lagi nanti.'
+                );
             } finally {
                 setStatsLoading(false);
                 setTeamsLoading(false);
@@ -262,104 +264,122 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                         <ErrorPanel message={error} />
                     ) : (
                         <>
-                    <div className="hidden xl:flex gap-4 mb-4">
-                        {statsLoading
-                            ? [1, 2, 3, 4].map((_, i) => (
-                                  <SimpleCardSkeleton key={i} />
-                              ))
-                            : cards.map((card, index) => (
-                                  <SimpleCard key={index} {...card} />
-                              ))}
-                    </div>
+                            <div className="hidden xl:flex gap-4 mb-4">
+                                {statsLoading
+                                    ? [1, 2, 3, 4].map((_, i) => (
+                                          <SimpleCardSkeleton key={i} />
+                                      ))
+                                    : cards.map((card, index) => (
+                                          <SimpleCard key={index} {...card} />
+                                      ))}
+                            </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
-                        <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-full">
-                            <h3 className="font-bold text-xl">Tim Terdaftar</h3>
-                            <div className="flex relative z-10">
-                                <InputField
-                                    leftIcon={
-                                        <SearchIcon
-                                            size={18}
-                                            className="text-gray-400"
+                            <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
+                                <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:col-span-2 md:row-span-3 h-full">
+                                    <h3 className="font-bold text-xl">
+                                        Tim Terdaftar
+                                    </h3>
+                                    <div className="flex relative z-10">
+                                        <InputField
+                                            leftIcon={
+                                                <SearchIcon
+                                                    size={18}
+                                                    className="text-gray-400"
+                                                />
+                                            }
+                                            name="search"
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                            placeholder="Cari Tim atau Sekolah..."
+                                            className="h-11"
+                                            disabled={teamsLoading}
                                         />
-                                    }
-                                    name="search"
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                    placeholder="Cari Tim atau Sekolah..."
-                                    className="h-11"
-                                    disabled={teamsLoading}
-                                />
-                            </div>
+                                    </div>
 
-                            <div className="relative">
-                                <div
-                                    className={`transition-opacity duration-300 ${teamsLoading ? 'opacity-50' : 'opacity-100'} space-y-2`}
-                                >
-                                    {/* <div className="space-y-2"> */}
-                                    <Table
-                                        columns={columns}
-                                        data={paginatedTeams}
-                                        sortConfig={sortConfig}
-                                        onSort={handleSort}
-                                        isLoading={teamsLoading}
-                                    />
-                                    <Pagination
-                                        currentPage={currentPage}
-                                        totalItems={processedTeams.length}
-                                        itemsPerPage={itemsPerPage}
-                                        onPageChange={setCurrentPage}
-                                        onItemsPerPageChange={(val) => {
-                                            setItemsPerPage(val);
-                                            setCurrentPage(1);
-                                        }}
-                                    />
+                                    <div className="relative">
+                                        {teamsLoading ? (
+                                            <div className="border border-gray-200 rounded-lg overflow-hidden animate-pulse">
+                                                <div className="h-12 bg-gray-100 border-b border-gray-200"></div>
+                                                {[1, 2, 3, 4, 5].map((i) => (
+                                                    <div
+                                                        key={i}
+                                                        className="h-16 bg-white border-b border-gray-100"
+                                                    ></div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <Table
+                                                    columns={columns}
+                                                    data={paginatedTeams}
+                                                    sortConfig={sortConfig}
+                                                    onSort={handleSort}
+                                                />
+                                                <Pagination
+                                                    currentPage={currentPage}
+                                                    totalItems={
+                                                        processedTeams.length
+                                                    }
+                                                    itemsPerPage={itemsPerPage}
+                                                    onPageChange={
+                                                        setCurrentPage
+                                                    }
+                                                    onItemsPerPageChange={(
+                                                        val
+                                                    ) => {
+                                                        setItemsPerPage(val);
+                                                        setCurrentPage(1);
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex justify-end items-center">
+                                        <Link to="/tim-terdaftar">
+                                            <Button
+                                                text="Lihat Selengkapnya"
+                                                size="long"
+                                                round="half"
+                                                color="secondary"
+                                                disabled={teamsLoading}
+                                                leftIcon={
+                                                    <ExternalLink size={18} />
+                                                }
+                                            ></Button>
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                <div className="flex bg-white shadow-md rounded-lg col-span-1 row-span-1">
+                                    <div className="h-full w-full p-6 flex flex-col gap-4">
+                                        <span className="text-xl text-simbaris-text font-bold">
+                                            Pendaftar Tercepat
+                                        </span>
+                                        <div className="flex items-center w-full h-full">
+                                            <FastestRegistrantsPanel
+                                                teams={
+                                                    fastestTeams.length > 0
+                                                        ? fastestTeams
+                                                        : []
+                                                }
+                                                isLoading={statsLoading}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white flex flex-col items-center rounded-lg shadow-md py-4 px-6 md:row-span-2">
+                                    <div className="h-full w-full max-w-[350px] p-4">
+                                        <PieChart
+                                            // Gunakan data yang sudah diproses
+                                            chartData={registrationData}
+                                            title="Tim Terdaftar Perkategori"
+                                            isLoading={statsLoading}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="flex justify-end items-center">
-                                <Link to="/tim-terdaftar">
-                                    <Button
-                                        text="Lihat Selengkapnya"
-                                        size="long"
-                                        round="half"
-                                        color="secondary"
-                                        disabled={teamsLoading}
-                                        leftIcon={<ExternalLink size={18} />}
-                                    ></Button>
-                                </Link>
-                            </div>
-                        </div>
-
-                        <div className="flex bg-white shadow-md rounded-lg col-span-1 row-span-1">
-                            <div className="h-full w-full p-6 flex flex-col">
-                                <span className="text-xl text-simbaris-text font-bold">
-                                    Pendaftar Tercepat
-                                </span>
-                                <div className="flex items-center w-full h-full">
-                                    <FastestRegistrantsPanel
-                                        teams={
-                                            fastestTeams.length > 0
-                                                ? fastestTeams
-                                                : []
-                                        }
-                                        isLoading={statsLoading}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white flex flex-col items-center rounded-lg shadow-md py-4 px-6 md:row-span-2">
-                            <div className="h-full w-full max-w-[350px] p-4">
-                                <PieChart
-                                    // Gunakan data yang sudah diproses
-                                    chartData={registrationData}
-                                    title="Tim Terdaftar Perkategori"
-                                    isLoading={statsLoading}
-                                />
-                            </div>
-                        </div>
-                    </div>
                         </>
                     )}
                 </div>

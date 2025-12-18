@@ -2,16 +2,31 @@ import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
 import { ExternalLink, Eye } from 'lucide-react';
 
-const MyRegistrationPanel = ({ teamData }) => {
-    const isDetailPage =
-        location.pathname === '/tim-terdaftar/detail' ||
-        location.pathname === '/detail-pendaftaran';
+const MyRegistrationPanel = ({ teamData, isLoading = false }) => {
+    const isDetailPage = location.pathname === '/detail-pendaftaran';
 
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold text-simbaris-text">
                 Detail Pendaftaran
             </h2>
+            {isLoading ? (
+                <div className="flex flex-col gap-4 animate-pulse">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex flex-col w-full gap-4">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div
+                                    key={i}
+                                    className="flex justify-between items-center border-b border-gray-200 pb-2"
+                                >
+                                    <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                                    <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ) : (
             <div
                 className={`flex flex-col items-center md:flex-row ${!isDetailPage ? 'gap-4' : 'gap-2'}`}
             >
@@ -36,7 +51,7 @@ const MyRegistrationPanel = ({ teamData }) => {
                     <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                         <span className="text-sm text-gray-600">Harga</span>
                         <span className="text-sm font-medium text-gray-900 text-right px-2 py-1">
-                            400000
+                            {teamData.price}
                         </span>
                     </div>
                     <div className="flex justify-between items-center border-b border-gray-200 pb-2">
@@ -66,16 +81,37 @@ const MyRegistrationPanel = ({ teamData }) => {
                     </div>
                 </div>
             </div>
+            )}
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-simbaris-text">
-                    Status
+                    Detail Verifikasi
                 </h2>
+                {isLoading ? (
+                    <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
+                ) : (
                 <div
                     className={`flex items-center ${!isDetailPage ? 'gap-4' : 'gap-2'} text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-md border border-simbaris-secondary-light`}
                 >
-                    Dalam Proses Verifikasi
+                    {teamData.status}
                 </div>
+                )}
             </div>
+            {isLoading ? (
+                <div className="flex flex-col gap-4 animate-pulse">
+                    <div className="flex flex-col w-full gap-4">
+                        {[1, 2, 3, 4].map((i) => (
+                            <div
+                                key={i}
+                                className="flex justify-between items-center border-b border-gray-200 pb-2"
+                            >
+                                <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+            <>
             <div
                 className={`flex flex-col w-full ${!isDetailPage ? 'gap-4' : 'gap-2'}`}
             >
@@ -112,6 +148,8 @@ const MyRegistrationPanel = ({ teamData }) => {
                     </>
                 )}
             </div>
+            </>
+            )}
             <div className="flex w-full justify-end items-center">
                 <Link to="/tim-saya/detail">
                     <Button
@@ -120,6 +158,7 @@ const MyRegistrationPanel = ({ teamData }) => {
                         type="primary"
                         color="secondary"
                         leftIcon={<ExternalLink size={18} />}
+                        disabled={isLoading}
                     ></Button>
                 </Link>
             </div>

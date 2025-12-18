@@ -95,7 +95,7 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                                 onPreferences();
                                 setIsOpen(false);
                             }}
-                            className="block px-4 py-3 text-sm text-simbaris-text hover:bg-gray-100 transition-colors"
+                            className="block px-4 py-3 text-sm text-simbaris-text hover:bg-gray-100 transition-colors cursor-pointer"
                         >
                             Preferensi
                         </a>
@@ -107,7 +107,7 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                                 onLogout();
                                 setIsOpen(false);
                             }}
-                            className="block px-4 py-3 text-sm text-simbaris-hazard hover:bg-simbaris-hazard-lightest transition-colors"
+                            className="block px-4 py-3 text-sm text-simbaris-hazard hover:bg-simbaris-hazard-lightest transition-colors cursor-pointer"
                         >
                             Logout
                         </a>

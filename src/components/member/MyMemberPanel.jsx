@@ -10,13 +10,13 @@ import Pagination from '../ui/Pagination';
 import FilterDropdown from '../ui/FilterDropdown';
 import MemberModal from '../ui/MemberModal';
 
-const MyMemberPanel = ({ myMemberData, userRole }) => {
+const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
     const isMemberPage = location.pathname === '/tim-saya/anggota';
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
 
-    const [memberData] = useState(myMemberData);
+    const memberData = myMemberData || [];
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(isMemberPage ? 10 : 5);
     const [filters, setFilters] = useState({ gender: '', member_grade: '' });
@@ -168,13 +168,17 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
                 <div className="flex">
                     <InputField
                         leftIcon={
-                            <SearchIcon size={18} className="text-gray-400" />
+                            <SearchIcon
+                                size={18}
+                                className="text-gray-400"
+                            />
                         }
                         name="search"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Cari Tim atau Sekolah..."
                         className="h-11"
+                        disabled={isLoading}
                     />
                 </div>
                 {isMemberPage && (
@@ -186,6 +190,7 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
                             onChange={(val) =>
                                 handleFilterChange('gender', val)
                             }
+                            isLoading={isLoading}
                         />
                         <FilterDropdown
                             label="Kelas"
@@ -194,26 +199,43 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
                             onChange={(val) =>
                                 handleFilterChange('member_grade', val)
                             }
+                            isLoading={isLoading}
                         />
                     </div>
                 )}
             </div>
-            <Table
-                columns={columns}
-                data={paginatedData}
-                sortConfig={sortConfig}
-                onSort={handleSort}
-            />
-            <Pagination
-                currentPage={currentPage}
-                totalItems={filteredData.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={setCurrentPage}
-                onItemsPerPageChange={(val) => {
-                    setItemsPerPage(val);
-                    setCurrentPage(1);
-                }}
-            />
+            {isLoading ? (
+                <div className="flex flex-col gap-4 animate-pulse">
+                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="h-12 bg-gray-100 border-b border-gray-200"></div>
+                        {[1, 2, 3, 4, 5].map((i) => (
+                            <div
+                                key={i}
+                                className="h-14 bg-white border-b border-gray-100"
+                            ></div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <Table
+                        columns={columns}
+                        data={paginatedData}
+                        sortConfig={sortConfig}
+                        onSort={handleSort}
+                    />
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={filteredData.length}
+                        itemsPerPage={itemsPerPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={(val) => {
+                            setItemsPerPage(val);
+                            setCurrentPage(1);
+                        }}
+                    />
+                </>
+            )}
             {!isMemberPage && (
                 <div className="flex justify-end items-center">
                     <Link to="/tim-saya/anggota">
@@ -223,6 +245,7 @@ const MyMemberPanel = ({ myMemberData, userRole }) => {
                             round="half"
                             color="secondary"
                             leftIcon={<ExternalLink size={18} />}
+                            disabled={isLoading}
                         ></Button>
                     </Link>
                 </div>

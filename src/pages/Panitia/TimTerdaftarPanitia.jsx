@@ -275,90 +275,102 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                         <ErrorPanel message={errorTable} />
                     ) : (
                         <>
-                    {/* Cards */}
-                    <div className="hidden xl:flex gap-4 mb-4">
-                        {loadingStats
-                            ? [1, 2, 3, 4].map((_, index) => (
-                                  <SimpleCardSkeleton key={index} />
-                              ))
-                            : cards.map((card, index) => (
-                                  <SimpleCard key={index} {...card} />
-                              ))}
-                    </div>
+                            {/* Cards */}
+                            <div className="hidden xl:flex gap-4 mb-4">
+                                {loadingStats
+                                    ? [1, 2, 3, 4].map((_, index) => (
+                                          <SimpleCardSkeleton key={index} />
+                                      ))
+                                    : cards.map((card, index) => (
+                                          <SimpleCard key={index} {...card} />
+                                      ))}
+                            </div>
 
-                    {/* Main Content */}
-                    <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <h1 className="text-xl font-bold text-gray-900">
-                                Daftar Tim
-                            </h1>
-                        </div>
+                            {/* Main Content */}
+                            <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <h1 className="text-xl font-bold text-gray-900">
+                                        Daftar Tim
+                                    </h1>
+                                </div>
 
-                        {/* Search & Filters */}
-                        <div className="flex flex-col lg:flex-row gap-4">
-                            <div className="flex">
-                                <InputField
-                                    leftIcon={
-                                        <SearchIcon
-                                            size={18}
-                                            className="text-gray-400"
+                                {/* Search & Filters */}
+                                <div className="flex flex-col lg:flex-row gap-4">
+                                    <div className="flex">
+                                        <InputField
+                                            leftIcon={
+                                                <SearchIcon
+                                                    size={18}
+                                                    className="text-gray-400"
+                                                />
+                                            }
+                                            name="search"
+                                            value={search}
+                                            onChange={(e) =>
+                                                setSearch(e.target.value)
+                                            }
+                                            placeholder="Cari Tim atau Sekolah..."
+                                            className="h-11"
+                                            disabled={loadingTable}
                                         />
-                                    }
-                                    name="search"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari Tim atau Sekolah..."
-                                    className="h-11"
-                                    disabled={loadingTable}
-                                />
-                            </div>
-                            <div className="relative z-10 flex flex-wrap gap-2">
-                                <FilterDropdown
-                                    label="Jenjang"
-                                    options={levelOptions}
-                                    value={filters.level}
-                                    onChange={(val) =>
-                                        handleFilterChange('level', val)
-                                    }
-                                    isLoading={loadingTable}
-                                />
-                                <FilterDropdown
-                                    label="Status"
-                                    options={statusOptions}
-                                    value={filters.status}
-                                    onChange={(val) =>
-                                        handleFilterChange('status', val)
-                                    }
-                                    isLoading={loadingTable}
-                                />
-                            </div>
-                        </div>
+                                    </div>
+                                    <div className="relative z-10 flex flex-wrap gap-2">
+                                        <FilterDropdown
+                                            label="Jenjang"
+                                            options={levelOptions}
+                                            value={filters.level}
+                                            onChange={(val) =>
+                                                handleFilterChange('level', val)
+                                            }
+                                            isLoading={loadingTable}
+                                        />
+                                        <FilterDropdown
+                                            label="Status"
+                                            options={statusOptions}
+                                            value={filters.status}
+                                            onChange={(val) =>
+                                                handleFilterChange(
+                                                    'status',
+                                                    val
+                                                )
+                                            }
+                                            isLoading={loadingTable}
+                                        />
+                                    </div>
+                                </div>
 
-                        <div className="relative">
-                            <div
-                                className={`transition-opacity duration-300 ${loadingTable ? 'opacity-50' : 'opacity-100'}`}
-                            >
-                                <Table
-                                    columns={columns}
-                                    data={paginatedData}
-                                    sortConfig={sortConfig}
-                                    onSort={handleSort}
-                                    isLoading={loadingTable}
+                                <div className="relative">
+                                    {loadingTable ? (
+                                        <div className="border border-gray-200 rounded-lg overflow-hidden animate-pulse">
+                                            <div className="h-12 bg-gray-100 border-b border-gray-200"></div>
+                                            {[1, 2, 3, 4, 5].map((i) => (
+                                                <div
+                                                    key={i}
+                                                    className="h-16 bg-white border-b border-gray-100"
+                                                ></div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <Table
+                                            columns={columns}
+                                            data={paginatedData}
+                                            sortConfig={sortConfig}
+                                            onSort={handleSort}
+                                        />
+                                    )}
+                                </div>
+
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalItems={processedData.length}
+                                    itemsPerPage={itemsPerPage}
+                                    onPageChange={setCurrentPage}
+                                    onItemsPerPageChange={(val) => {
+                                        setItemsPerPage(val);
+                                        setCurrentPage(1);
+                                    }}
                                 />
                             </div>
-                        </div>
-
-                        <Pagination
-                            currentPage={currentPage}
-                            totalItems={processedData.length}
-                            itemsPerPage={itemsPerPage}
-                            onPageChange={setCurrentPage}
-                            onItemsPerPageChange={(val) => {
-                                setItemsPerPage(val);
-                                setCurrentPage(1);
-                            }}
-                        />
-                    </div>
                         </>
                     )}
                 </div>
