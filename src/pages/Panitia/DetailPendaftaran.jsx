@@ -27,6 +27,7 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
                 };
                 const data = response.data;
                 const flattenedData = {
+                    registration_id: data.registration_id,
                     logoUrl: data.teams?.team_logo_url,
                     team_name: data.teams?.team_name,
                     school_name: data.teams?.schools?.school_name,
@@ -58,7 +59,7 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
                     committee_contact: data.verified_by?.committee_contact,
                     committee_email: data.verified_by?.users?.email,
                     status: statusMapping[data.status] || data.status,
-                    verification_message : data.verification_message,
+                    verification_message: data.verification_message,
                     verified_at: new Date(data.verified_at).toLocaleDateString(
                         'id-ID',
                         {
@@ -130,10 +131,9 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
                                     {/* Section 1 */}
                                     <div>
                                         <div className="h-6 w-32 bg-gray-300 rounded mb-4"></div>
-                                        <div className="space-y-3">
-                                            <div className="h-4 w-full bg-gray-200 rounded"></div>
-                                            <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
-                                            <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
+                                        <div className="flex flex-col gap-4 items-center">
+                                            <div className="w-80 h-80 rounded-full bg-gray-200 border-4 border-white"></div>
+                                            <div className="h-24 w-full bg-gray-200 rounded"></div>
                                         </div>
                                     </div>
                                     {/* Section 2 */}
@@ -141,7 +141,7 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
                                         <div className="h-6 w-32 bg-gray-300 rounded mb-4"></div>
                                         <div className="space-y-3">
                                             <div className="h-4 w-full bg-gray-200 rounded"></div>
-                                            <div className="h-4 w-2/3 bg-gray-200 rounded"></div>
+                                            <div className="h-4 w-full bg-gray-200 rounded"></div>
                                         </div>
                                     </div>
                                 </div>

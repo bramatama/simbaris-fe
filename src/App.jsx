@@ -18,7 +18,7 @@ import RegistrationPage from './pages/registration/RegistrationPage';
 // import Sample from './pages/Sample';
 import NotFoundPage from './pages/others/NotFoundPage';
 import LoginPage from './pages/Login/LoginPage';
-import DetailPendaftaran from './pages/Panitia/DetailPendaftaran';
+import DetailPendaftaran from './pages/panitia/DetailPendaftaran';
 import ComponentsCheck from './pages/others/ComponentsCheck';
 
 import DashboardRoute from './routes/DashboardRoute';
@@ -82,7 +82,7 @@ function App() {
         const checkAuth = async () => {
             // Helper untuk delay loading agar transisi lebih halus (mencegah glitch)
             const finishLoading = () => {
-                setTimeout(() => setIsLoading(false), 1000);
+                setTimeout(() => setIsLoading(false), 500);
             };
 
             const token = localStorage.getItem('access_token');

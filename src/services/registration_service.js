@@ -150,11 +150,9 @@ const getRegistrationById = async (registrationId) => {
 // 12. Update Registration Status (Verify/Reject)
 // Endpoint: PATCH /api/registration/{uuid}
 // Body: { "status": "verified" | "rejected" | "pending" }
-const updateStatus = async (registrationId, status) => {
+const updateStatus = async (registrationId, statusChange) => {
     try {
-        const response = await api.patch(`/registration/${registrationId}`, {
-            status: status, // Sesuai schema ChangeStatus di backend
-        });
+        const response = await api.patch(`/registration/${registrationId}`, statusChange);
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;

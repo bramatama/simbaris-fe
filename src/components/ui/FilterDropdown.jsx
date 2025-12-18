@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { Filter, ChevronDown, XCircle } from 'lucide-react';
+import { Filter, ChevronDown, XCircle, Loader2 } from 'lucide-react';
 
-const FilterDropdown = ({ label, options, value, onChange }) => {
+const FilterDropdown = ({
+    label,
+    options,
+    value,
+    onChange,
+    isLoading = false,
+    disabled = false,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -23,14 +30,19 @@ const FilterDropdown = ({ label, options, value, onChange }) => {
         ? options.find((opt) => opt.value === value)?.label
         : label;
 
+    const isDisabled = isLoading || disabled;
+
     return (
         <div className="relative" ref={dropdownRef}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => !isDisabled && setIsOpen(!isOpen)}
+                disabled={isDisabled}
                 className={`group flex items-center justify-between gap-3 px-3 py-2 h-11 border rounded-md text-sm transition-all duration-200 min-w-[140px] ${
-                    value
-                        ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
-                        : 'bg-white border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                    isDisabled
+                        ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed'
+                        : value
+                          ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
+                          : 'bg-white border-gray-300 text-gray-600 hover:border-blue-400 hover:text-blue-600'
                 }`}
             >
                 {/* Bagian Kiri: Ikon Filter & Label */}
@@ -46,7 +58,12 @@ const FilterDropdown = ({ label, options, value, onChange }) => {
                 </div>
 
                 {/* Bagian Kanan: Chevron atau Clear */}
-                {value ? (
+                {isLoading ? (
+                    <Loader2
+                        size={16}
+                        className="animate-spin text-gray-400 shrink-0"
+                    />
+                ) : value ? (
                     <div
                         className="p-0.5 rounded-full hover:bg-blue-200 text-blue-500 transition-colors shrink-0"
                         onClick={(e) => {
@@ -64,7 +81,7 @@ const FilterDropdown = ({ label, options, value, onChange }) => {
                 )}
             </button>
 
-            {isOpen && (
+            {isOpen && !isDisabled && (
                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-0 border border-gray-100 py-1 animate-in fade-in zoom-in-95 duration-100">
                     <div className="py-2 px-3 mb-1 border-b border-gray-50 bg-gray-50/50">
                         <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">

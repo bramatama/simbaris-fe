@@ -14,6 +14,7 @@ import FilterDropdown from '../../components/ui/FilterDropdown';
 import registrationService from '../../services/registration_service';
 import schoolService from '../../services/school_service';
 import SimpleCardSkeleton from '../../components/skeleton/CardSkeleton';
+import ErrorPanel from '../../components/ui/ErrorPanel';
 
 const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     const navigate = useNavigate();
@@ -270,6 +271,10 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                         Tim Terdaftar
                     </header>
 
+                    {errorTable ? (
+                        <ErrorPanel message={errorTable} />
+                    ) : (
+                        <>
                     {/* Cards */}
                     <div className="hidden xl:flex gap-4 mb-4">
                         {loadingStats
@@ -315,7 +320,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     onChange={(val) =>
                                         handleFilterChange('level', val)
                                     }
-                                    disabled={loadingTable}
+                                    isLoading={loadingTable}
                                 />
                                 <FilterDropdown
                                     label="Status"
@@ -324,17 +329,12 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                     onChange={(val) =>
                                         handleFilterChange('status', val)
                                     }
-                                    disabled={loadingTable}
+                                    isLoading={loadingTable}
                                 />
                             </div>
                         </div>
 
                         <div className="relative">
-                            {errorTable && (
-                                <p className="text-center text-red-500">
-                                    {errorTable}
-                                </p>
-                            )}
                             <div
                                 className={`transition-opacity duration-300 ${loadingTable ? 'opacity-50' : 'opacity-100'}`}
                             >
@@ -359,6 +359,8 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                             }}
                         />
                     </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

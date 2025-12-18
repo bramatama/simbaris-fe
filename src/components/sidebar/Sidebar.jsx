@@ -160,13 +160,20 @@ const Sidebar = ({
                         <nav className="flex-1 py-4">
                             {userNav.map((item) => {
                                 if (item.type === 'link') {
+                                    const isLinkActive =
+                                        activePath === item.path ||
+                                        (activePath &&
+                                            activePath.startsWith(
+                                                `${item.path}/`
+                                            ));
+
                                     return (
                                         <SidebarLink
                                             key={item.path}
                                             href={item.path}
                                             icon={item.icon}
                                             label={item.label}
-                                            isActive={activePath === item.path}
+                                            isActive={isLinkActive}
                                             isChildren={false}
                                         />
                                     );

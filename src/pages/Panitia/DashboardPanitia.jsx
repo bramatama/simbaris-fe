@@ -15,6 +15,7 @@ import Table from '../../components/ui/Table';
 import InputField from '../../components/ui/InputField';
 import Pagination from '../../components/ui/Pagination';
 import SimpleCardSkeleton from '../../components/skeleton/CardSkeleton';
+import ErrorPanel from '../../components/ui/ErrorPanel';
 
 const DashboardPanitia = ({ isSidebarOpen }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +38,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
         labels: [],
         values: [],
     });
+    const [error, setError] = useState(null);
 
     const hasFetched = useRef(false);
 
@@ -47,6 +49,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
             try {
                 // Fetch stats for cards
                 setStatsLoading(true);
+                setError(null);
 
                 const [statsRes, levelsRes, allRegRes, fastestRes] =
                     await Promise.all([
@@ -98,6 +101,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 );
             } catch (error) {
                 console.error('Failed to fetch dashboard widgets data:', error);
+                setError('Gagal memuat data dashboard. Silakan periksa koneksi internet Anda atau coba lagi nanti.');
             } finally {
                 setStatsLoading(false);
                 setTeamsLoading(false);
@@ -254,6 +258,10 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                         Dashboard
                     </header>
 
+                    {error ? (
+                        <ErrorPanel message={error} />
+                    ) : (
+                        <>
                     <div className="hidden xl:flex gap-4 mb-4">
                         {statsLoading
                             ? [1, 2, 3, 4].map((_, i) => (
@@ -335,6 +343,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                                 ? fastestTeams
                                                 : []
                                         }
+                                        isLoading={statsLoading}
                                     />
                                 </div>
                             </div>
@@ -346,10 +355,13 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                     // Gunakan data yang sudah diproses
                                     chartData={registrationData}
                                     title="Tim Terdaftar Perkategori"
+                                    isLoading={statsLoading}
                                 />
                             </div>
                         </div>
                     </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

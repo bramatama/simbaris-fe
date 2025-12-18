@@ -13,7 +13,7 @@ const getResponsiveFontSizes = () => {
     return { title: 20, legend: 12 };
 };
 
-const PieChart = ({ chartData, title }) => {
+const PieChart = ({ chartData, title, isLoading = false }) => {
     const [fontSizes, setFontSizes] = useState(getResponsiveFontSizes());
     useEffect(() => {
         const handleResize = () => {
@@ -110,6 +110,23 @@ const PieChart = ({ chartData, title }) => {
             },
         ],
     };
+
+    if (isLoading) {
+        return (
+            <div className="w-full h-fit flex flex-col items-center justify-center animate-pulse p-4">
+                {/* Title Skeleton */}
+                <div className="h-6 w-48 bg-gray-200 rounded mb-6"></div>
+                {/* Chart Circle Skeleton */}
+                <div className="w-48 h-48 rounded-full bg-gray-200 border-4 border-white"></div>
+                {/* Legend Skeleton */}
+                <div className="flex gap-3 mt-6">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-3 w-16 bg-gray-200 rounded"></div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return <Pie data={data} options={options} />;
 };

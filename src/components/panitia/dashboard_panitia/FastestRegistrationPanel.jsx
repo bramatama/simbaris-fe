@@ -39,7 +39,34 @@ const RegistrantItem = ({ team, index }) => {
     );
 };
 
-const FastestRegistrantsPanel = ({ teams }) => {
+const RegistrantItemSkeleton = () => (
+    <div className="flex items-center gap-3 animate-pulse">
+        <div className="w-6 flex justify-center">
+            <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+        </div>
+        <div className="w-10 h-10 bg-gray-200 rounded-full shrink-0"></div>
+        <div className="flex-1 min-w-0 space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        </div>
+    </div>
+);
+
+const FastestRegistrantsPanel = ({ teams, isLoading = false }) => {
+    if (isLoading) {
+        return (
+            <div className="h-fit flex flex-col">
+                <div className="flex-1 flex flex-col min-[425px]:flex-row md:flex-col min-[425px]:gap-x-4">
+                    <div className="flex flex-col gap-4 w-full">
+                        {[1, 2, 3].map((i) => (
+                            <RegistrantItemSkeleton key={i} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     const top3Teams = teams.slice(0, 5);
 
     return (
