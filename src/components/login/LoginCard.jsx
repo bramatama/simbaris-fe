@@ -119,6 +119,7 @@ export default function LoginCard() {
                     <div className="flex justify-start mt-1">
                         <button
                             type="button"
+                            onClick={() => navigate('/confirm-email')}
                             className="text-sm text-black hover:underline"
                         >
                             Lupa Password

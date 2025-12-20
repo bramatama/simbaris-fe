@@ -18,6 +18,8 @@ import RegistrationPage from './pages/registration/RegistrationPage';
 // import Sample from './pages/Sample';
 import NotFoundPage from './pages/others/NotFoundPage';
 import LoginPage from './pages/Login/LoginPage';
+import ConfirmEmail from './pages/forgot_password/ConfirmEmail';
+import RestorePassword from './pages/forgot_password/RestorePassword';
 import DetailPendaftaran from './pages/panitia/DetailPendaftaran';
 import ComponentsCheck from './pages/others/ComponentsCheck';
 
@@ -204,6 +206,8 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/confirm-email',
+        '/restore-password',
         '/tim-saya/detail/*',
         '/tim-saya/anggota',
         '/detail-pendaftaran',
@@ -227,6 +231,8 @@ function App() {
         '/sample',
         '/reset-password',
         '/forgot-password',
+        '/confirm-email',
+        '/restore-password',
     ];
     const showHeader =
         !excludedRoutes.includes(location.pathname) && !isNotFoundPage;
@@ -270,6 +276,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/confirm-email" element={<ConfirmEmail />} />
+                <Route path="/restore-password" element={<RestorePassword />} />
                 <Route path="/pendaftaran" element={<RegistrationPage />} />
                 <Route
                     path="/dashboard/*"

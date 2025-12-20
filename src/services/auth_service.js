@@ -73,7 +73,37 @@ const updatePassword = async (oldPassword, newPassword) => {
     }
 };
 
-// 6. Get Current User
+// 6. Forget Password
+// Endpoint: POST /api/auth/forget-password
+// Body: { email, redirect_url }
+const forgetPassword = async (email, redirectUrl) => {
+    try {
+        const response = await api.post('/auth/forget-password', {
+            email,
+            redirect_url: redirectUrl,
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error;
+    }
+};
+
+// 7. Reset Password Confirm
+// Endpoint: POST /api/auth/reset-password-confirm
+// Body: { new_password }
+const resetPasswordConfirm = async (newPassword, token) => {
+    try {
+        const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        const response = await api.post('/auth/reset-password-confirm', {
+            new_password: newPassword,
+        }, config);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error;
+    }
+};
+
+// 8. Get Current User
 // Endpoint: GET /api/auth/me
 const getCurrentUser = async () => {
     try {
@@ -94,6 +124,8 @@ const authService = {
     registerTeamAdmin,
     requestResetPassword,
     updatePassword,
+    forgetPassword,
+    resetPasswordConfirm,
     isAuthenticated,
     getCurrentUser,
 };

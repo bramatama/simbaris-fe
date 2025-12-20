@@ -40,6 +40,23 @@ const CommitteeRegistrationPanel = ({
         }
     };
 
+    const getStatusBadgeClass = (status) => {
+        const s = status?.toLowerCase();
+        if (s === 'verified' || s === 'terverifikasi') {
+            return 'text-simbaris-success bg-simbaris-success-lightest border-simbaris-success-light';
+        }
+        if (s === 'rejected' || s === 'ditolak') {
+            return 'text-simbaris-accent bg-simbaris-accent-lightest border-simbaris-accent-light';
+        }
+        if (s === 'pending') {
+            return 'text-simbaris-warning bg-simbaris-warning-lightest border-simbaris-warning-light';
+        }
+        if (s === 'draft') {
+            return 'text-simbaris-hazard bg-simbaris-hazard-lightest border-simbaris-hazard-light'
+        }
+        return 'text-simbaris-secondary bg-simbaris-secondary-lightest border-simbaris-secondary-light';
+    };
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold text-simbaris-text">
@@ -122,7 +139,7 @@ const CommitteeRegistrationPanel = ({
                     <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
                 ) : (
                     <div
-                        className={`flex items-center gap-4 text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-md border border-simbaris-secondary-light`}
+                        className={`flex items-center gap-4 font-medium px-2 py-1 rounded-md text-md border ${getStatusBadgeClass(registrationData.status)}`}
                     >
                         {registrationData.status}
                     </div>

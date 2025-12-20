@@ -1,16 +1,10 @@
-// c:\Users\RB\Downloads\Kuliah\Semester_7\Capstone\Frontend\src\components\panitia\detail_pendaftaran\UpdateStatus.jsx
-
 import { useState } from 'react';
 import { X, AlertCircle } from 'lucide-react';
 import Button from '../../ui/Button';
+import Dropdown from '../../ui/Dropdown';
 import registrationService from '../../../services/registration_service';
 
-const UpdateStatus = ({
-    isOpen,
-    onClose,
-    registrationId,
-    onSuccess,
-}) => {
+const UpdateStatus = ({ isOpen, onClose, registrationId, onSuccess }) => {
     const [status, setStatus] = useState('pending');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -23,8 +17,8 @@ const UpdateStatus = ({
         setError(null);
         try {
             await registrationService.updateStatus(registrationId, {
-                status : status,
-                verification_message : message,
+                status: status,
+                verification_message: message,
             });
             if (onSuccess) {
                 onSuccess(status);
@@ -62,23 +56,13 @@ const UpdateStatus = ({
                 </h3>
 
                 <div className="flex flex-col gap-6">
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
-                            Status Pendaftaran
-                        </label>
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-simbaris-primary/50 focus:border-simbaris-primary transition-all bg-white"
-                            disabled={isLoading}
-                        >
-                            {statusOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <Dropdown
+                        label="Status Pendaftaran"
+                        options={statusOptions}
+                        value={status}
+                        onChange={(val) => setStatus(val)}
+                        disabled={isLoading}
+                    />
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">
@@ -123,7 +107,7 @@ const UpdateStatus = ({
                                 color="primary"
                                 onClick={handleUpdate}
                                 disabled={isLoading}
-                                className='w-full'
+                                className="w-full"
                             />
                         </div>
                     </div>
