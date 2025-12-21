@@ -168,10 +168,7 @@ const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
                 <div className="flex">
                     <InputField
                         leftIcon={
-                            <SearchIcon
-                                size={18}
-                                className="text-gray-400"
-                            />
+                            <SearchIcon size={18} className="text-gray-400" />
                         }
                         name="search"
                         value={search}

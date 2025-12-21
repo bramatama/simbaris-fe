@@ -4,7 +4,7 @@ const Avatar = ({ imageUrl, initials, name }) => {
             <img
                 src={imageUrl}
                 alt={`Avatar for ${name}`}
-                className="w-10 h-10 rounded-full object-cover"
+                className="transform scale-110 w-10 h-10 rounded-full object-cover"
             />
         );
     }

@@ -13,17 +13,14 @@ const MyDataPanel = ({ myData, userRole }) => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-semibold text-simbaris-text">
-                Data Saya
-            </h2>
             <div className="flex flex-col items-center md:flex-row gap-6">
                 {/* Logo Tim */}
                 <div className="shrink-0">
                     <div className="w-48 h-48 border-2 border-gray-300 rounded-full flex items-center justify-center overflow-hidden bg-white">
-                        {myData.photo_url ? (
+                        {myData.file_url ? (
                             <img
-                                src={myData.photo_url}
-                                className="w-full h-full object-contain rounded-full"
+                                src={myData.file_url}
+                                className="transform scale-110 object-contain rounded-full"
                             />
                         ) : (
                             <div className="text-gray-300 text-6xl font-bold">

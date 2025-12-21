@@ -208,7 +208,7 @@ function App() {
         '/forgot-password',
         '/confirm-email',
         '/restore-password',
-        '/tim-saya/detail/*',
+        '/tim-saya/detail',
         '/tim-saya/anggota',
         '/detail-pendaftaran',
         '/tim-terdaftar',

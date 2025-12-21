@@ -5,9 +5,6 @@ import { ExternalLink } from 'lucide-react';
 const myTeamPanel = ({ teamData }) => {
     return (
         <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-semibold text-simbaris-text">
-                Data Tim
-            </h2>
             <div className="flex flex-col items-center md:flex-row gap-6">
                 {/* Info Tim */}
                 <div className="flex-1 w-full space-y-4">
