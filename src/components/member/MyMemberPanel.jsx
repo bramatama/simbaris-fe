@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ExternalLink, MoreVertical, SearchIcon } from 'lucide-react';
 
+import memberService from '../../services/member_service';
 import Table from '../ui/Table';
 import Button from '../ui/Button';
 import InputField from '../ui/InputField';
@@ -11,10 +12,14 @@ import FilterDropdown from '../ui/FilterDropdown';
 import MemberModal from '../ui/MemberModal';
 
 const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
-    const isMemberPage = location.pathname === '/tim-saya/anggota';
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { memberId } = useParams();
+    const isMemberPage = location.pathname.startsWith('/tim-saya/anggota');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
+    const [isModalLoading, setIsModalLoading] = useState(false);
 
     const memberData = myMemberData || [];
     const [currentPage, setCurrentPage] = useState(1);
@@ -44,6 +49,27 @@ const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
         setItemsPerPage(isMemberPage ? 10 : 5);
         setCurrentPage(1); // Reset ke halaman 1 saat mode berubah
     }, [isMemberPage]);
+
+    useEffect(() => {
+        const fetchMemberDetail = async () => {
+            if (isMemberPage && memberId) {
+                setIsModalOpen(true);
+                setIsModalLoading(true);
+                try {
+                    const response = await memberService.getMemberDetail(memberId);
+                    setSelectedMember(response.data);
+                } catch (error) {
+                    console.error('Error fetching member detail:', error);
+                } finally {
+                    setIsModalLoading(false);
+                }
+            } else if (!memberId) {
+                setIsModalOpen(false);
+                setSelectedMember(null);
+            }
+        };
+        fetchMemberDetail();
+    }, [memberId, isMemberPage]);
 
     const filteredData = useMemo(() => {
         return memberData.filter(
@@ -138,25 +164,11 @@ const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
     };
 
     const handleViewDetail = (row) => {
-        const mappedData = {
-            ...row,
-            member_name: row.member_name,
-            team_name: row.team_name,
-            school_name: row.school_name,
-            level: row.level,
-            member_grade: row.member_grade,
-            nisn: row.nisn,
-            gender: row.gender,
-            email: row.email,
-        };
-
-        setSelectedMember(mappedData);
-        setIsModalOpen(true);
+        navigate(`/tim-saya/anggota/${row.member_id}`);
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedMember(null);
+        navigate('/tim-saya/anggota');
     };
 
     return (
@@ -253,6 +265,7 @@ const MyMemberPanel = ({ myMemberData, userRole, isLoading = false }) => {
                 memberData={selectedMember}
                 title="Detail Anggota"
                 userRole={userRole}
+                isLoading={isModalLoading}
             />
         </div>
     );

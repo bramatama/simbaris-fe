@@ -20,13 +20,16 @@ import NotFoundPage from './pages/others/NotFoundPage';
 import LoginPage from './pages/Login/LoginPage';
 import ConfirmEmail from './pages/forgot_password/ConfirmEmail';
 import RestorePassword from './pages/forgot_password/RestorePassword';
-import DetailPendaftaran from './pages/panitia/DetailPendaftaran';
+import DetailPendaftaran from './pages/panitia/DetailPendaftaranPanitia';
 import ComponentsCheck from './pages/others/ComponentsCheck';
+import EditTimAdminTim from './pages/admin_tim/EditTimAdminTim';
 
 import DashboardRoute from './routes/DashboardRoute';
 import TimTerdaftarRoute from './routes/TimTerdaftarRoute';
 import DetailTimRoute from './routes/DetailTimRoute';
+import RegistrationDetailRoute from './routes/RegistrationDetailRoute';
 import MemberListRoute from './routes/MemberListRoute';
+
 import authService from './services/auth_service';
 
 function App() {
@@ -183,7 +186,7 @@ function App() {
         setIsSessionExpired(false);
         setAuthUser(null);
         setSidebarUser(null);
-        navigate('/login', { replace: true });
+        navigate('/', { replace: true });
     };
 
     const handleUserLogout = async () => {
@@ -209,6 +212,7 @@ function App() {
         '/confirm-email',
         '/restore-password',
         '/tim-saya/detail',
+        '/tim-saya/detail/edit',
         '/tim-saya/anggota',
         '/detail-pendaftaran',
         '/tim-terdaftar',
@@ -219,7 +223,8 @@ function App() {
         (route) =>
             route === location.pathname ||
             location.pathname.startsWith('/dashboard/') ||
-            location.pathname.startsWith('/tim-terdaftar/')
+            location.pathname.startsWith('/tim-terdaftar/') ||
+            location.pathname.startsWith('/tim-saya/anggota/')
     );
 
     const excludedRoutes = [
@@ -303,7 +308,16 @@ function App() {
                         )
                     }
                 />
-
+                <Route
+                    path="/tim-saya/detail/edit"
+                    element={
+                        authUser ? (
+                            <EditTimAdminTim isSidebarOpen={isSidebarOpen} />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
                 <Route
                     path="/tim-saya/anggota"
                     element={
@@ -317,12 +331,34 @@ function App() {
                         )
                     }
                 />
-
+                <Route
+                    path="/tim-saya/anggota/:memberId"
+                    element={
+                        authUser ? (
+                            <MemberListRoute
+                                userRole={authUser?.role}
+                                isSidebarOpen={isSidebarOpen}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/detail-pendaftaran"
+                    element={
+                        authUser ? (
+                            <RegistrationDetailRoute isSidebarOpen={isSidebarOpen} userRole={authUser?.role} />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
                 <Route
                     path="/tim-terdaftar/detail/:registrationId"
                     element={
                         authUser ? (
-                            <DetailPendaftaran isSidebarOpen={isSidebarOpen} />
+                            <RegistrationDetailRoute isSidebarOpen={isSidebarOpen} userRole={authUser?.role}/>
                         ) : (
                             <Navigate to="/login" />
                         )

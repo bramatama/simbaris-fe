@@ -10,7 +10,7 @@ const data = {
     logoUrl: '/images/logo_transparant.png', // Ganti dengan URL logo asli jika ada
     school: {
         school_name: 'SMP Negeri 18 Balikpapan',
-        level: 'SMP/MTs Sederajat',
+        school_level: 'SMP/MTs Sederajat',
         province: 'Kalimantan Timur',
         city: 'Balikpapan',
         district: 'Balikpapan Selatan',

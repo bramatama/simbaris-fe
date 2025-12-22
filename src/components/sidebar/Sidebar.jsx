@@ -180,7 +180,12 @@ const Sidebar = ({
                                 }
                                 if (item.type === 'dropdown') {
                                     const isChildActive = item.children.some(
-                                        (child) => child.path === activePath
+                                        (child) =>
+                                            activePath === child.path ||
+                                            (activePath &&
+                                                activePath.startsWith(
+                                                    `${child.path}/`
+                                                ))
                                     );
                                     return (
                                         <SidebarDropdown
@@ -195,7 +200,11 @@ const Sidebar = ({
                                                     label={child.label}
                                                     isActive={
                                                         activePath ===
-                                                        child.path
+                                                            child.path ||
+                                                        (activePath &&
+                                                            activePath.startsWith(
+                                                                `${child.path}/`
+                                                            ))
                                                     }
                                                     isChildren={true}
                                                 />

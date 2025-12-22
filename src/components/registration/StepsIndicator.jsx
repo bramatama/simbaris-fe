@@ -39,7 +39,7 @@ const StepsIndicator = ({ steps = [], currentStep = 1 }) => {
                             };
 
                             return (
-                                <>
+                                <React.Fragment key={index}>
                                     {/* Node (Ikon/Nomor dan Teks) */}
                                     <div className="relative z-10 flex flex-col items-center text-center w-auto md:w-32">
                                         {/* Lingkaran Node untuk Desktop */}
@@ -84,7 +84,7 @@ const StepsIndicator = ({ steps = [], currentStep = 1 }) => {
                                             />
                                         </div>
                                     )}
-                                </>
+                                </React.Fragment>
                             );
                         })}
                     </div>

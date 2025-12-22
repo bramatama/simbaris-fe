@@ -15,7 +15,7 @@ const Table = ({ columns, data, onSort }) => {
                                 >
                                     {col.sortable ? (
                                         <button
-                                            className="flex items-center gap-2 hover:text-gray-200"
+                                            className="flex items-center justify-between w-full hover:text-gray-200"
                                             onClick={() =>
                                                 onSort && onSort(col.accessor)
                                             }

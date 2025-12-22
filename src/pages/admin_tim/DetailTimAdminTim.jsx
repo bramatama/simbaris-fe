@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import teamService from '../../services/team_service';
 import TeamDataPanel from '../../components/member/detail_tim_member/TeamDataPanel';
 import SchoolDataPanel from '../../components/member/detail_tim_member/SchoolDataPanels';
+import Button from '../../components/ui/Button';
+import { Pen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const DetailTimMember = ({ isSidebarOpen = true }) => {
+const DetailTimAdminTim = ({ isSidebarOpen = true }) => {
     const [teamData, setTeamData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -13,18 +17,18 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
                 setIsLoading(true);
                 const response = await teamService.getMyTeam();
                 const flattenedData = {
-                    team_name : response.data.team_name,
-                    coach_name : response.data.coach_name,
-                    supervisor_name : response.data.supervisor_name,
-                    team_logo_url : response.data.team_logo_url,
-                    contact : response.data.contact,
-                    email : response.data.users.email,
-                    school_name : response.data.schools.school_name,
-                    school_level : response.data.schools.school_level,
-                    province : response.data.schools.province,
-                    city : response.data.schools.city,
-                    subdistrict : response.data.schools.subdistrict,
-                }
+                    team_name: response.data.team_name,
+                    coach_name: response.data.coach_name,
+                    supervisor_name: response.data.supervisor_name,
+                    team_logo_url: response.data.team_logo_url,
+                    contact: response.data.contact,
+                    email: response.data.users.email,
+                    school_name: response.data.schools.school_name,
+                    school_level: response.data.schools.school_level,
+                    province: response.data.schools.province,
+                    city: response.data.schools.city,
+                    subdistrict: response.data.schools.subdistrict,
+                };
                 setTeamData(flattenedData);
             } catch (error) {
                 console.error('Error fetching team data:', error);
@@ -57,6 +61,17 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
                                 schoolData={teamData}
                                 isLoading={isLoading}
                             />
+                            <div className="flex justify-end">
+                                <Button
+                                    text="Edit Data Tim"
+                                    color="accent"
+                                    size={'long'}
+                                    leftIcon={<Pen size={18} />}
+                                    type="primary"
+                                    disabled={isLoading}
+                                    onClick={()=> navigate('/tim-saya/detail/edit')}
+                                ></Button>
+                            </div>
                         </div>
 
                         {/* KANAN ATAS — NILAI & CATATAN JURI */}
@@ -85,4 +100,4 @@ const DetailTimMember = ({ isSidebarOpen = true }) => {
     );
 };
 
-export default DetailTimMember;
+export default DetailTimAdminTim;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { X, Eye, PenLine } from 'lucide-react';
 import Button from './Button';
+import { useParams } from 'react-router-dom';
 
 const MemberModal = ({
     isOpen,
@@ -8,6 +9,7 @@ const MemberModal = ({
     memberData,
     title = 'Detail Anggota',
     userRole,
+    isLoading = false,
 }) => {
     const modalRef = useRef(null);
     const [showFullImage, setShowFullImage] = useState(false); // State untuk lightbox
@@ -34,20 +36,21 @@ const MemberModal = ({
     }, [isOpen, onClose, showFullImage]);
 
     const handleViewImage = () => {
-        if (memberData?.photo_url) {
+        if (memberData?.file_url) {
             setShowFullImage(true); // Buka preview internal
         }
     };
 
-    if (!isOpen || !memberData) return null;
+    if (!isOpen) return null;
+    if (!isLoading && !memberData) return null;
 
-    const hasPhoto = !!memberData.photo_url;
+    const hasPhoto = !!memberData?.file_url;
 
     return (
         <>
             {/* --- LIGHTBOX (PREVIEW GAMBAR FULL) --- */}
             {/* Render di luar modal utama dengan z-index lebih tinggi (60 vs 50) */}
-            {showFullImage && (
+            {showFullImage && memberData && (
                 <div
                     className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 transition-opacity animate-in fade-in duration-200"
                     onClick={() => setShowFullImage(false)} // Klik background untuk tutup
@@ -62,21 +65,21 @@ const MemberModal = ({
 
                     {/* Gambar Full */}
                     <img
-                        src={memberData.photo_url}
+                        src={memberData.file_url}
                         alt={`Full Preview ${memberData.member_name}`}
-                        className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+                        className="max-w-full max-h-full object-contain rounded-md shadow-2xl transform scale-150"
                         onClick={(e) => e.stopPropagation()} // Mencegah klik gambar menutup lightbox
                     />
                 </div>
             )}
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 transition-opacity animate-in fade-in duration-200">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity animate-in fade-in duration-200">
                 {/* Modal Container */}
                 <div
                     ref={modalRef}
-                    className="bg-white rounded-lg shadow-xl w-full h-full md:h-fit max-w-4xl overflow-auto relative"
+                    className="bg-white rounded-2xl shadow-2xl w-full h-full md:h-fit max-w-4xl overflow-auto relative animate-in zoom-in-95 duration-200"
                 >
                     {/* --- Header --- */}
-                    <div className="flex justify-between items-center p-6 pb-4">
+                    <div className="flex justify-between items-center p-6 pb-4 border-b border-gray-100">
                         <h2 className="text-2xl font-bold text-gray-900">
                             {title}
                         </h2>
@@ -90,87 +93,99 @@ const MemberModal = ({
 
                     {/* --- Content --- */}
                     <div className="p-6 pt-2">
-                        <div className="flex flex-col-reverse md:flex-row gap-8">
-                            {/* Kolom Kiri: Detail Data */}
-                            <div className="flex-1 space-y-4">
-                                <DetailRow
-                                    label="Nama"
-                                    value={memberData.member_name}
-                                />
-                                <DetailRow
-                                    label="Nama Tim"
-                                    value={memberData.team_name}
-                                />
-                                <DetailRow
-                                    label="Asal Sekolah"
-                                    value={memberData.school_name}
-                                />
-                                <DetailRow
-                                    label="Jenjang Sekolah"
-                                    value={memberData.level}
-                                />
-                                <DetailRow
-                                    label="Kelas"
-                                    value={memberData.member_grade}
-                                />
-                                <DetailRow
-                                    label="NISN"
-                                    value={memberData.nisn}
-                                />
-                                <DetailRow
-                                    label="Jenis Kelamin"
-                                    value={memberData.gender}
-                                />
-                                <DetailRow
-                                    label="Email"
-                                    value={memberData.email}
-                                />
-                            </div>
-
-                            {/* Kolom Kanan: Foto & Aksi */}
-                            <div className="md:w-48 w-full flex flex-col gap-4 shrink-0">
-                                {/* Foto Anggota */}
-                                <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                    {memberData.photo_url ? (
-                                        <img
-                                            src={memberData.photo_url}
-                                            alt={`Foto ${memberData.member_name}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50 flex-col gap-2">
-                                            <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
-                                            <span className="text-xs">
-                                                No Photo
-                                            </span>
+                        {isLoading ? (
+                            <div className="animate-pulse flex flex-col-reverse md:flex-row gap-8">
+                                {/* Skeleton Kiri */}
+                                <div className="flex-1 space-y-4">
+                                    {[...Array(8)].map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className="flex justify-between items-end border-b border-gray-200 pb-3"
+                                        >
+                                            <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                                         </div>
-                                    )}
+                                    ))}
                                 </div>
-
-                                {/* Tombol Aksi */}
-                                <div className="flex flex-col gap-3">
-                                    <Button
-                                        text="Lihat Gambar"
-                                        leftIcon={<Eye size={18} />}
-                                        size="default"
-                                        type="secondary"
-                                        className="w-full"
-                                        onClick={handleViewImage}
-                                        disabled={!hasPhoto}
-                                    />
-                                    {title === 'Detail Anggota' &&
-                                        userRole === 'admin_tim' && (
-                                            <Button
-                                                text="Edit"
-                                                leftIcon={<PenLine size={18} />}
-                                                size="default"
-                                                color="accent"
-                                                className="w-full"
-                                            />
-                                        )}
+                                {/* Skeleton Kanan */}
+                                <div className="md:w-48 w-full flex flex-col gap-4 shrink-0">
+                                    <div className="aspect-[3/4] bg-gray-200 rounded-lg"></div>
+                                    <div className="h-10 bg-gray-200 rounded"></div>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="flex flex-col-reverse md:flex-row gap-8">
+                                {/* Kolom Kiri: Detail Data */}
+                                <div className="flex-1 space-y-4">
+                                    <DetailRow
+                                        label="Nama"
+                                        value={memberData.member_name}
+                                    />
+                                    <DetailRow
+                                        label="Nama Tim"
+                                        value={memberData.team_name}
+                                    />
+                                    <DetailRow
+                                        label="Asal Sekolah"
+                                        value={memberData.school_name}
+                                    />
+                                    <DetailRow
+                                        label="Jenjang Sekolah"
+                                        value={memberData.school_level}
+                                    />
+                                    <DetailRow
+                                        label="Kelas"
+                                        value={memberData.member_grade}
+                                    />
+                                    <DetailRow
+                                        label="NISN"
+                                        value={memberData.nisn}
+                                    />
+                                    <DetailRow
+                                        label="Jenis Kelamin"
+                                        value={memberData.gender}
+                                    />
+                                    <DetailRow
+                                        label="Email"
+                                        value={memberData.email}
+                                    />
+                                </div>
+
+                                {/* Kolom Kanan: Foto & Aksi */}
+                                <div className="md:w-48 w-full flex flex-col gap-4 shrink-0">
+                                    {/* Foto Anggota */}
+                                    <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                        {memberData.file_url ? (
+                                            <img
+                                                src={memberData.file_url}
+                                                alt={`Foto ${memberData.member_name}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50 flex-col gap-2">
+                                                <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
+                                                <span className="text-xs">
+                                                    No Photo
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Tombol Aksi */}
+                                    <div className="flex flex-col gap-3">
+                                        <Button
+                                            text="Lihat Gambar"
+                                            leftIcon={<Eye size={18} />}
+                                            size="default"
+                                            type="secondary"
+                                            className="w-full"
+                                            onClick={handleViewImage}
+                                            disabled={!hasPhoto}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

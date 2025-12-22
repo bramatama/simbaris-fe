@@ -215,6 +215,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                     pending: 'Menunggu Verifikasi',
                     verified: 'Terverifikasi',
                     rejected: 'Ditolak',
+                    draft : 'Dalam Proses Pendaftaran'
                 };
                 let colorClass = 'text-gray-600';
                 if (row.status === 'pending')
@@ -226,7 +227,10 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                 if (row.status === 'rejected')
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
-                return (
+                if (row.status === 'draft')
+                    colorClass =
+                        'text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-secondary-light';
+                        return (
                     <span className={colorClass}>
                         {statusMapping[row.status] || row.status || 'N/A'}
                     </span>

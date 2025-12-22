@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { X } from 'lucide-react';
-import CommitteeRegistrationPanel from '../../components/panitia/detail_pendaftaran/CommitteeRegistrationPanel';
-import CommitteeTeamDataPanel from '../../components/panitia/detail_pendaftaran/CommitteeTeamData';
 import registrationService from '../../services/registration_service';
+import ErrorPanel from '../../components/ui/ErrorPanel';
+import MyTeamDataPanel from '../../components/admin_tim/MyTeamDataPanel';
+import MyRegistrationPanel from '../../components/admin_tim/MyRegistrationPanel';
 
-const DetailPendaftaran = ({ isSidebarOpen = true }) => {
-    const { registrationId } = useParams();
+const DetailPendaftaranAdminTim = ({ isSidebarOpen = true }) => {
     const [registrationData, setRegistrationData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showFullImage, setShowFullImage] = useState(false);
 
+    const formatDate = (date) =>
+        date
+            ? new Date(date).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+              })
+            : '-';
     useEffect(() => {
         const fetchRegistrationDetail = async () => {
             try {
                 setLoading(true);
-                const response =
-                    await registrationService.getRegistrationById(
-                        registrationId
-                    );
+                const response = await registrationService.getMyRegistration();
                 const statusMapping = {
                     pending: 'Menunggu Verifikasi',
                     verified: 'Terverifikasi',
@@ -36,38 +40,18 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
                     supervisor_name: data.teams?.supervisor_name,
                     contact: data.teams?.contact,
                     email: data.teams?.users?.email,
-                    level: data.teams?.schools?.level,
+                    school_level: data.teams?.schools?.school_level,
                     member_count: data.total_members,
                     price: data.price,
                     payment_proof: data.payment_proof,
-                    submitted_at: new Date(
-                        data.submitted_at
-                    ).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                    }),
-                    last_updated: new Date(data.last_update).toLocaleDateString(
-                        'id-ID',
-                        {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                        }
-                    ),
+                    submitted_at: formatDate(data.submitted_at),
+                    last_updated: formatDate(data.last_updated),
                     committee_name: data.verified_by?.committee_name,
                     committee_contact: data.verified_by?.committee_contact,
                     committee_email: data.verified_by?.users?.email,
                     status: statusMapping[data.status] || data.status,
                     verification_message: data.verification_message,
-                    verified_at: new Date(data.verified_at).toLocaleDateString(
-                        'id-ID',
-                        {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                        }
-                    ),
+                    verified_at: formatDate(data.verified_at),
                 };
                 setRegistrationData(flattenedData);
             } catch (err) {
@@ -78,21 +62,11 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
             }
         };
 
-        if (registrationId) {
-            fetchRegistrationDetail();
-        } else {
-            setLoading(false);
-        }
-    }, [registrationId]);
+        fetchRegistrationDetail();
+    }, []);
 
     if (!loading && (error || !registrationData)) {
-        return (
-            <div className="flex justify-center items-center h-screen bg-gray-100">
-                <p className="text-red-500">
-                    {error || 'Data tidak ditemukan'}
-                </p>
-            </div>
-        );
+        return <ErrorPanel message={error} />;
     }
 
     return (
@@ -128,15 +102,15 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4 flex-1">
                         <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6 col-span-1 row-span-1 md:row-span-2">
-                            <CommitteeTeamDataPanel
-                                registrationData={registrationData}
+                            <MyTeamDataPanel
+                                teamData={registrationData}
                                 isLoading={loading}
                             />
                         </div>
 
                         <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col  lg:col-span-1 lg:row-span-2">
-                            <CommitteeRegistrationPanel
-                                registrationData={registrationData}
+                            <MyRegistrationPanel
+                                teamData={registrationData}
                                 onViewImage={() => setShowFullImage(true)}
                                 isLoading={loading}
                             />
@@ -148,4 +122,4 @@ const DetailPendaftaran = ({ isSidebarOpen = true }) => {
     );
 };
 
-export default DetailPendaftaran;
+export default DetailPendaftaranAdminTim;

@@ -1,6 +1,6 @@
 // src/components/LoginCard.jsx
 import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, XCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, XCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/auth_service';
 
@@ -42,8 +42,17 @@ export default function LoginCard() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-transparent">
             {/* Card Section */}
-            <div className="bg-white shadow-lg rounded-xl flex flex-col items-center justify-center py-11 px-14 md:w-[500px] md:py-24">
+            <div className="relative bg-white shadow-lg rounded-xl flex flex-col items-center justify-center py-11 px-14 md:w-[500px] md:py-24">
                 {/* Logo */}
+
+                <button
+                    type="button"
+                    onClick={() => navigate('/')}
+                    className="absolute top-6 left-6 text-gray-500 hover:text-gray-800 transition-colors"
+                    aria-label="Kembali"
+                >
+                    <ArrowLeft size={24} />
+                </button>
 
                 <img
                     src="/images/logo_simbaris_lined.png"
@@ -115,8 +124,9 @@ export default function LoginCard() {
                         {isLoading ? 'Loading..' : 'Login'}
                     </button>
 
-                    {/* Forgot Password */}
-                    <div className="flex justify-start mt-1">
+                    {/* Back and Forgot Password */}
+                    <div className="flex mt-1">
+                        
                         <button
                             type="button"
                             onClick={() => navigate('/confirm-email')}

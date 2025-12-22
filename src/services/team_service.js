@@ -75,6 +75,21 @@ const getTeamCode = async () => {
     }
 };
 
+// 7. Update Team Logo
+// Endpoint: PUT /api/teams/logo
+const updateTeamLogo = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+        const response = await api.put('/teams/logo', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error;
+    }
+};
+
 const teamService = {
     createTeam,
     uploadTeamLogo,
@@ -82,6 +97,7 @@ const teamService = {
     getMyTeam,
     editMyTeam,
     getTeamCode,
+    updateTeamLogo,
 };
 
 export default teamService;

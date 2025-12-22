@@ -13,6 +13,7 @@ const CommitteeRegistrationPanel = ({
     onViewImage,
     isLoading = false,
 }) => {
+    const navigate = useNavigate();
     const [isUpdateStatusOpen, setIsUpdateStatusOpen] = useState(false);
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
         useState(false);
@@ -20,7 +21,10 @@ const CommitteeRegistrationPanel = ({
     const [successType, setSuccessType] = useState('default');
     const [isRedirectModalOpen, setIsRedirectModalOpen] = useState(false);
 
-    const navigate = useNavigate();
+    const valid_phone_number =
+        registrationData?.contact[0] === '0'
+            ? '62' + registrationData?.contact.slice(1)
+            : registrationData?.contact;
 
     const handleUpdateSuccess = () => {
         window.location.reload();
@@ -31,6 +35,7 @@ const CommitteeRegistrationPanel = ({
             await registrationService.deleteRegistration(
                 registrationData.registration_id
             );
+
             setIsDeleteConfirmationOpen(false);
             setSuccessType('delete');
             setIsSuccessOpen(true);
@@ -52,7 +57,7 @@ const CommitteeRegistrationPanel = ({
             return 'text-simbaris-warning bg-simbaris-warning-lightest border-simbaris-warning-light';
         }
         if (s === 'draft') {
-            return 'text-simbaris-hazard bg-simbaris-hazard-lightest border-simbaris-hazard-light'
+            return 'text-simbaris-hazard bg-simbaris-hazard-lightest border-simbaris-hazard-light';
         }
         return 'text-simbaris-secondary bg-simbaris-secondary-lightest border-simbaris-secondary-light';
     };
@@ -83,7 +88,7 @@ const CommitteeRegistrationPanel = ({
                                 Jenjang
                             </span>
                             <span className="text-sm font-medium text-gray-900 text-right px-2 py-1">
-                                {registrationData.level}
+                                {registrationData.school_level}
                             </span>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-200 pb-2">
@@ -106,7 +111,8 @@ const CommitteeRegistrationPanel = ({
                             </span>
                             <button
                                 onClick={onViewImage}
-                                className="flex items-center gap-2 text-simbaris-accent font-medium bg-simbaris-accent-lightest px-2 py-1 rounded-md text-sm border border-simbaris-accent-light"
+                                disabled={!registrationData.payment_proof}
+                                className="flex items-center gap-2 text-simbaris-accent font-medium bg-simbaris-accent-lightest px-2 py-1 rounded-md text-sm border border-simbaris-accent-light disabled:cursor-not-allowed"
                             >
                                 <Eye />
                                 Lihat Gambar
@@ -243,13 +249,16 @@ const CommitteeRegistrationPanel = ({
             />
             <SuccessModal
                 isOpen={isSuccessOpen}
-                onClose={() => setIsSuccessOpen(false)}
+                onClose={() => {
+                    setIsSuccessOpen(false);
+                    navigate('/tim-terdaftar');
+                }}
                 type={successType}
             />
             <RedirectModal
                 isOpen={isRedirectModalOpen}
                 onClose={() => setIsRedirectModalOpen(false)}
-                url={`https://wa.me/${registrationData?.contact || ''}`}
+                url={`https://wa.me/${valid_phone_number}`}
                 title="Hubungi Tim"
                 message={`Apakah Anda ingin menghubungi tim ${registrationData?.team_name} melalui WhatsApp?`}
             />

@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
 import MyMemberPanel from '../../components/member/MyMemberPanel';
-import MyTeamDataPanel from '../../components/admin_tim/MyTeamDataPanel';
 import MyRegistrationPanel from '../../components/admin_tim/MyRegistrationPanel';
 import memberService from '../../services/member_service';
 import registrationService from '../../services/registration_service';
 import ErrorPanel from '../../components/ui/ErrorPanel';
+import { X } from 'lucide-react';
+import MyTeamPanelAdminTim from '../../components/admin_tim/MyTeamPanelAdminTim';
+
 
 const DashboardAdminTim = ({ isSidebarOpen }) => {
     const [members, setMembers] = useState([]);
     const [registration, setRegistration] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showFullImage, setShowFullImage] = useState(false);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,9 +40,10 @@ const DashboardAdminTim = ({ isSidebarOpen }) => {
                           team_name: rawReg.teams?.team_name,
                           school_name: rawReg.teams?.schools?.school_name,
                           city: rawReg.teams?.schools?.city,
-                          level: rawReg.teams?.schools?.level,
+                          school_level: rawReg.teams?.schools?.school_level,
                           member_count: rawReg.total_members,
                           price: rawReg.price,
+                          payment_proof: rawReg.payment_proof,
                           submitted_at: new Date(
                               rawReg.submitted_at
                           ).toLocaleDateString('id-ID', {
@@ -71,6 +77,25 @@ const DashboardAdminTim = ({ isSidebarOpen }) => {
 
     return (
         <div className="flex bg-gray-100">
+            {showFullImage && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 transition-opacity animate-in fade-in duration-200"
+                    onClick={() => setShowFullImage(false)}
+                >
+                    <button
+                        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-2 bg-black/20 rounded-full"
+                        onClick={() => setShowFullImage(false)}
+                    >
+                        <X size={32} />
+                    </button>
+                    <img
+                        src={registration.payment_proof}
+                        alt="Bukti Pembayaran Full"
+                        className="max-w-full max-h-full object-contain rounded-md shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </div>
+            )}
             <div
                 className={`w-full min-h-screen overflow-hidden pt-16 ${
                     isSidebarOpen ? 'md:ml-64' : 'ml-0'
@@ -87,7 +112,10 @@ const DashboardAdminTim = ({ isSidebarOpen }) => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 gap-4">
                             <div className="bg-white rounded-lg shadow-md p-6 lg:col-span-2 border border-gray-200">
-                                <MyTeamDataPanel teamData={registration} isLoading={loading} />
+                                <MyTeamPanelAdminTim
+                                    teamData={registration}
+                                    isLoading={loading}
+                                />
                             </div>
 
                             <div className="bg-white rounded-lg shadow-md p-6 border flex flex-col lg:col-span-1 lg:row-span-1">
@@ -100,11 +128,18 @@ const DashboardAdminTim = ({ isSidebarOpen }) => {
                             </div>
 
                             <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2 h-fit lg:row-span-2 border border-gray-200">
-                                <MyMemberPanel myMemberData={members} isLoading={loading} />
+                                <MyMemberPanel
+                                    myMemberData={members}
+                                    isLoading={loading}
+                                />
                             </div>
 
                             <div className="bg-white rounded-lg shadow-md p-6 border h-fit lg:col-span-1 lg:row-span-2 border-gray-200">
-                                <MyRegistrationPanel teamData={registration} isLoading={loading} />
+                                <MyRegistrationPanel
+                                    teamData={registration}
+                                    onViewImage={() => setShowFullImage(true)}
+                                    isLoading={loading}
+                                />
                             </div>
                         </div>
                     )}

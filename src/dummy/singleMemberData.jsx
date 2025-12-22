@@ -9,7 +9,7 @@ const data = {
         team_name: 'Specta Squad',
         school: {
             school_name: 'SMP Negeri 18 Balikpapan',
-            level: 'SMP/MTs Sederajat',
+            school_level: 'SMP/MTs Sederajat',
         },
     },
 };
@@ -29,7 +29,7 @@ const myData = {
     email : data.email,
     team_name : data.team.team_name,
     school_name : data.team.school.school_name,
-    level : data.team.school.level,
+    school_level : data.team.school.school_level,
     photo_url : myPhoto.photo_url,
 }
 

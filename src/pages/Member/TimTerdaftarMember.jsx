@@ -1,17 +1,19 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { GraduationCapIcon, Users, SearchIcon } from 'lucide-react';
+import teamService from '../../services/team_service';
 import SimpleCard from '../../components/ui/SimpleCards';
 import InputField from '../../components/ui/InputField';
 import Table from '../../components/ui/Table';
+import CardSkeleton from '../../components/skeleton/CardSkeleton';
 import Pagination from '../../components/ui/Pagination';
 import FilterDropdown from '../../components/ui/FilterDropdown';
-import registrantList from '../../dummy/registrantList';
 
 const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
-    const [data] = useState(registrantList);
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState({
-        level: '',
+        school_level: '',
         province: '',
         city: '',
         district: '',
@@ -23,18 +25,63 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
         direction: 'asc',
     });
 
-    const stats = useMemo(() => {
-        const counts = { total: data.length, sma: 0, smp: 0, sd: 0 };
-        data.forEach((item) => {
-            if (item.level === 'SMA/SMK/MA Sederajat') counts.sma++;
-            else if (item.level === 'SMP/MTs Sederajat') counts.smp++;
-            else if (item.level === 'SD/MI Sederajat') counts.sd++;
-        });
-        return counts;
-    }, [data]);
+    const [stats, setStats] = useState({ total: 0, sma: 0, smp: 0, sd: 0 });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const response = await teamService.getTeams();
+
+                // Mapping data dari backend ke format tabel
+                const teams = response.data || [];
+                const mappedData = teams.map((t) => ({
+                    id: t.team_id,
+                    team: t.team_name,
+                    school: t.school_name || '-',
+                    school_level: t.school_level || '-',
+                    province: t.province || '-',
+                    city: t.city || '-',
+                    district: t.subdistrict || '-',
+                }));
+                setData(mappedData);
+
+                // Menggunakan level_counts dari server jika ada, atau hitung manual
+                if (response.level_counts) {
+                    setStats({
+                        total: response.level_counts.total ?? mappedData.length,
+                        sma: response.level_counts.sma ?? 0,
+                        smp: response.level_counts.smp ?? 0,
+                        sd: response.level_counts.sd ?? 0,
+                    });
+                } else {
+                    const counts = {
+                        total: mappedData.length,
+                        sma: 0,
+                        smp: 0,
+                        sd: 0,
+                    };
+                    mappedData.forEach((item) => {
+                        if (item.school_level === 'SMA/SMK/MA Sederajat')
+                            counts.sma++;
+                        else if (item.school_level === 'SMP/MTs Sederajat')
+                            counts.smp++;
+                        else if (item.school_level === 'SD/MI Sederajat')
+                            counts.sd++;
+                    });
+                    setStats(counts);
+                }
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     const levelOptions = useMemo(() => {
-        const unique = Array.from(new Set(data.map((d) => d.level)));
+        const unique = Array.from(new Set(data.map((d) => d.school_level)));
         return [
             ...unique.map((item) => ({
                 label: item,
@@ -78,8 +125,8 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
             const matchSearch =
                 item.team.toLowerCase().includes(search.toLowerCase()) ||
                 item.school.toLowerCase().includes(search.toLowerCase());
-            const matchLevel = filters.level
-                ? item.level === filters.level
+            const matchLevel = filters.school_level
+                ? item.school_level === filters.school_level
                 : true;
             const matchProvince = filters.province
                 ? item.province === filters.province
@@ -153,7 +200,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
             cellClassName: 'text-gray-900 font-medium',
         },
         { header: 'Nama Sekolah', accessor: 'school', sortable: true },
-        { header: 'Jenjang', accessor: 'level' },
+        { header: 'Jenjang', accessor: 'school_level' },
         { header: 'Provinsi', accessor: 'province' },
         { header: 'Kota', accessor: 'city' },
         { header: 'Kecamatan', accessor: 'district' },
@@ -198,9 +245,13 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                     </header>
 
                     <div className="hidden xl:flex gap-4 mb-4">
-                        {cards.map((card, index) => (
-                            <SimpleCard key={index} {...card} />
-                        ))}
+                        {isLoading
+                            ? [...Array(4)].map((_, i) => (
+                                  <CardSkeleton key={i} />
+                              ))
+                            : cards.map((card, index) => (
+                                  <SimpleCard key={index} {...card} />
+                              ))}
                     </div>
 
                     <div className="flex flex-col gap-4 bg-white rounded-lg shadow-md p-6">
@@ -223,6 +274,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Cari Tim atau Sekolah..."
                                     className="h-11"
+                                    disabled={isLoading}
                                 />
                             </div>
 
@@ -230,10 +282,11 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                 <FilterDropdown
                                     label="Jenjang"
                                     options={levelOptions}
-                                    value={filters.level}
+                                    value={filters.school_level}
                                     onChange={(val) =>
-                                        handleFilterChange('level', val)
+                                        handleFilterChange('school_level', val)
                                     }
+                                    isLoading={isLoading}
                                 />
                                 <FilterDropdown
                                     label="Provinsi"
@@ -242,6 +295,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                     onChange={(val) =>
                                         handleFilterChange('province', val)
                                     }
+                                    isLoading={isLoading}
                                 />
                                 <FilterDropdown
                                     label="Kota"
@@ -250,6 +304,7 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                     onChange={(val) =>
                                         handleFilterChange('city', val)
                                     }
+                                    isLoading={isLoading}
                                 />
                                 <FilterDropdown
                                     label="Kecamatan"
@@ -258,28 +313,42 @@ const TimTerdaftarMember = ({ isSidebarOpen = true }) => {
                                     onChange={(val) =>
                                         handleFilterChange('district', val)
                                     }
+                                    isLoading={isLoading}
                                 />
                             </div>
                         </div>
 
-                        <Table
-                            columns={columns}
-                            data={paginatedData}
-                            sortConfig={sortConfig}
-                            onSort={handleSort}
-                        />
+                        {isLoading ? (
+                            <div className="animate-pulse space-y-4">
+                                <div className="h-12 bg-gray-100 rounded w-full"></div>
+                                {[...Array(5)].map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className="h-16 bg-gray-50 rounded w-full"
+                                    ></div>
+                                ))}
+                            </div>
+                        ) : (
+                            <>
+                                <Table
+                                    columns={columns}
+                                    data={paginatedData}
+                                    sortConfig={sortConfig}
+                                    onSort={handleSort}
+                                />
 
-                        {/* footer pagination */}
-                        <Pagination
-                            currentPage={currentPage}
-                            totalItems={filteredData.length}
-                            itemsPerPage={itemsPerPage}
-                            onPageChange={setCurrentPage}
-                            onItemsPerPageChange={(val) => {
-                                setItemsPerPage(val);
-                                setCurrentPage(1);
-                            }}
-                        />
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalItems={filteredData.length}
+                                    itemsPerPage={itemsPerPage}
+                                    onPageChange={setCurrentPage}
+                                    onItemsPerPageChange={(val) => {
+                                        setItemsPerPage(val);
+                                        setCurrentPage(1);
+                                    }}
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

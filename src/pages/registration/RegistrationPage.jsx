@@ -1,12 +1,17 @@
-import React, { useState, useRef, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import InputField from '../../components/ui/InputField';
 import StepsIndicator from '../../components/registration/StepsIndicator';
 import ComboBox from '../../components/ui/Combobox';
 import UploadModal from '../../components/registration/UploadModal';
+import AuditModal from '../../components/registration/AuditModal';
+import authService from '../../services/auth_service';
+import teamService from '../../services/team_service';
+import memberService from '../../services/member_service';
+import registrationService from '../../services/registration_service';
+import schoolService from '../../services/school_service';
 
-import schoolList from '../../dummy/schoolList';
 import {
     Users,
     User,
@@ -17,12 +22,14 @@ import {
     Pen,
     PenLine,
     Save,
+    Loader2,
 } from 'lucide-react';
+import SuccessModal from '../../components/ui/SuccessModal';
 
 const defaultMember = {
-    fullName: '',
+    member_name: '',
     nisn: '',
-    grade: '',
+    member_grade: '',
     gender: '',
     email: '',
 };
@@ -34,14 +41,15 @@ const gradeOptionsByLevel = {
 };
 
 const RegistrationPage = () => {
+    const nav = useNavigate();
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [formData, setFormData] = useState({
         schoolName: '',
-        schoolLevel: '',
+        school_Level: '',
         province: '',
         city: '',
-        district: '',
+        subdistrict: '',
         teamName: '',
         coachName: '',
         mentorName: '',
@@ -56,6 +64,26 @@ const RegistrationPage = () => {
 
     const [selectedBank, setSelectedBank] = useState(null);
     const [teamCode, setTeamCode] = useState('XXXX-XXXX-XXXX');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [error, setError] = useState('');
+    const [schools, setSchools] = useState([]);
+    const [membersSaved, setMembersSaved] = useState(false);
+    const [photoUploaded, setPhotoUploaded] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+
+    useEffect(() => {
+        const fetchSchools = async () => {
+            try {
+                const response = await schoolService.getSchools();
+                setSchools(Array.isArray(response.data) ? response.data : []);
+            } catch (err) {
+                console.error('Failed to fetch schools:', err);
+            }
+        };
+        fetchSchools();
+    }, []);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -86,6 +114,8 @@ const RegistrationPage = () => {
 
     const handleMemberChange = (index, field, value) => {
         setFormData((prev) => {
+            setMembersSaved(false);
+            setPhotoUploaded(false);
             const updatedMembers = [...prev.members];
             updatedMembers[index] = {
                 ...updatedMembers[index],
@@ -119,10 +149,11 @@ const RegistrationPage = () => {
     const step2Validation = useMemo(() => {
         return formData.members.some(
             (member) =>
-                !member.fullName ||
+                !member.member_name ||
                 !member.nisn ||
                 !member.gender ||
-                !member.grade
+                !member.member_grade ||
+                !member.email
         );
     }, [formData.members]);
 
@@ -156,9 +187,127 @@ const RegistrationPage = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
 
-    const handleNext = () => {
-        if (currentStep < registrationSteps.length) {
-            setCurrentStep(currentStep + 1);
+    const handleSignUpMembers = async () => {
+        setError('');
+        try {
+            if (currentStep === 3) {
+                if (formData.members.length === 0) {
+                    throw new Error('Minimal 1 anggota tim');
+                }
+
+                setIsLoading(true);
+                const membersPayload = formData.members
+                    .filter((m) => m.member_name)
+                    .map((m) => ({
+                        member_name: m.member_name,
+                        nisn: m.nisn,
+                        gender: m.gender,
+                        member_grade: m.member_grade,
+                        email: m.email,
+                    }));
+                console.log('RAW MEMBERS:', formData.members);
+                console.log('PAYLOAD MEMBERS:', membersPayload);
+
+                await memberService.signupBulkMembers(membersPayload);
+                setMembersSaved(true);
+            }
+        } catch (err) {
+            setIsLoading(false);
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+            setSuccessMessage('Data Anggota Berhasil Ditambahkan');
+            setShowSuccess(true);
+        }
+    };
+
+    const handleNext = async () => {
+        setError('');
+        try {
+            if (currentStep === 1) {
+                if (
+                    !formData.email ||
+                    !formData.password ||
+                    !formData.confirmPassword
+                ) {
+                    throw new Error('Mohon lengkapi data akun');
+                }
+                if (formData.password !== formData.confirmPassword) {
+                    throw new Error('Password tidak sama');
+                }
+
+                setIsLoading(true);
+                const user = await authService.registerTeamAdmin({
+                    email: formData.email,
+                    password: formData.password,
+                });
+                console.log('REGISTER RESPONSE:', user);
+                setIsLoading(false);
+                setCurrentStep(currentStep + 1);
+            } else if (currentStep === 2) {
+                if (
+                    !formData.teamName ||
+                    !formData.schoolName ||
+                    !formData.coachName ||
+                    !formData.kontak ||
+                    !formData.school_Level ||
+                    !formData.province ||
+                    !formData.city ||
+                    !formData.subdistrict
+                ) {
+                    throw new Error('Mohon lengkapi data tim wajib');
+                }
+
+                setIsLoading(true);
+                const teamPayload = {
+                    team_name: formData.teamName,
+                    coach_name: formData.coachName,
+                    supervisor_name: formData.mentorName,
+                    contact: formData.kontak,
+                    school_name: formData.schoolName,
+                    school_level: formData.school_Level,
+                    city: formData.city,
+                    province: formData.province,
+                    subdistrict: formData.subdistrict,
+                };
+                await teamService.createTeam(teamPayload);
+
+                if (selectedFile) {
+                    await teamService.uploadTeamLogo(selectedFile);
+                }
+                setIsLoading(false);
+                setCurrentStep(currentStep + 1);
+            } else if (currentStep === 3) {
+                setIsLoading(false);
+                setCurrentStep(currentStep + 1);
+            } else if (currentStep === 4) {
+                if (!formData.payment.proofImage) {
+                    throw new Error('Mohon upload bukti pembayaran');
+                }
+
+                setIsLoading(true);
+                await registrationService.uploadPaymentProof(
+                    formData.payment.proofImage
+                );
+
+                // Fetch code before changing step to ensure we have it and token is valid
+                const codeData = await teamService.getTeamCode();
+                setTeamCode(codeData.data.team_code);
+
+                setIsLoading(false);
+                setCurrentStep(currentStep + 1);
+            }
+        } catch (err) {
+            setIsLoading(false);
+            console.error(err);
+            const msg =
+                err?.detail ||
+                err?.response?.data?.detail ||
+                err?.response?.data?.message ||
+                err.message ||
+                'Terjadi kesalahan';
+            setError(msg);
+            window.scrollTo(0, 0);
         }
     };
 
@@ -169,13 +318,17 @@ const RegistrationPage = () => {
     };
 
     const levelOptions = useMemo(() => {
-        return Array.from(new Set(schoolList.map((s) => s.level))).sort();
-    }, []);
+        if (!Array.isArray(schools)) return [];
+        return Array.from(new Set(schools.map((s) => s.school_level)))
+            .filter((level) => level)
+            .sort();
+    }, [schools]);
 
     const schoolsByLevel = useMemo(() => {
-        if (!formData.schoolLevel) return schoolList;
-        return schoolList.filter((s) => s.level === formData.schoolLevel);
-    }, [formData.schoolLevel]);
+        if (!Array.isArray(schools)) return [];
+        if (!formData.school_Level) return schools;
+        return schools.filter((s) => s.school_level === formData.school_Level);
+    }, [formData.school_Level, schools]);
 
     const provinceOptions = useMemo(() => {
         const setProv = new Set(schoolsByLevel.map((s) => s.province));
@@ -193,7 +346,7 @@ const RegistrationPage = () => {
         const filtered = formData.city
             ? schoolsByLevel.filter((s) => s.city === formData.city)
             : schoolsByLevel;
-        return Array.from(new Set(filtered.map((s) => s.district))).sort();
+        return Array.from(new Set(filtered.map((s) => s.subdistrict))).sort();
     }, [schoolsByLevel, formData.city]);
 
     const schoolNameOptions = useMemo(() => {
@@ -202,32 +355,39 @@ const RegistrationPage = () => {
             filtered = filtered.filter((s) => s.province === formData.province);
         if (formData.city)
             filtered = filtered.filter((s) => s.city === formData.city);
-        if (formData.district)
-            filtered = filtered.filter((s) => s.district === formData.district);
+        if (formData.subdistrict)
+            filtered = filtered.filter(
+                (s) => s.subdistrict === formData.subdistrict
+            );
         return Array.from(new Set(filtered.map((s) => s.school_name))).sort();
-    }, [schoolsByLevel, formData.province, formData.city, formData.district]);
+    }, [
+        schoolsByLevel,
+        formData.province,
+        formData.city,
+        formData.subdistrict,
+    ]);
 
     const handleSelectLevel = (level) => {
         setFormData((prev) => ({
             ...prev,
-            schoolLevel: level,
+            school_Level: level,
             schoolName: '',
             province: '',
             city: '',
-            district: '',
+            subdistrict: '',
         }));
     };
 
     const handleSelectSchool = (schoolName) => {
-        const s = schoolList.find((x) => x.school_name === schoolName);
+        const s = schools.find((x) => x.school_name === schoolName);
         if (s) {
             setFormData((prev) => ({
                 ...prev,
                 schoolName: s.school_name,
-                schoolLevel: s.level || prev.schoolLevel,
+                school_Level: s.school_level || prev.school_Level,
                 province: s.province || prev.province,
                 city: s.city || prev.city,
-                district: s.district || prev.district,
+                subdistrict: s.subdistrict || prev.subdistrict,
             }));
         } else {
             setFormData((prev) => ({ ...prev, schoolName }));
@@ -239,35 +399,37 @@ const RegistrationPage = () => {
             ...prev,
             province,
             city: '',
-            district: '',
+            subdistrict: '',
             schoolName: '',
         }));
     };
 
     const handleSelectCity = (city) => {
-        const s = schoolList.find(
+        const s = schools.find(
             (x) =>
                 x.city === city &&
-                (!formData.schoolLevel || x.level === formData.schoolLevel)
+                (!formData.school_Level ||
+                    x.school_level === formData.school_Level)
         );
         setFormData((prev) => ({
             ...prev,
             city,
             province: s?.province || prev.province,
-            district: '',
+            subdistrict: '',
             schoolName: '',
         }));
     };
 
-    const handleSelectDistrict = (district) => {
-        const s = schoolList.find(
+    const handleSelectDistrict = (subdistrict) => {
+        const s = schools.find(
             (x) =>
-                x.district === district &&
-                (!formData.schoolLevel || x.level === formData.schoolLevel)
+                x.subdistrict === subdistrict &&
+                (!formData.school_Level ||
+                    x.school_level === formData.school_Level)
         );
         setFormData((prev) => ({
             ...prev,
-            district,
+            subdistrict,
             city: s?.city || prev.city,
             province: s?.province || prev.province,
             schoolName: '',
@@ -275,6 +437,7 @@ const RegistrationPage = () => {
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -284,15 +447,29 @@ const RegistrationPage = () => {
         setIsModalOpen(false);
     };
 
-    const handleProcessUpload = (file) => {
+    const handleProcessUpload = async (file) => {
         if (file) {
-            console.log('Memproses file:', file.name);
-            // Lakukan logika upload ke server di sini
-
-            // Setelah selesai, tutup modal
-            setIsModalOpen(false);
+            try {
+                setIsUploading(true);
+                await registrationService.uploadRawPhoto(file);
+                setIsModalOpen(false);
+                setIsAuditModalOpen(true);
+            } catch (e) {
+                console.error(e);
+                alert('Gagal mengupload file.');
+            } finally {
+                setIsUploading(false);
+            }
         }
     };
+
+    const handleAuditSuccess = () => {
+        setIsAuditModalOpen(false);
+        setPhotoUploaded(true);
+        setSuccessMessage('Verifikasi Foto Berhasil');
+        setShowSuccess(true);
+    };
+
     return (
         <div className="bg-gray-50 min-h-screen py-12 flex flex-col gap-10 items-center">
             <div className="w-full max-w-6xl px-4 md:px-0">
@@ -301,6 +478,12 @@ const RegistrationPage = () => {
                     currentStep={currentStep}
                 />
             </div>
+
+            {error && (
+                <div className="w-full max-w-6xl bg-red-100 border border-simbaris-hazard-light text-simbaris-hazard px-2 py-3 rounded">
+                    <span className="">{error}</span>
+                </div>
+            )}
 
             <div className="w-full max-w-7xl">
                 {currentStep === 1 && (
@@ -344,18 +527,34 @@ const RegistrationPage = () => {
 
                                 <div className="flex flex-col-reverse md:flex-row md:justify-end pt-8 gap-4 mt-6">
                                     <Button
-                                        onClick={handlePrev}
+                                        onClick={() =>
+                                            nav('/', { replace: true })
+                                        }
                                         color="primary"
                                         variant="outline"
                                         size="default"
                                         text="← Kembali"
+                                        disabled={isLoading}
                                         className="w-full md:w-40 text-sm md:text-base"
                                     />
                                     <Button
                                         onClick={handleNext}
                                         color="accent"
                                         size="default"
-                                        text="Buat Akun!"
+                                        text={
+                                            isLoading
+                                                ? 'Membuat Akun...'
+                                                : 'Buat Akun!'
+                                        }
+                                        disabled={isLoading}
+                                        leftIcon={
+                                            isLoading ? (
+                                                <Loader2
+                                                    size={18}
+                                                    className="animate-spin"
+                                                />
+                                            ) : null
+                                        }
                                         className="w-full md:w-40 text-sm md:text-base"
                                     />
                                 </div>
@@ -458,7 +657,7 @@ const RegistrationPage = () => {
                                         label="Jenjang Sekolah"
                                         placeholder="Pilih jenjang"
                                         options={levelOptions}
-                                        value={formData.schoolLevel}
+                                        value={formData.school_Level}
                                         onSelect={handleSelectLevel}
                                     />
 
@@ -498,7 +697,7 @@ const RegistrationPage = () => {
                                         label="Kecamatan"
                                         placeholder="Pilih kecamatan"
                                         options={districtOptions}
-                                        value={formData.district}
+                                        value={formData.subdistrict}
                                         onSelect={handleSelectDistrict}
                                     />
                                 </div>
@@ -535,11 +734,11 @@ const RegistrationPage = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <InputField
                                             label="Nama Lengkap"
-                                            value={member.fullName}
+                                            value={member.member_name}
                                             onChange={(e) =>
                                                 handleMemberChange(
                                                     index,
-                                                    'fullName',
+                                                    'member_name',
                                                     e.target.value
                                                 )
                                             }
@@ -563,7 +762,7 @@ const RegistrationPage = () => {
                                         <ComboBox
                                             label="Jenis Kelamin"
                                             placeholder="Pilih jenis kelamin"
-                                            options={['Laki-laki', 'Perempuan']}
+                                            options={['Laki-Laki', 'Perempuan']}
                                             value={member.gender}
                                             onSelect={(val) =>
                                                 handleMemberChange(
@@ -578,14 +777,14 @@ const RegistrationPage = () => {
                                             placeholder="Pilih kelas"
                                             options={
                                                 gradeOptionsByLevel[
-                                                    formData.schoolLevel
+                                                    formData.school_Level
                                                 ] || []
                                             }
-                                            value={member.grade}
+                                            value={member.member_grade}
                                             onSelect={(val) =>
                                                 handleMemberChange(
                                                     index,
-                                                    'grade',
+                                                    'member_grade',
                                                     val
                                                 )
                                             }
@@ -620,11 +819,25 @@ const RegistrationPage = () => {
                                 )}
                                 <div className="flex flex-col gap-3 md:flex-row items-center ">
                                     <Button
-                                        disabled={step2Validation}
+                                        disabled={
+                                            step2Validation ||
+                                            isLoading ||
+                                            membersSaved
+                                        }
                                         color="accent"
                                         size="long"
                                         text="Simpan Data Anggota"
-                                        leftIcon={<Save className="w-4 h-4" />}
+                                        onClick={handleSignUpMembers}
+                                        leftIcon={
+                                            isLoading ? (
+                                                <Loader2
+                                                    className="animate-spin"
+                                                    size={18}
+                                                />
+                                            ) : (
+                                                <Save size={18} />
+                                            )
+                                        }
                                     />
                                     <a
                                         href="https://www.canva.com/design/DAG5kSicvtY/BXo_38G0V_om296veat4Fg/edit?utm_content=DAG5kSicvtY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
@@ -642,7 +855,11 @@ const RegistrationPage = () => {
                                     </a>
                                     <Button
                                         onClick={handleOpenModal}
-                                        disabled={step2Validation}
+                                        disabled={
+                                            step2Validation ||
+                                            !membersSaved ||
+                                            photoUploaded
+                                        }
                                         color="success"
                                         size="long"
                                         text="Upload Form Foto"
@@ -657,6 +874,14 @@ const RegistrationPage = () => {
                             isOpen={isModalOpen}
                             onClose={handleCloseModal}
                             onProcess={handleProcessUpload}
+                            title={'Upload Form Foto'}
+                            isLoading={isUploading}
+                        />
+                        <AuditModal
+                            isOpen={isAuditModalOpen}
+                            onClose={() => setIsAuditModalOpen(false)}
+                            onSaveSuccess={handleAuditSuccess}
+                            isLoading = {isUploading}
                         />
                     </div>
                 )}
@@ -908,15 +1133,18 @@ const RegistrationPage = () => {
                                 {teamCode}
                             </div>
                             <p className="text-sm text-gray-600">
-                                Simpan kode ini untuk setiap proses login
+                                Simpan kode ini untuk proses login anggota tim.
                             </p>
                         </div>
 
                         <div className="mt-8">
                             <Button
-                                onClick={() =>
-                                    (window.location.href = '/login')
-                                }
+                                onClick={() => {
+                                    window.location.href = '/login';
+                                    localStorage.removeItem(
+                                        'registration_token'
+                                    );
+                                }}
                                 color="primary"
                                 size="default"
                                 className="w-full"
@@ -930,24 +1158,51 @@ const RegistrationPage = () => {
                     <div className="flex flex-col-reverse md:flex-row md:justify-end gap-4 mt-8 mx-4 md:mx-8">
                         <Button
                             onClick={handlePrev}
-                            disabled={currentStep === 1}
+                            disabled={currentStep === 1 || isLoading}
                             color="secondary"
                             type="secondary"
                             size="default"
-                            text="← Kembali"
+                            text={isLoading ? 'Loading...' : '← Kembali'}
+                            leftIcon={
+                                isLoading ? (
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={18}
+                                    />
+                                ) : null
+                            }
                             className="w-full md:w-40"
                         />
                         <Button
                             onClick={handleNext}
-                            disabled={currentStep === registrationSteps.length}
+                            disabled={
+                                currentStep === registrationSteps.length ||
+                                isLoading ||
+                                (currentStep === 3 &&
+                                    (!membersSaved || !photoUploaded))
+                            }
                             color="accent"
                             size="default"
-                            text="Selanjutnya →"
+                            text={isLoading ? 'Loading...' : 'Selanjutnya →'}
+                            leftIcon={
+                                isLoading ? (
+                                    <Loader2
+                                        className="animate-spin"
+                                        size={18}
+                                    />
+                                ) : null
+                            }
                             className="w-full md:w-40"
                         />
                     </div>
                 )}
             </div>
+            <SuccessModal
+                isOpen={showSuccess}
+                onClose={() => setShowSuccess(false)}
+                title={'Berhasil Menambahkan'}
+                message={successMessage}
+            />
         </div>
     );
 };

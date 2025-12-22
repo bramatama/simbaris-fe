@@ -55,15 +55,15 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
             {/* --- Tombol Utama Profile --- */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center p-4 transition-colors duration-200 ${
+                className={`w-full flex items-center p-2 transition-colors duration-200 ${
                     isOpen
                         ? 'bg-gray-100 rounded-b-none border-transparent border-2'
                         : 'hover:bg-gray-50 border-transparent border-2 hover:border-transparent'
                 }`}
             >
                 <Avatar imageUrl={avatar_url} initials={initials} name={name} />
-                <div className="ml-3 text-left">
-                    <p className="font-semibold text-lg text-simbaris-text">
+                <div className="ml-2 text-left">
+                    <p className="font-semibold text-md text-simbaris-text">
                         {member_name || committee_name || team_name || 'User'}
                     </p>
                     <p className="text-xs text-gray-500 capitalize">

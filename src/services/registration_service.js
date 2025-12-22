@@ -74,8 +74,6 @@ const uploadPaymentProof = async (file) => {
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;
-    } finally {
-        localStorage.removeItem('registration_token');
     }
 };
 

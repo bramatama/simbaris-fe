@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../ui/Button';
 import { ExternalLink } from 'lucide-react';
 
-const myTeamPanel = ({ teamData }) => {
+const MyTeamPanel = ({ teamData }) => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-col items-center md:flex-row gap-6">
@@ -45,4 +45,4 @@ const myTeamPanel = ({ teamData }) => {
     );
 };
 
-export default myTeamPanel;
+export default MyTeamPanel;

@@ -2,10 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload, Check, FileUp, Image as ImageIcon } from 'lucide-react';
 import Button from '../ui/Button'; // Pastikan path ini sesuai dengan lokasi Button.jsx Anda
 
-const UploadModal = ({ isOpen, onClose, onProcess }) => {
+const UploadModal = ({
+    isOpen,
+    onClose,
+    onProcess,
+    title,
+    isLoading = false,
+}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null); // State untuk URL preview
+    const [progress, setProgress] = useState(0); // State untuk fake progress
     const fileInputRef = useRef(null);
 
     // Efek untuk membuat dan membersihkan URL preview
@@ -27,11 +34,30 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
         }
     }, [file]);
 
+    // Efek untuk simulasi progress bar saat loading
+    useEffect(() => {
+        let interval;
+        if (isLoading) {
+            setProgress(0);
+            interval = setInterval(() => {
+                setProgress((prev) => {
+                    // Mentok di 95% sampai proses selesai (isLoading false)
+                    if (prev >= 95) return 95;
+                    return prev + Math.floor(Math.random() * 10) + 1;
+                });
+            }, 500);
+        } else {
+            setProgress(0);
+        }
+        return () => clearInterval(interval);
+    }, [isLoading]);
+
     // Jika modal tertutup, jangan render apa-apa
     if (!isOpen) return null;
 
     // --- Event Handlers untuk Drag & Drop ---
     const handleDragOver = (e) => {
+        if (isLoading) return;
         e.preventDefault();
         setIsDragging(true);
     };
@@ -41,6 +67,7 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
     };
 
     const handleDrop = (e) => {
+        if (isLoading) return;
         e.preventDefault();
         setIsDragging(false);
         const droppedFiles = e.dataTransfer.files;
@@ -51,6 +78,7 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
 
     // Handler untuk klik area upload
     const handleClickUpload = () => {
+        if (isLoading) return;
         fileInputRef.current.click();
     };
 
@@ -62,35 +90,38 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
 
     return (
         // Overlay (Background Gelap)
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 transition-opacity duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-all duration-300">
             {/* Modal Container */}
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all duration-300 scale-100">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
                 {/* --- Header --- */}
-                <div className="flex justify-between items-center p-6 pb-2">
+                <div className="flex justify-between items-center p-6 pb-4 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-simbaris-text">
-                        Upload Form Foto
+                        {title}
                     </h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                        disabled={isLoading}
+                        className={`text-gray-400 hover:text-gray-600 transition-colors focus:outline-none ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
                     >
                         <X size={24} />
                     </button>
                 </div>
 
                 {/* --- Content (Upload Area) --- */}
-                <div className="p-6">
+                <div className="p-6 pt-6">
                     <div
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                         onClick={handleClickUpload}
                         className={`
-                            border-2 border-dashed rounded-lg h-80 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 overflow-hidden relative
+                            border-2 border-dashed rounded-xl h-80 flex flex-col items-center justify-center transition-all duration-200 overflow-hidden relative
                             ${
                                 isDragging
-                                    ? 'border-simbaris-primary bg-simbaris-primary-lightest'
-                                    : 'border-gray-400 hover:bg-gray-50'
+                                    ? 'border-simbaris-primary bg-blue-50'
+                                    : isLoading
+                                      ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-70'
+                                      : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400 cursor-pointer'
                             }
                         `}
                     >
@@ -102,7 +133,23 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
                             accept="image/*" // Batasi hanya gambar (opsional)
                         />
 
-                        {previewUrl ? (
+                        {isLoading ? (
+                            // Tampilan Loading Progress
+                            <div className="flex flex-col items-center justify-center w-full h-full animate-in fade-in duration-300">
+                                <div className="w-64 bg-gray-100 rounded-full h-3 mb-4 overflow-hidden border border-gray-200">
+                                    <div
+                                        className="bg-blue-500 h-full rounded-full transition-all duration-500 ease-out"
+                                        style={{ width: `${progress}%` }}
+                                    ></div>
+                                </div>
+                                <p className="text-lg font-bold text-gray-700">
+                                    {progress}%
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    Sedang mengunggah berkas...
+                                </p>
+                            </div>
+                        ) : previewUrl ? (
                             // Tampilan Pratinjau Gambar
                             <div className="w-full h-full relative group">
                                 <img
@@ -152,14 +199,15 @@ const UploadModal = ({ isOpen, onClose, onProcess }) => {
                         color="success"
                         leftIcon={<Check size={18} />}
                         onClick={() => onProcess(file)}
-                        disabled={!file}
+                        disabled={!file || isLoading}
                         size={'default'}
-                        text="Lanjutkan"
+                        text={isLoading ? 'Mengunggah...' : 'Lanjutkan'}
                     ></Button>
                     <Button
                         color="hazard"
                         leftIcon={<X size={18} />}
                         onClick={onClose}
+                        disabled={isLoading}
                         size={'default'}
                         text="Batal"
                     ></Button>

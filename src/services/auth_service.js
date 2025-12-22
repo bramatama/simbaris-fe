@@ -26,6 +26,9 @@ const login = async (userLogin) => {
 const registerTeamAdmin = async (userCreate) => {
     try {
         const response = await api.post('/auth/registration', userCreate);
+        if (response.data.registration_token) {
+            localStorage.setItem('registration_token', response.data.registration_token);
+        }
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;

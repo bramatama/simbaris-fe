@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    if (config.authType === 'registration') {
+    if (config.authType === 'registration') {   
         const token = localStorage.getItem('registration_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;

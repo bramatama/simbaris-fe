@@ -24,7 +24,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
     const [errorTable, setErrorTable] = useState(null);
 
     const [search, setSearch] = useState('');
-    const [filters, setFilters] = useState({ level: '', status: '' });
+    const [filters, setFilters] = useState({ school_level: '', status: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [sortConfig, setSortConfig] = useState({
@@ -43,6 +43,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
         { label: 'Perlu Verifikasi', value: 'pending' },
         { label: 'Telah Diverifikasi', value: 'verified' },
         { label: 'Ditolak', value: 'rejected' },
+        { label: 'Dalam Proses Pendaftaran', value: 'draft' },
     ];
 
     // --- DATA PROCESSING ---
@@ -125,8 +126,10 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
         }
 
         // 2. Filter Level
-        if (filters.level) {
-            data = data.filter((item) => item.school_level === filters.level);
+        if (filters.school_level) {
+            data = data.filter(
+                (item) => item.school_level === filters.school_level
+            );
         }
 
         // 3. Filter Status
@@ -197,6 +200,7 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                     pending: 'Menunggu Verifikasi',
                     verified: 'Terverifikasi',
                     rejected: 'Ditolak',
+                    draft: 'Dalam Proses Pendaftaran',
                 };
                 let colorClass = 'text-gray-600';
                 if (row.status === 'pending')
@@ -208,6 +212,9 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                 if (row.status === 'rejected')
                     colorClass =
                         'text-simbaris-hazard font-medium bg-simbaris-hazard-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-hazard-light';
+                if (row.status === 'draft')
+                    colorClass =
+                        'text-simbaris-secondary font-medium bg-simbaris-secondary-lightest px-2 py-1 rounded-md text-xs inline-block border border-simbaris-secondary-light';
                 return (
                     <span className={colorClass}>
                         {statusMapping[row.status] || row.status || 'N/A'}
@@ -318,9 +325,12 @@ const TimTerdaftarPanitia = ({ isSidebarOpen }) => {
                                         <FilterDropdown
                                             label="Jenjang"
                                             options={levelOptions}
-                                            value={filters.level}
+                                            value={filters.school_level}
                                             onChange={(val) =>
-                                                handleFilterChange('level', val)
+                                                handleFilterChange(
+                                                    'school_level',
+                                                    val
+                                                )
                                             }
                                             isLoading={loadingTable}
                                         />
