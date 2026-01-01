@@ -161,6 +161,8 @@ const AuditModal = ({ isOpen, onClose, onSaveSuccess }) => {
                         color="secondary"
                         onClick={onClose}
                         text="Batal"
+                        size={"long"}
+                        className='w-fit'
                     />
                     <Button
                         color="primary"
@@ -174,6 +176,9 @@ const AuditModal = ({ isOpen, onClose, onSaveSuccess }) => {
                                 <Save size={18} />
                             )
                         }
+                        size={"long"}
+                        className='w-fit'
+                        
                     />
                 </div>
             </div>

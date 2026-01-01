@@ -283,7 +283,7 @@ const DashboardPanitia = ({ isSidebarOpen }) => {
                                     <h3 className="font-bold text-xl">
                                         Tim Terdaftar
                                     </h3>
-                                    <div className="flex relative z-10">
+                                    <div className="flex relative z-0">
                                         <InputField
                                             leftIcon={
                                                 <SearchIcon

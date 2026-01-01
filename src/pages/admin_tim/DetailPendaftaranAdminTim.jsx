@@ -45,7 +45,7 @@ const DetailPendaftaranAdminTim = ({ isSidebarOpen = true }) => {
                     price: data.price,
                     payment_proof: data.payment_proof,
                     submitted_at: formatDate(data.submitted_at),
-                    last_updated: formatDate(data.last_updated),
+                    last_updated: formatDate(data.last_update),
                     committee_name: data.verified_by?.committee_name,
                     committee_contact: data.verified_by?.committee_contact,
                     committee_email: data.verified_by?.users?.email,

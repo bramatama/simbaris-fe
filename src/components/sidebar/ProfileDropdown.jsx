@@ -89,19 +89,6 @@ const ProfileDropdown = ({ user, onLogout, onPreferences }) => {
                 <ul>
                     <li>
                         <a
-                            href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                onPreferences();
-                                setIsOpen(false);
-                            }}
-                            className="block px-4 py-3 text-sm text-simbaris-text hover:bg-gray-100 transition-colors cursor-pointer"
-                        >
-                            Preferensi
-                        </a>
-                    </li>
-                    <li>
-                        <a
                             onClick={(e) => {
                                 e.preventDefault();
                                 onLogout();

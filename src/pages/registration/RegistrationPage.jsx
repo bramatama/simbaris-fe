@@ -11,6 +11,7 @@ import teamService from '../../services/team_service';
 import memberService from '../../services/member_service';
 import registrationService from '../../services/registration_service';
 import schoolService from '../../services/school_service';
+import { CheckCircle } from 'lucide-react';
 
 import {
     Users,
@@ -23,6 +24,7 @@ import {
     PenLine,
     Save,
     Loader2,
+    Check,
 } from 'lucide-react';
 import SuccessModal from '../../components/ui/SuccessModal';
 
@@ -146,7 +148,7 @@ const RegistrationPage = () => {
         }
     };
 
-    const step2Validation = useMemo(() => {
+    const step3Validation = useMemo(() => {
         return formData.members.some(
             (member) =>
                 !member.member_name ||
@@ -191,8 +193,16 @@ const RegistrationPage = () => {
         setError('');
         try {
             if (currentStep === 3) {
-                if (formData.members.length === 0) {
-                    throw new Error('Minimal 1 anggota tim');
+                const filledMembers = formData.members.filter(
+                    (m) =>
+                        m.member_name &&
+                        m.nisn &&
+                        m.gender &&
+                        m.member_grade &&
+                        m.email
+                );
+                if (filledMembers.length < 13) {
+                    throw new Error('Minimal 13 anggota tim');
                 }
 
                 setIsLoading(true);
@@ -208,16 +218,46 @@ const RegistrationPage = () => {
                 console.log('RAW MEMBERS:', formData.members);
                 console.log('PAYLOAD MEMBERS:', membersPayload);
 
-                await memberService.signupBulkMembers(membersPayload);
+                const response =
+                    await memberService.signupBulkMembers(membersPayload);
+                const result = response.data;
+
                 setMembersSaved(true);
+
+                if (result.failed_count > 0) {
+                    const failedList = result.failed_members
+                        .map((m) => `${m.email} (${m.reason})`)
+                        .join(', ');
+                    setSuccessMessage(
+                        `Data Anggota Berhasil Disimpan, namun terdapat ${result.failed_count} anggota yang gagal: ${failedList}. Mohon periksa ulang dan simpan kembali.`
+                    );
+                } else {
+                    setSuccessMessage('Data Anggota Berhasil Ditambahkan');
+                }
+                setShowSuccess(true);
             }
         } catch (err) {
-            setIsLoading(false);
             console.error(err);
+            let msg = 'Terjadi kesalahan saat menyimpan anggota';
+            if (err.response?.data?.detail) {
+                const detail = err.response.data.detail;
+                if (typeof detail === 'object') {
+                    msg = detail.message || 'Gagal menyimpan data';
+                    if (detail.errors && Array.isArray(detail.errors)) {
+                        const errorList = detail.errors
+                            .map((e) => `${e.email}: ${e.reason}`)
+                            .join(', ');
+                        msg += `: ${errorList}`;
+                    }
+                } else {
+                    msg = detail;
+                }
+            } else if (err.message) {
+                msg = err.message;
+            }
+            setError(msg);
         } finally {
             setIsLoading(false);
-            setSuccessMessage('Data Anggota Berhasil Ditambahkan');
-            setShowSuccess(true);
         }
     };
 
@@ -233,7 +273,7 @@ const RegistrationPage = () => {
                     throw new Error('Mohon lengkapi data akun');
                 }
                 if (formData.password !== formData.confirmPassword) {
-                    throw new Error('Password tidak sama');
+                    throw new Error('Password konfirmasi tidak sama');
                 }
 
                 setIsLoading(true);
@@ -481,7 +521,12 @@ const RegistrationPage = () => {
 
             {error && (
                 <div className="w-full max-w-6xl bg-red-100 border border-simbaris-hazard-light text-simbaris-hazard px-2 py-3 rounded">
-                    <span className="">{error}</span>
+                    <span>
+                        {error}
+                        {error &&
+                            error.includes('terdaftar') &&
+                            '. Coba hubungi Panitia untuk pemulihan akun atau coba untuk Login'}
+                    </span>
                 </div>
             )}
 
@@ -535,7 +580,7 @@ const RegistrationPage = () => {
                                         size="default"
                                         text="← Kembali"
                                         disabled={isLoading}
-                                        className="w-full md:w-40 text-sm md:text-base"
+                                        className="w-full text-sm md:text-base"
                                     />
                                     <Button
                                         onClick={handleNext}
@@ -543,7 +588,7 @@ const RegistrationPage = () => {
                                         size="default"
                                         text={
                                             isLoading
-                                                ? 'Membuat Akun...'
+                                                ? 'Membuat Akun'
                                                 : 'Buat Akun!'
                                         }
                                         disabled={isLoading}
@@ -555,7 +600,7 @@ const RegistrationPage = () => {
                                                 />
                                             ) : null
                                         }
-                                        className="w-full md:w-40 text-sm md:text-base"
+                                        className={`w-full text-sm md:text-base`}
                                     />
                                 </div>
                             </div>
@@ -820,20 +865,27 @@ const RegistrationPage = () => {
                                 <div className="flex flex-col gap-3 md:flex-row items-center ">
                                     <Button
                                         disabled={
-                                            step2Validation ||
+                                            step3Validation ||
                                             isLoading ||
                                             membersSaved
                                         }
                                         color="accent"
                                         size="long"
-                                        text="Simpan Data Anggota"
+                                        text={
+                                            membersSaved
+                                                ? 'Data Anggota Tersimpan'
+                                                : 'Simpan Data Anggota'
+                                        }
                                         onClick={handleSignUpMembers}
+                                        className="w-fit"
                                         leftIcon={
                                             isLoading ? (
                                                 <Loader2
                                                     className="animate-spin"
                                                     size={18}
                                                 />
+                                            ) : membersSaved ? (
+                                                <CheckCircle />
                                             ) : (
                                                 <Save size={18} />
                                             )
@@ -848,23 +900,29 @@ const RegistrationPage = () => {
                                             color="secondary"
                                             size="long"
                                             text="Edit Form Foto"
-                                            leftIcon={
-                                                <PenLine className="w-4 h-4" />
-                                            }
+                                            leftIcon={<PenLine size={18} />}
                                         />
                                     </a>
                                     <Button
                                         onClick={handleOpenModal}
                                         disabled={
-                                            step2Validation ||
+                                            step3Validation ||
                                             !membersSaved ||
                                             photoUploaded
                                         }
                                         color="success"
                                         size="long"
-                                        text="Upload Form Foto"
+                                        text={
+                                            photoUploaded
+                                                ? 'Verifikasi Foto Berhasil'
+                                                : 'Upload Form Foto'
+                                        }
                                         leftIcon={
-                                            <Upload className="w-4 h-4" />
+                                            photoUploaded ? (
+                                                <CheckCircle size={18} />
+                                            ) : (
+                                                <Upload size={18} />
+                                            )
                                         }
                                     />
                                 </div>
@@ -881,7 +939,7 @@ const RegistrationPage = () => {
                             isOpen={isAuditModalOpen}
                             onClose={() => setIsAuditModalOpen(false)}
                             onSaveSuccess={handleAuditSuccess}
-                            isLoading = {isUploading}
+                            isLoading={isUploading}
                         />
                     </div>
                 )}
