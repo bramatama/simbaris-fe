@@ -17,10 +17,9 @@ import RegistrationPage from './pages/registration/RegistrationPage';
 // import SampleWithDashboard from './pages/SampleWithDashboard';
 // import Sample from './pages/Sample';
 import NotFoundPage from './pages/others/NotFoundPage';
-import LoginPage from './pages/Login/LoginPage';
+import LoginPage from './pages/login/LoginPage';
 import ConfirmEmail from './pages/forgot_password/ConfirmEmail';
 import RestorePassword from './pages/forgot_password/RestorePassword';
-import DetailPendaftaran from './pages/panitia/DetailPendaftaranPanitia';
 import ComponentsCheck from './pages/others/ComponentsCheck';
 import EditTimAdminTim from './pages/admin_tim/EditTimAdminTim';
 
