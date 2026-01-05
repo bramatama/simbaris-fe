@@ -1,5 +1,5 @@
 import React from 'react';
-import TimTerdaftarPanitia from '../pages/Panitia/TimTerdaftarPanitia';
+import TimTerdaftarPanitia from '../pages/panitia/TimTerdaftarPanitia';
 import TimTerdaftarMember from '../pages/member/TimTerdaftarMember';
 import NotFoundPage from '../pages/others/NotFoundPage';
 
