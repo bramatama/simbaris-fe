@@ -1,4 +1,4 @@
-import DetailTimMember from '../pages/member/DetailTimMember';
+import DetailTimMember from '../pages/member/DetailTimMember.jsx';
 import NotFoundPage from '../pages/others/NotFoundPage';
 import DetailTimAdminTim from '../pages/admin_tim/DetailTimAdminTim';
 

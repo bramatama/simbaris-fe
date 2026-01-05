@@ -1,8 +1,8 @@
 import React from 'react';
-import DashboardPanitia from '../pages/panitia/DashboardPanitia';
-import DashboardAdminTim from '../pages/admin_tim/DashboardAdminTim';
-import DashboardMember from '../pages/member/DashboardMember';
-import NotFoundPage from '../pages/others/NotFoundPage';
+import DashboardPanitia from '../pages/panitia/DashboardPanitia.jsx';
+import DashboardAdminTim from '../pages/admin_tim/DashboardAdminTim.jsx';
+import DashboardMember from '../pages/member/DashboardMember.jsx';
+import NotFoundPage from '../pages/others/NotFoundPage.jsx';
 
 const DashboardRoute = ({ userRole, isSidebarOpen }) => {
     // Gunakan object mapping untuk pendekatan yang lebih modern dan skalabel

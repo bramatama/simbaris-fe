@@ -1,5 +1,5 @@
-import DetailPendaftaranPanitia from '../pages/panitia/DetailPendaftaranPanitia';
-import DetailPendaftaranAdminTim from '../pages/admin_tim/DetailPendaftaranAdminTim';
+import DetailPendaftaranPanitia from '../pages/panitia/DetailPendaftaranPanitia.jsx';
+import DetailPendaftaranAdminTim from '../pages/admin_tim/DetailPendaftaranAdminTim.jsx';
 import NotFoundPage from '../pages/others/NotFoundPage';
 
 const RegistrationDetailRoute = ({ userRole, isSidebarOpen }) => {
